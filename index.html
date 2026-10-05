@@ -3,294 +3,318 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yalla Delivery | يلا ديلفري</title>
-    <!-- Google Fonts -->
+    <title>ديلفري الديراوي | Derawi Delivery</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Tajawal', sans-serif;
+        /* المتغيرات للوضع الليلي (الأساسي) والنهاري */
+        :root {
+            --bg-overlay: rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.95);
+            --card-bg: rgba(30, 41, 59, 0.85);
+            --text-main: #ffffff;
+            --text-sec: #cbd5e1;
+            --input-bg: rgba(15, 23, 42, 0.8);
+            --input-border: #475569;
+            --btn-grad: linear-gradient(135deg, #ff4757, #e84118);
+            --shadow: rgba(0, 0, 0, 0.5);
         }
+
+        body.light-theme {
+            --bg-overlay: rgba(248, 250, 252, 0.85), rgba(226, 232, 240, 0.9);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-main: #1e293b;
+            --text-sec: #475569;
+            --input-bg: #ffffff;
+            --input-border: #cbd5e1;
+            --shadow: rgba(0, 0, 0, 0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
 
         body {
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(30, 41, 59, 0.9)),
-                        url('https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&w=1920&q=80') center/cover no-repeat fixed;
+            background: linear-gradient(135deg, var(--bg-overlay)), url('https://images.unsplash.com/photo-1526367790999-0150786686a2?auto=format&fit=crop&w=1920&q=80') center/cover fixed;
+            color: var(--text-main);
             padding: 20px;
+            transition: all 0.4s ease;
         }
 
+        /* زر تبديل الثيم */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--input-border);
+            padding: 10px 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            color: var(--text-main);
+            font-size: 20px;
+            box-shadow: 0 4px 10px var(--shadow);
+            transition: 0.3s;
+            z-index: 100;
+        }
+        .theme-toggle:hover { transform: scale(1.05); }
+
         .card {
-            background: rgba(255, 255, 255, 0.96);
-            backdrop-filter: blur(10px);
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
             border-radius: 24px;
             padding: 35px 30px;
             width: 100%;
             max-width: 480px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 40px var(--shadow);
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .logo-container {
-            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logo-icon {
-            width: 75px;
-            height: 75px;
-            background: linear-gradient(135deg, #ff4757, #ff6b81);
+            width: 80px; height: 80px;
+            background: var(--btn-grad);
             border-radius: 50%;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
+            display: inline-flex; justify-content: center; align-items: center;
             box-shadow: 0 10px 20px rgba(255, 71, 87, 0.4);
-            animation: pulse 2s infinite;
+            margin-bottom: 10px;
         }
+        .logo-icon svg { width: 40px; height: 40px; fill: #ffffff; }
 
-        .logo-icon svg {
-            width: 40px;
-            height: 40px;
-            fill: #ffffff;
-        }
+        .brand-name { font-size: 28px; font-weight: 900; margin-bottom: 4px; }
+        .brand-en { font-family: 'Poppins', sans-serif; font-size: 14px; color: #ff4757; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 25px; }
 
-        .brand-name {
-            font-size: 28px;
-            font-weight: 900;
-            color: #1e293b;
-            margin-bottom: 4px;
+        .form-group { margin-bottom: 18px; text-align: right; }
+        .form-group label { display: block; font-size: 14px; font-weight: 700; color: var(--text-sec); margin-bottom: 6px; }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 14px 16px;
+            border: 2px solid var(--input-border); border-radius: 12px;
+            background: var(--input-bg); color: var(--text-main);
+            font-size: 15px; outline: none; transition: 0.3s;
         }
-
-        .brand-en {
-            font-family: 'Poppins', sans-serif;
-            font-size: 14px;
-            color: #ff4757;
-            letter-spacing: 2px;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 25px;
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: #ff4757; box-shadow: 0 0 0 4px rgba(255, 71, 87, 0.15);
         }
-
-        .cta-header {
-            background: #f8fafc;
-            border-right: 4px solid #ff4757;
-            padding: 12px;
-            font-size: 18px;
-            font-weight: 700;
-            color: #334155;
-            margin-bottom: 25px;
-            border-radius: 6px;
-            text-align: right;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-            text-align: right;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 14px;
-            font-weight: 700;
-            color: #475569;
-            margin-bottom: 6px;
-        }
-
-        .form-group input, .form-group textarea {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 15px;
-            outline: none;
-            transition: all 0.3s ease;
-            background: #ffffff;
-        }
-
-        .form-group input:focus, .form-group textarea:focus {
-            border-color: #ff4757;
-            box-shadow: 0 0 0 4px rgba(255, 71, 87, 0.15);
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
+        .form-group textarea { resize: vertical; min-height: 100px; }
 
         .submit-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(135deg, #ff4757, #e84118);
-            color: #ffffff;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 8px 18px rgba(255, 71, 87, 0.35);
-            margin-top: 10px;
+            width: 100%; padding: 16px; background: var(--btn-grad);
+            color: #fff; border: none; border-radius: 12px; font-size: 18px; font-weight: 700;
+            cursor: pointer; transition: 0.2s; box-shadow: 0 8px 18px rgba(255, 71, 87, 0.35); margin-top: 10px;
         }
+        .submit-btn:hover { transform: translateY(-2px); }
 
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 22px rgba(255, 71, 87, 0.45);
+        .status-msg { margin-top: 15px; font-weight: 700; font-size: 14px; display: none; padding: 12px; border-radius: 8px; }
+        .success { display: block; background: #dcfce7; color: #15803d; }
+        .error { display: block; background: #fee2e2; color: #b91c1c; }
+
+        /* أزرار الواتساب والتقييم */
+        .bottom-actions {
+            display: flex; gap: 10px; margin-top: 20px;
         }
-
-        .submit-btn:active {
-            transform: translateY(0);
+        .action-btn {
+            flex: 1; padding: 12px; border-radius: 12px;
+            font-weight: 700; text-decoration: none; display: flex;
+            justify-content: center; align-items: center; gap: 8px;
+            cursor: pointer; border: none; font-size: 15px; color: #fff;
+            transition: 0.2s;
         }
+        .whatsapp-btn { background: #25D366; }
+        .whatsapp-btn:hover { background: #1eb956; transform: translateY(-2px); }
+        .rate-btn { background: #6366f1; }
+        .rate-btn:hover { background: #4f46e5; transform: translateY(-2px); }
 
-        .submit-btn:disabled {
-            background: #cbd5e1;
-            box-shadow: none;
-            cursor: not-allowed;
+        /* نافذة التقييم المنبثقة (Modal) */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); z-index: 1000;
+            justify-content: center; align-items: center; padding: 20px;
         }
-
-        .status-msg {
-            margin-top: 15px;
-            font-weight: 700;
-            font-size: 15px;
-            display: none;
-            padding: 12px;
-            border-radius: 8px;
+        .modal-content {
+            background: var(--card-bg); width: 100%; max-width: 400px;
+            border-radius: 20px; padding: 30px; position: relative; border: 1px solid var(--input-border);
         }
-
-        .status-msg.success {
-            display: block;
-            background: #dcfce7;
-            color: #15803d;
-        }
-
-        .status-msg.error {
-            display: block;
-            background: #fee2e2;
-            color: #b91c1c;
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0.5); }
-            70% { box-shadow: 0 0 0 15px rgba(255, 71, 87, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 71, 87, 0); }
+        .close-modal {
+            position: absolute; top: 15px; left: 20px; font-size: 24px;
+            cursor: pointer; color: var(--text-sec);
         }
     </style>
 </head>
 <body>
 
+    <!-- زر تبديل الوضع الليلي / النهاري -->
+    <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()">☀️ نهار</button>
+
     <div class="card">
-        <!-- Logo -->
-        <div class="logo-container">
-            <div class="logo-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M19 7h-3V6a3 3 0 0 0-3-3H5a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h.78A3 3 0 0 0 11 18a3 3 0 0 0 5.22 0H18a3 3 0 0 0 3-3V10a3 3 0 0 0-2-3zM8 19.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5.5-13.5a1.5 1.5 0 0 1 1.5-1.5h1.78a1.5 1.5 0 0 1 1.42 1.02L18.8 8H13.5V6zm3.5 13.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/>
-                </svg>
-            </div>
+        <div class="logo-icon">
+            <svg viewBox="0 0 24 24"><path d="M19 7h-3V6a3 3 0 0 0-3-3H5a3 3 0 0 0-3 3v9a3 3 0 0 0 3 3h.78A3 3 0 0 0 11 18a3 3 0 0 0 5.22 0H18a3 3 0 0 0 3-3V10a3 3 0 0 0-2-3zM8 19.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5.5-13.5a1.5 1.5 0 0 1 1.5-1.5h1.78a1.5 1.5 0 0 1 1.42 1.02L18.8 8H13.5V6zm3.5 13.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z"/></svg>
         </div>
+        
+        <h1 class="brand-name">ديلفري الديراوي</h1>
+        <div class="brand-en">Derawi Delivery</div>
 
-        <!-- Branding -->
-        <h1 class="brand-name">يلا ديلفري</h1>
-        <div class="brand-en">Yalla Delivery</div>
-
-        <div class="cta-header">
-            🛵 قدم طلبك الآن
-        </div>
-
-        <!-- Form -->
+        <!-- فورم الطلب -->
         <form id="deliveryForm">
             <div class="form-group">
-                <label for="name">الاسم الكامل</label>
-                <input type="text" id="name" placeholder="أدخل اسمك الكريم" required>
+                <label>الاسم الكامل</label>
+                <input type="text" id="name" placeholder="أدخل اسمك" required>
             </div>
-
             <div class="form-group">
-                <label for="phone">رقم الهاتف</label>
-                <input type="tel" id="phone" placeholder="05XXXXXXXX" required dir="ltr" style="text-align: right;">
+                <label>رقم الهاتف (يجب أن يبدأ بـ 05)</label>
+                <input type="tel" id="phone" placeholder="05XXXXXXXX" required dir="ltr">
             </div>
-
             <div class="form-group">
-                <label for="address">العنوان التفصيلي</label>
-                <input type="text" id="address" placeholder="المدينة، الشارع، علامة مميزة" required>
+                <label>العنوان التفصيلي</label>
+                <input type="text" id="address" placeholder="المدينة، الشارع..." required>
             </div>
-
             <div class="form-group">
-                <label for="orderDetails">تفاصيل الطلب</label>
-                <textarea id="orderDetails" placeholder="اكتب أغراضك أو طلبك هنا بالتفصيل..." required></textarea>
+                <label>تفاصيل الطلب</label>
+                <textarea id="orderDetails" placeholder="اكتب طلبك هنا..." required></textarea>
             </div>
-
-            <button type="submit" class="submit-btn" id="submitBtn">إرسال الطلب الآن</button>
+            <button type="submit" class="submit-btn" id="submitBtn">إرسال الطلب</button>
             <div id="statusMsg" class="status-msg"></div>
         </form>
+
+        <!-- أزرار التواصل والتقييم -->
+        <div class="bottom-actions">
+            <a href="https://wa.me/972592526313" target="_blank" class="action-btn whatsapp-btn">
+                💬 واتساب
+            </a>
+            <button type="button" class="action-btn rate-btn" onclick="openModal()">
+                ⭐ قيمنا
+            </button>
+        </div>
+    </div>
+
+    <!-- نافذة التقييم -->
+    <div id="rateModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <h2 style="margin-bottom: 20px; font-weight: 900;">تقييم الخدمة 🌟</h2>
+            <form id="rateForm">
+                <div class="form-group">
+                    <label>الاسم (اختياري)</label>
+                    <input type="text" id="rateName" placeholder="اسمك الكريم">
+                </div>
+                <div class="form-group">
+                    <label>تقييمك</label>
+                    <select id="rateStars" required>
+                        <option value="⭐⭐⭐⭐⭐ 5/5 - ممتاز جداً">⭐⭐⭐⭐⭐ ممتاز جداً</option>
+                        <option value="⭐⭐⭐⭐ 4/5 - جيد جداً">⭐⭐⭐⭐ جيد جداً</option>
+                        <option value="⭐⭐⭐ 3/5 - جيد">⭐⭐⭐ جيد</option>
+                        <option value="⭐⭐ 2/5 - مقبول">⭐⭐ مقبول</option>
+                        <option value="⭐ 1/5 - سيء">⭐ سيء</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>ملاحظاتك</label>
+                    <textarea id="rateNotes" placeholder="رأيك يهمنا..." required></textarea>
+                </div>
+                <button type="submit" class="submit-btn" id="rateSubmitBtn" style="background: #6366f1; box-shadow: 0 8px 18px rgba(99, 102, 241, 0.3);">إرسال التقييم</button>
+                <div id="rateStatusMsg" class="status-msg"></div>
+            </form>
+        </div>
     </div>
 
     <script>
-        // Webhook الخاص بقناة الديسكورد الخاصة بك
-        const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1556726586407919630/5VrORfaR4NdN4kIInRwKLpD0wkhNwe-uAXjfQ_igAojxucCjtoyRs14RYM23VxctVhsL";
+        // روابط الديسكورد للطلبات والتقييمات
+        const ORDER_WEBHOOK = "https://discord.com/api/webhooks/1556726586407919630/5VrORfaR4NdN4kIInRwKLpD0wkhNwe-uAXjfQ_igAojxucCjtoyRs14RYM23VxctVhsL";
+        const RATING_WEBHOOK = "https://discord.com/api/webhooks/1556740129635176488/Q9F48ziVJc4jp8KUyRyahFBMAZj3NcgkvpSD3dHCf-q2yjL-KI-_jdlcPkpKrUPAIEMq";
 
-        const form = document.getElementById('deliveryForm');
-        const submitBtn = document.getElementById('submitBtn');
-        const statusMsg = document.getElementById('statusMsg');
+        // تبديل الوضع الليلي/النهاري
+        function toggleTheme() {
+            const body = document.body;
+            const btn = document.getElementById('themeBtn');
+            body.classList.toggle('light-theme');
+            if (body.classList.contains('light-theme')) {
+                btn.innerHTML = '🌙 ليل';
+            } else {
+                btn.innerHTML = '☀️ نهار';
+            }
+        }
 
-        form.addEventListener('submit', async (e) => {
+        // إرسال الطلب (الفورم الأساسي)
+        document.getElementById('deliveryForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            const name = document.getElementById('name').value.trim();
+            
             const phone = document.getElementById('phone').value.trim();
-            const address = document.getElementById('address').value.trim();
-            const orderDetails = document.getElementById('orderDetails').value.trim();
+            const statusMsg = document.getElementById('statusMsg');
 
-            submitBtn.disabled = true;
-            submitBtn.innerText = 'جاري إرسال الطلب...';
-            statusMsg.style.display = 'none';
+            // حماية الرقم: يجب أن يبدأ بـ 05
+            if (!phone.startsWith('05')) {
+                statusMsg.className = 'status-msg error';
+                statusMsg.innerText = '❌ عذراً، يجب أن يبدأ رقم الهاتف بـ 05';
+                return;
+            }
 
-            // تنسيق الرسالة لتظهر بكرت ملون وأنيق داخل روم الديسكورد
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true; btn.innerText = 'جاري الإرسال...'; statusMsg.style.display = 'none';
+
             const payload = {
-                username: "يلا ديلفري - Yalla Delivery",
-                avatar_url: "https://cdn-icons-png.flaticon.com/512/2972/2972531.png",
-                embeds: [
-                    {
-                        title: "📦 طلب توصيل جديد!",
-                        color: 16730225,
-                        fields: [
-                            { name: "👤 الاسم", value: name, inline: true },
-                            { name: "📞 الهاتف", value: phone, inline: true },
-                            { name: "📍 العنوان", value: address, inline: false },
-                            { name: "📝 تفاصيل الطلب", value: orderDetails, inline: false }
-                        ],
-                        timestamp: new Date().toISOString(),
-                        footer: { text: "نظام طلبات يلا ديلفري" }
-                    }
-                ]
+                username: "ديلفري الديراوي - طلبات",
+                embeds: [{
+                    title: "📦 طلب توصيل جديد!", color: 16730225,
+                    fields: [
+                        { name: "👤 الاسم", value: document.getElementById('name').value.trim(), inline: true },
+                        { name: "📞 الهاتف", value: phone, inline: true },
+                        { name: "📍 العنوان", value: document.getElementById('address').value.trim(), inline: false },
+                        { name: "📝 الطلب", value: document.getElementById('orderDetails').value.trim(), inline: false }
+                    ], timestamp: new Date().toISOString()
+                }]
             };
 
             try {
-                const response = await fetch(DISCORD_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok || response.status === 204) {
-                    statusMsg.className = 'status-msg success';
-                    statusMsg.innerText = '✅ تم إرسال طلبك بنجاح! سنتواصل معك قريبًا.';
-                    form.reset();
-                } else {
-                    throw new Error('فشل الإرسال');
-                }
-            } catch (error) {
-                statusMsg.className = 'status-msg error';
-                statusMsg.innerText = '❌ حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.';
+                await fetch(ORDER_WEBHOOK, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+                statusMsg.className = 'status-msg success'; statusMsg.innerText = '✅ تم إرسال طلبك بنجاح!';
+                document.getElementById('deliveryForm').reset();
+            } catch (err) {
+                statusMsg.className = 'status-msg error'; statusMsg.innerText = '❌ حدث خطأ بالاتصال.';
             } finally {
-                submitBtn.disabled = false;
-                submitBtn.innerText = 'إرسال الطلب الآن';
+                btn.disabled = false; btn.innerText = 'إرسال الطلب';
+            }
+        });
+
+        // دوال نافذة التقييم (Modal)
+        const modal = document.getElementById('rateModal');
+        function openModal() { modal.style.display = 'flex'; }
+        function closeModal() { modal.style.display = 'none'; document.getElementById('rateStatusMsg').style.display='none'; }
+        
+        // إغلاق النافذة عند الضغط خارجها
+        window.onclick = function(event) { if (event.target == modal) closeModal(); }
+
+        // إرسال التقييم
+        document.getElementById('rateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('rateSubmitBtn');
+            const statusMsg = document.getElementById('rateStatusMsg');
+            btn.disabled = true; btn.innerText = 'جاري الإرسال...'; statusMsg.style.display = 'none';
+
+            const name = document.getElementById('rateName').value.trim() || "غير معروف";
+            const payload = {
+                username: "نظام تقييم الديراوي",
+                embeds: [{
+                    title: "⭐ تقييم جديد للخدمة!", color: 6519537,
+                    fields: [
+                        { name: "👤 من", value: name, inline: true },
+                        { name: "🌟 التقييم", value: document.getElementById('rateStars').value, inline: true },
+                        { name: "💬 الملاحظات", value: document.getElementById('rateNotes').value.trim(), inline: false }
+                    ], timestamp: new Date().toISOString()
+                }]
+            };
+
+            try {
+                await fetch(RATING_WEBHOOK, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+                statusMsg.className = 'status-msg success'; statusMsg.innerText = '✅ شكراً لتقييمك!';
+                document.getElementById('rateForm').reset();
+                setTimeout(closeModal, 2000); // إغلاق النافذة بعد ثانيتين
+            } catch (err) {
+                statusMsg.className = 'status-msg error'; statusMsg.innerText = '❌ حدث خطأ.';
+            } finally {
+                btn.disabled = false; btn.innerText = 'إرسال التقييم';
             }
         });
     </script>
 </body>
 </html>
-
