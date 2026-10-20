@@ -1,1 +1,447 @@
-b
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>لوحة الإدارة | GOLDEN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #000000;
+  --glass: rgba(25, 25, 30, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --text: #ffffff;
+  --muted: #8b8b93;
+  --accent: #e8b923;
+  --danger: #ff453a;
+  --success: #32d74b;
+  --radius: 20px;
+  --ease: cubic-bezier(0.25, 1, 0.5, 1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; font-family: 'Tajawal', -apple-system, sans-serif; }
+body { background: var(--bg); color: var(--text); height: 100vh; display: flex; overflow: hidden; }
+
+/* Sidebar / Nav */
+.nav-bar {
+  width: 260px; background: rgba(15,15,18,0.8); backdrop-filter: blur(30px);
+  border-left: 1px solid var(--glass-border); display: flex; flex-direction: column; padding: 20px 15px;
+  transition: 0.3s;
+}
+.brand { font-size: 22px; font-weight: 800; margin-bottom: 30px; padding-right: 10px; display: flex; align-items: center; gap: 10px; }
+.brand span { color: var(--accent); }
+.nav-btn {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: 14px;
+  background: transparent; border: none; color: var(--muted); font-size: 16px; font-weight: 700;
+  cursor: pointer; transition: 0.2s; text-align: right; margin-bottom: 5px;
+}
+.nav-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
+.nav-btn.active { background: var(--glass); color: var(--accent); border: 1px solid var(--glass-border); }
+
+/* Main Content */
+.main-content { flex: 1; overflow-y: auto; padding: 30px; scroll-behavior: smooth; }
+.page-title { font-size: 28px; font-weight: 800; margin-bottom: 25px; }
+
+/* Glass Card */
+.card {
+  background: var(--glass); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border: 1px solid var(--glass-border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+
+/* Forms & Inputs */
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+.input-box { display: flex; flex-direction: column; gap: 6px; }
+.input-box label { font-size: 13px; color: var(--muted); font-weight: 600; margin-right: 5px; }
+.input-box input, .input-box select, .input-box textarea {
+  background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border); color: #fff;
+  padding: 12px 16px; border-radius: 12px; font-size: 15px; outline: none; transition: 0.2s;
+}
+.input-box input:focus, .input-box textarea:focus { border-color: var(--accent); }
+.input-box input[type="color"] { padding: 5px; height: 45px; cursor: pointer; }
+
+.btn {
+  padding: 12px 20px; border-radius: 12px; border: none; font-weight: 700; font-size: 15px;
+  cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn:active { transform: scale(0.96); }
+.btn-primary { background: var(--accent); color: #000; }
+.btn-danger { background: rgba(255,69,58,0.15); color: var(--danger); border: 1px solid rgba(255,69,58,0.3); }
+.btn-ghost { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--glass-border); }
+
+/* Stats */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+.stat-item { text-align: center; padding: 15px; }
+.stat-item h3 { font-size: 32px; color: var(--accent); font-weight: 800; margin-bottom: 5px; }
+.stat-item p { color: var(--muted); font-size: 14px; }
+
+/* Lists & Tables */
+.list-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid var(--glass-border); }
+.list-item:last-child { border-bottom: none; }
+.badge { padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
+.badge.confirmed { background: rgba(50,215,75,0.15); color: var(--success); }
+.badge.cancelled { background: rgba(255,69,58,0.15); color: var(--danger); }
+
+/* Pages */
+.page { display: none; animation: fadeIn 0.3s ease; }
+.page.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Login Overlay */
+#loginOverlay {
+  position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center;
+}
+.login-box { width: 100%; max-width: 350px; text-align: center; padding: 30px; }
+
+/* Mobile */
+@media (max-width: 768px) {
+  body { flex-direction: column; }
+  .nav-bar { width: 100%; height: auto; flex-direction: row; overflow-x: auto; border-left: none; border-bottom: 1px solid var(--glass-border); padding: 10px; }
+  .brand { display: none; }
+  .nav-btn { white-space: nowrap; padding: 10px 15px; }
+  .main-content { padding: 15px; }
+  .form-row { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- شاشة تسجيل الدخول -->
+<div id="loginOverlay">
+  <div class="card login-box">
+    <h2 style="margin-bottom: 20px;">لوحة الإدارة</h2>
+    <div class="input-box" style="margin-bottom: 15px;">
+      <input type="password" id="pwdInput" placeholder="أدخل كلمة المرور" style="text-align: center; letter-spacing: 3px;">
+    </div>
+    <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="tryLogin()">دخول</button>
+  </div>
+</div>
+
+<!-- القائمة الجانبية -->
+<div class="nav-bar">
+  <div class="brand">GOLDEN <span>Admin</span></div>
+  <button class="nav-btn active" onclick="switchPage('dashboard')">📊 القيادة</button>
+  <button class="nav-btn" onclick="switchPage('bookings')">📋 الحجوزات</button>
+  <button class="nav-btn" onclick="switchPage('services')">💼 الخدمات</button>
+  <button class="nav-btn" onclick="switchPage('times')">⏰ المواعيد</button>
+  <button class="nav-btn" onclick="switchPage('design')">🎨 التصميم والمحتوى</button>
+  <button class="nav-btn" onclick="switchPage('settings')">⚙️ الإعدادات</button>
+  <div style="flex:1"></div>
+  <button class="nav-btn" style="color: var(--danger)" onclick="window.location.href='index.html'">🚪 عرض الموقع</button>
+</div>
+
+<!-- المحتوى -->
+<div class="main-content">
+
+  <!-- 1. لوحة القيادة -->
+  <div id="page-dashboard" class="page active">
+    <h1 class="page-title">لوحة القيادة</h1>
+    <div class="stats-grid">
+      <div class="card stat-item">
+        <h3 id="statTotal">0</h3>
+        <p>إجمالي الحجوزات</p>
+      </div>
+      <div class="card stat-item">
+        <h3 id="statToday">0</h3>
+        <p>حجوزات اليوم</p>
+      </div>
+      <div class="card stat-item">
+        <h3 id="statRevenue">0</h3>
+        <p>الإيرادات المتوقعة</p>
+      </div>
+    </div>
+    <div class="card" style="margin-top: 20px;">
+      <h3 style="margin-bottom: 15px;">آخر الحجوزات</h3>
+      <div id="recentBookingsList"></div>
+    </div>
+  </div>
+
+  <!-- 2. الحجوزات -->
+  <div id="page-bookings" class="page">
+    <h1 class="page-title">إدارة الحجوزات</h1>
+    <div class="card">
+      <div id="bookingsList"></div>
+    </div>
+  </div>
+
+  <!-- 3. الخدمات -->
+  <div id="page-services" class="page">
+    <h1 class="page-title">إدارة الخدمات</h1>
+    <div class="card">
+      <div id="servicesAdminList"></div>
+      <button class="btn btn-primary" style="margin-top: 15px;" onclick="addService()">+ إضافة خدمة</button>
+    </div>
+  </div>
+
+  <!-- 4. المواعيد -->
+  <div id="page-times" class="page">
+    <h1 class="page-title">إدارة المواعيد</h1>
+    <div class="card">
+      <h3>الأوقات المتاحة (كل وقت في سطر)</h3>
+      <div class="input-box" style="margin-top: 10px;">
+        <textarea id="slotsInput" rows="6" oninput="saveSlots(this.value)" dir="ltr"></textarea>
+      </div>
+    </div>
+    <div class="card">
+      <h3>أيام العطلة (لن يستقبل الموقع حجوزات فيها)</h3>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px;" id="closedDaysBox"></div>
+    </div>
+  </div>
+
+  <!-- 5. التصميم والمحتوى -->
+  <div id="page-design" class="page">
+    <h1 class="page-title">التصميم والمحتوى</h1>
+    <div class="card">
+      <div class="form-row">
+        <div class="input-box">
+          <label>اسم الموقع</label>
+          <input type="text" id="siteBrand" oninput="updateSite('brand', this.value)">
+        </div>
+        <div class="input-box">
+          <label>حرف الشعار (حرف واحد)</label>
+          <input type="text" id="siteLogo" maxlength="2" oninput="updateSite('logoText', this.value)">
+        </div>
+      </div>
+      <div class="input-box" style="margin-bottom: 15px;">
+        <label>العنوان الرئيسي</label>
+        <input type="text" id="siteTitle" oninput="updateSite('title', this.value)">
+      </div>
+      <div class="input-box" style="margin-bottom: 15px;">
+        <label>الوصف الفرعي</label>
+        <textarea id="siteSubtitle" rows="2" oninput="updateSite('subtitle', this.value)"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="input-box">
+          <label>اللون الرئيسي</label>
+          <input type="color" id="siteAccent" oninput="updateSite('accent', this.value)">
+        </div>
+        <div class="input-box">
+          <label>العملة</label>
+          <input type="text" id="siteCurrency" oninput="updateSite('currency', this.value)">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. الإعدادات -->
+  <div id="page-settings" class="page">
+    <h1 class="page-title">الإعدادات العامة</h1>
+    <div class="card">
+      <h3>Discord Webhook</h3>
+      <p style="color:var(--muted); font-size:13px; margin-bottom: 10px;">لإرسال إشعار عند كل حجز جديد</p>
+      <div class="input-box">
+        <input type="text" id="siteWebhook" oninput="updateSite('webhook', this.value)" dir="ltr">
+      </div>
+    </div>
+    <div class="card">
+      <h3>كلمة المرور</h3>
+      <div class="input-box" style="margin-top: 10px;">
+        <input type="text" id="sitePass" oninput="updateSite('adminPass', this.value)" dir="ltr">
+      </div>
+    </div>
+    <div class="card" style="border-color: rgba(255,69,58,0.3);">
+      <h3 style="color: var(--danger)">منطقة الخطر</h3>
+      <p style="color:var(--muted); font-size:13px; margin-bottom: 15px;">حذف جميع الحجوزات نهائياً</p>
+      <button class="btn btn-danger" onclick="clearBookings()">مسح جميع الحجوزات</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const LS_KEY = 'golden_booking_v4';
+let DB = {};
+
+// جلب البيانات
+function loadData() {
+  const saved = localStorage.getItem(LS_KEY);
+  if(saved) {
+    DB = JSON.parse(saved);
+  } else {
+    DB = { site: { brand: 'GOLDEN', logoText: 'G', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت المناسب لك', currency: '₪', accent: '#e8b923', webhook: '', adminPass: 'GOLDEN' }, services: [], slots: [], closedDays: [], bookings: [] };
+  }
+  if(!DB.site.adminPass) DB.site.adminPass = 'GOLDEN';
+}
+
+// حفظ البيانات
+function saveData() {
+  localStorage.setItem(LS_KEY, JSON.stringify(DB));
+}
+
+// تسجيل الدخول
+function tryLogin() {
+  const pwd = document.getElementById('pwdInput').value;
+  if(pwd === DB.site.adminPass) {
+    document.getElementById('loginOverlay').style.display = 'none';
+    initAdmin();
+  } else {
+    alert('كلمة المرور غير صحيحة');
+  }
+}
+
+// التنقل بين الصفحات
+function switchPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + pageId).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  if(pageId === 'dashboard') renderDashboard();
+  if(pageId === 'bookings') renderBookings();
+  if(pageId === 'services') renderServicesAdmin();
+  if(pageId === 'times') renderTimes();
+  if(pageId === 'design') renderDesign();
+  if(pageId === 'settings') renderSettings();
+}
+
+// ======================= لوحة القيادة =======================
+function renderDashboard() {
+  const today = new Date().toISOString().split('T')[0];
+  const activeBookings = DB.bookings.filter(b => b.status !== 'cancelled');
+  const todayBookings = activeBookings.filter(b => b.date === today);
+  const revenue = activeBookings.reduce((sum, b) => sum + Number(b.price || 0), 0);
+
+  document.getElementById('statTotal').innerText = DB.bookings.length;
+  document.getElementById('statToday').innerText = todayBookings.length;
+  document.getElementById('statRevenue').innerText = revenue + ' ' + DB.site.currency;
+
+  const recent = [...DB.bookings].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+  document.getElementById('recentBookingsList').innerHTML = recent.length ? recent.map(b => `
+    <div class="list-item">
+      <div>
+        <strong>${b.name}</strong> - ${b.serviceName}
+        <div style="font-size: 12px; color: var(--muted);">${b.date} | ${b.time}</div>
+      </div>
+      <span class="badge ${b.status}">${b.status === 'confirmed' ? 'مؤكد' : 'ملغي'}</span>
+    </div>
+  `).join('') : '<p style="color:var(--muted)">لا توجد حجوزات بعد</p>';
+}
+
+// ======================= الحجوزات =======================
+function renderBookings() {
+  const sorted = [...DB.bookings].sort((a,b) => new Date(b.createdAt) - new Date(a.createdAt));
+  document.getElementById('bookingsList').innerHTML = sorted.length ? sorted.map(b => `
+    <div class="list-item">
+      <div>
+        <strong>${b.name}</strong> (${b.phone})
+        <div style="font-size: 13px; color: var(--muted); margin-top: 4px;">
+          ${b.serviceName} | ${b.date} الساعة ${b.time} | ${b.price} ${DB.site.currency}
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px;">
+        ${b.status === 'confirmed' 
+          ? `<button class="btn btn-ghost" onclick="cancelBooking('${b.id}')" style="padding:6px 12px; font-size:12px;">إلغاء</button>` 
+          : `<span class="badge cancelled">ملغي</span>`}
+        <button class="btn btn-danger" onclick="deleteBooking('${b.id}')" style="padding:6px 12px; font-size:12px;">حذف</button>
+      </div>
+    </div>
+  `).join('') : '<p style="color:var(--muted)">لا توجد حجوزات</p>';
+}
+
+function cancelBooking(id) {
+  if(!confirm('هل أنت متأكد من إلغاء هذا الحجز؟')) return;
+  const b = DB.bookings.find(x => x.id === id);
+  if(b) b.status = 'cancelled';
+  saveData(); renderBookings(); renderDashboard();
+}
+
+function deleteBooking(id) {
+  if(!confirm('هل أنت متأكد من الحذف نهائياً؟')) return;
+  DB.bookings = DB.bookings.filter(x => x.id !== id);
+  saveData(); renderBookings(); renderDashboard();
+}
+
+// ======================= الخدمات =======================
+function renderServicesAdmin() {
+  document.getElementById('servicesAdminList').innerHTML = DB.services.map((s, i) => `
+    <div class="list-item" style="flex-wrap: wrap; gap: 10px;">
+      <input type="text" value="${s.name}" onchange="updateSrv(${i}, 'name', this.value)" style="width: 30%; background:transparent; border:none; color:#fff; font-weight:bold; font-size:16px;">
+      <input type="number" value="${s.price}" onchange="updateSrv(${i}, 'price', this.value)" style="width: 15%; background:transparent; border:none; color:var(--accent); font-weight:bold;" placeholder="السعر">
+      <input type="number" value="${s.duration}" onchange="updateSrv(${i}, 'duration', this.value)" style="width: 15%; background:transparent; border:none; color:var(--muted);" placeholder="المدة">
+      <div style="display:flex; gap:5px; margin-right:auto;">
+        <button class="btn btn-ghost" style="padding:6px 10px;" onclick="toggleSrv(${i})">${s.active === false ? '🙈' : '👁️'}</button>
+        <button class="btn btn-danger" style="padding:6px 10px;" onclick="deleteSrv(${i})">🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function addService() {
+  DB.services.push({ id: 's' + Date.now(), name: 'خدمة جديدة', price: 0, duration: 30, active: true });
+  saveData(); renderServicesAdmin();
+}
+
+function updateSrv(index, key, val) {
+  DB.services[index][key] = (key === 'price' || key === 'duration') ? Number(val) : val;
+  saveData();
+}
+
+function toggleSrv(index) {
+  DB.services[index].active = DB.services[index].active === false;
+  saveData(); renderServicesAdmin();
+}
+
+function deleteSrv(index) {
+  if(!confirm('حذف هذه الخدمة؟')) return;
+  DB.services.splice(index, 1);
+  saveData(); renderServicesAdmin();
+}
+
+// ======================= المواعيد =======================
+function renderTimes() {
+  document.getElementById('slotsInput').value = DB.slots.join('\n');
+  
+  const days = ['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  document.getElementById('closedDaysBox').innerHTML = days.map((d, i) => `
+    <button class="btn ${DB.closedDays.includes(i) ? 'btn-danger' : 'btn-ghost'}" onclick="toggleDay(${i})">${d}</button>
+  `).join('');
+}
+
+function saveSlots(val) {
+  DB.slots = val.split('\n').map(s => s.trim()).filter(Boolean).sort();
+  saveData();
+}
+
+function toggleDay(dayIndex) {
+  const idx = DB.closedDays.indexOf(dayIndex);
+  if(idx > -1) DB.closedDays.splice(idx, 1);
+  else DB.closedDays.push(dayIndex);
+  saveData(); renderTimes();
+}
+
+// ======================= التصميم والمحتوى =======================
+function renderDesign() {
+  document.getElementById('siteBrand').value = DB.site.brand;
+  document.getElementById('siteLogo').value = DB.site.logoText;
+  document.getElementById('siteTitle').value = DB.site.title;
+  document.getElementById('siteSubtitle').value = DB.site.subtitle;
+  document.getElementById('siteAccent').value = DB.site.accent || '#e8b923';
+  document.getElementById('siteCurrency').value = DB.site.currency;
+}
+
+function updateSite(key, val) {
+  DB.site[key] = val;
+  saveData();
+  if(key === 'accent') document.documentElement.style.setProperty('--accent', val);
+}
+
+// ======================= الإعدادات =======================
+function renderSettings() {
+  document.getElementById('siteWebhook').value = DB.site.webhook;
+  document.getElementById('sitePass').value = DB.site.adminPass;
+}
+
+function clearBookings() {
+  if(!confirm('سيتم حذف كل الحجوزات نهائياً، هل أنت متأكد؟')) return;
+  DB.bookings = [];
+  saveData(); renderDashboard();
+}
+
+// تشغيل
+loadData();
+document.getElementById('pwdInput').addEventListener('keypress', function(e) {
+  if(e.key === 'Enter') tryLogin();
+});
+</script>
+</body>
+</html>
