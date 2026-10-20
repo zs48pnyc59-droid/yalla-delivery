@@ -1,325 +1,257 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
-<title>GOLDEN — حجز المواعيد</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-<style>
-:root {
-  --bg: #050505;
-  --glass: rgba(30, 30, 35, 0.55);
-  --glass-border: rgba(255, 255, 255, 0.12);
-  --text: #ffffff;
-  --muted: #9ca3af;
-  --accent: #e8b923;
-  --accent-glow: rgba(232, 185, 35, 0.3);
-  --radius: 24px;
-  --ease: cubic-bezier(0.25, 1, 0.5, 1);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; font-family: 'Tajawal', -apple-system, BlinkMacSystemFont, sans-serif; }
-body {
-  background-color: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
-}
-/* خلفية iOS متحركة */
-.bg-orbs { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
-.orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.5; animation: float 10s infinite alternate; }
-.orb-1 { width: 400px; height: 400px; background: var(--accent); top: -100px; right: -100px; }
-.orb-2 { width: 300px; height: 300px; background: #3b82f6; bottom: -50px; left: -100px; animation-delay: -5s; }
-@keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-30px, 30px) scale(1.1); } }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#000000">
+  <title>GOLDEN - حجز المواعيد</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #000;
+      --glass: rgba(30, 30, 35, 0.65);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --text: #fff;
+      --muted: #a1a1a6;
+      --accent: #e8b923;
+      --radius: 20px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    
+    /* خلفية متحركة زجاجية */
+    .bg-blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.6; }
+    .blob-1 { width: 350px; height: 350px; background: var(--accent); top: -50px; right: -50px; }
+    .blob-2 { width: 250px; height: 250px; background: #007aff; bottom: -50px; left: -50px; }
 
-.container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; padding: 15px; padding-bottom: 50px; }
 
-/* Glassmorphism */
-.glass {
-  background: var(--glass);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-}
+    /* زجاج */
+    .glass {
+      background: var(--glass); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border: 1px solid var(--glass-border); border-radius: var(--radius);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
 
-/* Header */
-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; margin-top: 20px; }
-.brand { display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 800; }
-.logo-dot { width: 40px; height: 40px; border-radius: 12px; background: var(--accent); display: grid; place-items: center; color: #000; font-weight: 900; box-shadow: 0 0 20px var(--accent-glow); }
-.btn-admin { background: rgba(255,255,255,0.1); border: none; color: var(--text); width: 44px; height: 44px; border-radius: 50%; cursor: pointer; font-size: 20px; transition: 0.3s; }
-.btn-admin:active { transform: scale(0.9); }
+    /* الهيدر */
+    header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; margin-top: 10px; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; }
+    .logo { width: 35px; height: 35px; background: var(--accent); border-radius: 10px; display: grid; place-items: center; color: #000; font-weight: 900; }
+    .btn-icon { background: rgba(255,255,255,0.1); border: none; color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer; }
 
-/* Hero */
-.hero { text-align: center; padding: 40px 20px; margin-top: 20px; }
-.hero h1 { font-size: 36px; font-weight: 800; margin-bottom: 10px; background: linear-gradient(180deg, #fff, #a1a1aa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-.hero p { color: var(--muted); font-size: 16px; }
+    /* العناوين */
+    .hero { text-align: center; padding: 30px 10px; }
+    .hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero p { color: var(--muted); font-size: 15px; }
 
-/* Services */
-.section-title { font-size: 20px; font-weight: 700; margin: 30px 0 15px 5px; }
-.services-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
-.service-card { padding: 20px; text-align: center; transition: 0.3s var(--ease); cursor: pointer; border: 2px solid transparent; }
-.service-card:hover { transform: translateY(-5px); background: rgba(50, 50, 55, 0.7); }
-.service-card.active { border-color: var(--accent); background: rgba(232, 185, 35, 0.1); box-shadow: 0 0 20px var(--accent-glow); }
-.service-card h3 { font-size: 18px; margin-bottom: 5px; }
-.service-card .price { color: var(--accent); font-weight: 800; font-size: 20px; }
-.service-card .dur { color: var(--muted); font-size: 13px; }
+    .section-title { font-size: 18px; font-weight: 700; margin: 25px 0 15px 5px; }
 
-/* Booking Form */
-.booking-form { padding: 25px; margin-top: 30px; }
-.input-group { margin-bottom: 20px; }
-.input-group label { display: block; font-size: 14px; color: var(--muted); margin-bottom: 8px; font-weight: 500; }
-.input-group input, .input-group textarea {
-  width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--glass-border); color: #fff;
-  padding: 16px; border-radius: 16px; font-size: 16px; outline: none; transition: 0.3s;
-}
-.input-group input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+    /* بطاقات الخدمات */
+    .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .srv-card { padding: 15px; cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
+    .srv-card.active { border-color: var(--accent); background: rgba(232, 185, 35, 0.1); }
+    .srv-card h3 { font-size: 16px; margin-bottom: 5px; }
+    .srv-card .price { color: var(--accent); font-weight: 800; font-size: 18px; }
+    .srv-card .time { color: var(--muted); font-size: 12px; }
 
-/* Slots */
-.slots-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; }
-.slot-btn {
-  padding: 12px 0; border-radius: 12px; background: rgba(255,255,255,0.05);
-  border: 1px solid var(--glass-border); color: #fff; font-weight: 700; font-size: 15px;
-  transition: 0.2s; cursor: pointer;
-}
-.slot-btn:active { transform: scale(0.95); }
-.slot-btn.selected { background: var(--accent); color: #000; border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-.slot-btn:disabled { opacity: 0.3; text-decoration: line-through; cursor: not-allowed; }
+    /* النموذج */
+    .form-box { padding: 20px; margin-top: 15px; }
+    .input-group { margin-bottom: 15px; }
+    .input-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .input-group input, .input-group textarea {
+      width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);
+      color: #fff; padding: 14px; border-radius: 14px; font-size: 15px; outline: none; transition: 0.2s;
+    }
+    .input-group input:focus { border-color: var(--accent); }
 
-.btn-submit {
-  width: 100%; padding: 18px; border-radius: 18px; background: var(--accent); color: #000;
-  font-size: 18px; font-weight: 800; border: none; cursor: pointer; margin-top: 10px;
-  transition: 0.3s; box-shadow: 0 10px 20px var(--accent-glow);
-}
-.btn-submit:active { transform: scale(0.98); }
+    /* الأوقات */
+    .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .slot { padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .slot.selected { background: var(--accent); color: #000; border-color: var(--accent); }
+    .slot:disabled { opacity: 0.3; text-decoration: line-through; cursor: not-allowed; }
 
-/* Animations */
-.fade-up { animation: fadeUp 0.6s var(--ease) both; }
-@keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-</style>
+    .btn-submit {
+      width: 100%; padding: 16px; border-radius: 14px; background: var(--accent); color: #000;
+      font-size: 16px; font-weight: 800; border: none; cursor: pointer; margin-top: 10px; transition: 0.2s;
+    }
+    .btn-submit:active { transform: scale(0.96); }
+
+    /* أنيميشن */
+    .fade { animation: fade 0.5s ease forwards; opacity: 0; transform: translateY(10px); }
+    @keyframes fade { to { opacity: 1; transform: translateY(0); } }
+  </style>
 </head>
 <body>
+  <div class="bg-blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div></div>
 
-<div class="bg-orbs">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-</div>
+  <div class="container">
+    <header class="glass fade">
+      <div class="brand"><div class="logo" id="siteLogo">G</div><span id="siteBrand">GOLDEN</span></div>
+      <button class="btn-icon" onclick="window.location.href='admin.html'">⚙️</button>
+    </header>
 
-<div class="container">
-  <header class="glass fade-up">
-    <div class="brand">
-      <div class="logo-dot" id="siteLogo">G</div>
-      <span id="siteBrand">GOLDEN</span>
+    <div class="hero fade" style="animation-delay: 0.1s">
+      <h1 id="siteTitle">احجز موعدك</h1>
+      <p id="siteSubtitle">اختر الخدمة والوقت المناسب</p>
     </div>
-    <button class="btn-admin" onclick="window.location.href='admin.html'">⚙️</button>
-  </header>
 
-  <div class="hero fade-up" style="animation-delay: 0.1s">
-    <h1 id="heroTitle">احجز موعدك</h1>
-    <p id="heroSub">اختر الخدمة والوقت المناسب لك</p>
+    <div class="section-title fade" style="animation-delay: 0.2s">الخدمات المتاحة</div>
+    <div class="services-grid fade" id="servicesGrid" style="animation-delay: 0.2s"></div>
+
+    <div class="section-title fade" style="animation-delay: 0.3s">تفاصيل الحجز</div>
+    <form class="form-box glass fade" id="bookForm" onsubmit="submitBooking(event)" style="animation-delay: 0.3s">
+      <div class="input-group">
+        <label>الاسم الكامل</label>
+        <input type="text" id="fName" required placeholder="الاسم">
+      </div>
+      <div class="input-group">
+        <label>رقم الهاتف</label>
+        <input type="tel" id="fPhone" required placeholder="05XXXXXXXX" dir="ltr">
+      </div>
+      <div class="input-group">
+        <label>التاريخ</label>
+        <input type="date" id="fDate" required onchange="renderSlots()">
+      </div>
+      <div class="input-group">
+        <label>الوقت</label>
+        <div class="slots" id="slotsGrid"><p style="color:var(--muted); font-size:13px; grid-column:1/-1;">اختر التاريخ أولاً</p></div>
+      </div>
+      <div class="input-group">
+        <label>ملاحظات (اختياري)</label>
+        <textarea id="fNote" rows="2" placeholder="أي تفاصيل..."></textarea>
+      </div>
+      <button type="submit" class="btn-submit">تأكيد الحجز</button>
+    </form>
   </div>
 
-  <div class="section-title fade-up" style="animation-delay: 0.2s">خدماتنا</div>
-  <div class="services-grid" id="servicesGrid"></div>
+  <script>
+    const KEY = 'GOLDEN_SYSTEM_V5';
+    let DB = {};
+    let srvSelect = null;
+    let timeSelect = null;
 
-  <div class="section-title fade-up" style="animation-delay: 0.3s">تفاصيل الحجز</div>
-  <form class="booking-form glass fade-up" id="bookForm" onsubmit="submitBooking(event)" style="animation-delay: 0.4s">
-    <div class="input-group">
-      <label>الاسم الكامل</label>
-      <input type="text" id="fName" required placeholder="مثال: أحمد محمد">
-    </div>
-    <div class="input-group">
-      <label>رقم الهاتف</label>
-      <input type="tel" id="fPhone" required placeholder="05XXXXXXXX" dir="ltr">
-    </div>
-    <div class="input-group">
-      <label>التاريخ</label>
-      <input type="date" id="fDate" required onchange="renderSlots()">
-    </div>
-    <div class="input-group">
-      <label>الوقت المتاح</label>
-      <div class="slots-grid" id="slotsGrid">
-        <p style="color:var(--muted); grid-column: 1/-1;">يرجى اختيار التاريخ أولاً</p>
-      </div>
-    </div>
-    <div class="input-group">
-      <label>ملاحظات (اختياري)</label>
-      <textarea id="fNote" rows="2" placeholder="أي تفاصيل إضافية..."></textarea>
-    </div>
-    <button type="submit" class="btn-submit">تأكيد الحجز الآن</button>
-  </form>
-  
-  <div style="height: 50px;"></div>
-</div>
-
-<script>
-const LS_KEY = 'golden_booking_v4';
-const DEFAULT = {
-  site: { brand: 'GOLDEN', logoText: 'G', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت المناسب لك', currency: '₪', accent: '#e8b923', webhook: '' },
-  services: [],
-  slots: [],
-  closedDays: [],
-  bookings: []
-};
-
-let DB = { ...DEFAULT };
-let selectedService = null;
-let selectedTime = null;
-
-// تحميل البيانات من التخزين المحلي
-function loadData() {
-  const saved = localStorage.getItem(LS_KEY);
-  if (saved) {
-    DB = JSON.parse(saved);
-  } else {
-    // بيانات افتراضية في حال عدم وجود إعدادات من الأدمن
-    DB.site.brand = "GOLDEN";
-    DB.services = [
-      {id:'s1', name:'قص شعر', price:50, duration:30, active:true},
-      {id:'s2', name:'حلاقة', price:30, duration:20, active:true}
-    ];
-    DB.slots = ['09:00','10:00','11:00','12:00','16:00','17:00'];
-  }
-  applySiteConfig();
-}
-
-function applySiteConfig() {
-  document.documentElement.style.setProperty('--accent', DB.site.accent || '#e8b923');
-  document.documentElement.style.setProperty('--accent-glow', (DB.site.accent || '#e8b923') + '4D'); // إضافة شفافية
-  document.getElementById('siteBrand').innerText = DB.site.brand;
-  document.getElementById('siteLogo').innerText = DB.site.logoText;
-  document.getElementById('heroTitle').innerText = DB.site.title;
-  document.getElementById('heroSub').innerText = DB.site.subtitle;
-  
-  renderServices();
-}
-
-function renderServices() {
-  const grid = document.getElementById('servicesGrid');
-  const activeServices = DB.services.filter(s => s.active !== false);
-  
-  if(activeServices.length === 0) {
-    grid.innerHTML = '<p style="color:var(--muted)">لا توجد خدمات متاحة حالياً</p>';
-    return;
-  }
-
-  grid.innerHTML = activeServices.map(s => `
-    <div class="service-card glass" onclick="selectService('${s.id}')" id="srv-${s.id}">
-      <h3>${s.name}</h3>
-      <div class="price">${s.price} ${DB.site.currency}</div>
-      <div class="dur">${s.duration} دقيقة</div>
-    </div>
-  `).join('');
-}
-
-function selectService(id) {
-  selectedService = id;
-  document.querySelectorAll('.service-card').forEach(el => el.classList.remove('active'));
-  document.getElementById(`srv-${id}`).classList.add('active');
-}
-
-// التحقق من الإجازات
-function isClosed(dateStr) {
-  const day = new Date(dateStr).getDay();
-  return DB.closedDays.includes(day);
-}
-
-// عرض الأوقات
-function renderSlots() {
-  const date = document.getElementById('fDate').value;
-  const grid = document.getElementById('slotsGrid');
-  selectedTime = null;
-  
-  if(!date) {
-    grid.innerHTML = '<p style="color:var(--muted); grid-column: 1/-1;">يرجى اختيار التاريخ أولاً</p>';
-    return;
-  }
-  if(isClosed(date)) {
-    grid.innerHTML = '<p style="color:var(--muted); grid-column: 1/-1;">🚫 هذا اليوم عطلة رسمية</p>';
-    return;
-  }
-
-  // جلب الأوقات المحجوزة في هذا اليوم
-  const takenTimes = DB.bookings
-    .filter(b => b.date === date && b.status !== 'cancelled')
-    .map(b => b.time);
-
-  if(DB.slots.length === 0) {
-    grid.innerHTML = '<p style="color:var(--muted); grid-column: 1/-1;">لا توجد أوقات متاحة</p>';
-    return;
-  }
-
-  grid.innerHTML = DB.slots.map(time => {
-    const isTaken = takenTimes.includes(time);
-    return `<button type="button" class="slot-btn ${isTaken?'':''}" ${isTaken?'disabled':''} onclick="selectTime(this, '${time}')">${time}</button>`;
-  }).join('');
-}
-
-function selectTime(btn, time) {
-  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  selectedTime = time;
-}
-
-// إرسال الحجز
-async function submitBooking(e) {
-  e.preventDefault();
-  if(!selectedService) return alert('يرجى اختيار خدمة من الأعلى');
-  if(!selectedTime) return alert('يرجى اختيار وقت متاح');
-
-  const name = document.getElementById('fName').value;
-  const phone = document.getElementById('fPhone').value;
-  const date = document.getElementById('fDate').value;
-  const note = document.getElementById('fNote').value;
-  const srv = DB.services.find(s => s.id === selectedService);
-
-  const newBooking = {
-    id: 'b' + Date.now(),
-    name, phone, date, time: selectedTime, note,
-    serviceName: srv.name, price: srv.price, status: 'confirmed', createdAt: new Date().toISOString()
-  };
-
-  // حفظ في التخزين المحلي
-  DB.bookings.push(newBooking);
-  localStorage.setItem(LS_KEY, JSON.stringify(DB));
-
-  // إرسال إلى ديسكورد
-  if(DB.site.webhook) {
-    fetch(DB.site.webhook, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: 'GOLDEN System',
-        embeds: [{
-          title: '🗓️ حجز جديد',
-          color: parseInt(DB.site.accent.replace('#', ''), 16),
-          fields: [
-            { name: 'الاسم', value: name, inline: true },
-            { name: 'الهاتف', value: phone, inline: true },
-            { name: 'الخدمة', value: srv.name, inline: true },
-            { name: 'التاريخ', value: date, inline: true },
-            { name: 'الوقت', value: selectedTime, inline: true },
-            { name: 'ملاحظات', value: note || 'لا يوجد' }
+    function loadData() {
+      const d = localStorage.getItem(KEY);
+      if(d) { DB = JSON.parse(d); }
+      else {
+        DB = {
+          site: { brand: 'GOLDEN', logoText: 'G', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت المناسب', accent: '#e8b923', currency: '₪', webhook: 'https://discord.com/api/webhooks/1556726586407919630/5VrORfaR4NdN4kIInRwKLpD0wkhNwe-uAXjfQ_igAojxucCjtoyRs14RYM23VxctVhsL', adminPass: 'GOLDEN' },
+          services: [
+            {id:'s1', name:'قص شعر', price:50, duration:30, active:true},
+            {id:'s2', name:'حلاقة ذقن', price:30, duration:20, active:true},
+            {id:'s3', name:'باقة كاملة', price:80, duration:45, active:true}
           ],
-          timestamp: new Date().toISOString()
-        }]
-      })
-    }).catch(err => console.log('Webhook error', err));
-  }
+          slots: ['09:00','10:00','11:00','12:00','13:00','16:00','17:00','18:00','19:00','20:00'],
+          closedDays: [5], // 5 = الجمعة
+          bookings: []
+        };
+        localStorage.setItem(KEY, JSON.stringify(DB));
+      }
+      applyData();
+    }
 
-  alert(`تم الحجز بنجاح يا ${name}! موعدك يوم ${date} الساعة ${selectedTime}`);
-  document.getElementById('bookForm').reset();
-  document.querySelectorAll('.service-card').forEach(el => el.classList.remove('active'));
-  document.getElementById('slotsGrid').innerHTML = '';
-  selectedService = null;
-  selectedTime = null;
-}
+    function applyData() {
+      document.documentElement.style.setProperty('--accent', DB.site.accent);
+      document.getElementById('siteBrand').innerText = DB.site.brand;
+      document.getElementById('siteLogo').innerText = DB.site.logoText;
+      document.getElementById('siteTitle').innerText = DB.site.title;
+      document.getElementById('siteSubtitle').innerText = DB.site.subtitle;
+      renderServices();
+    }
 
-// التشغيل
-loadData();
-</script>
+    function renderServices() {
+      const grid = document.getElementById('servicesGrid');
+      const active = DB.services.filter(s => s.active !== false);
+      if(active.length === 0) { grid.innerHTML = '<p style="color:var(--muted)">لا توجد خدمات</p>'; return; }
+      
+      grid.innerHTML = active.map(s => `
+        <div class="srv-card glass" id="card-${s.id}" onclick="selectSrv('${s.id}')">
+          <h3>${s.name}</h3>
+          <div class="price">${s.price} ${DB.site.currency}</div>
+          <div class="time">${s.duration} دقيقة</div>
+        </div>
+      `).join('');
+    }
+
+    function selectSrv(id) {
+      srvSelect = id;
+      document.querySelectorAll('.srv-card').forEach(c => c.classList.remove('active'));
+      document.getElementById(`card-${id}`).classList.add('active');
+    }
+
+    function renderSlots() {
+      const date = document.getElementById('fDate').value;
+      const grid = document.getElementById('slotsGrid');
+      timeSelect = null;
+      
+      if(!date) { grid.innerHTML = '<p style="color:var(--muted); font-size:13px; grid-column:1/-1;">اختر التاريخ أولاً</p>'; return; }
+      
+      const day = new Date(date).getDay();
+      if(DB.closedDays.includes(day)) {
+        grid.innerHTML = '<p style="color:var(--muted); font-size:13px; grid-column:1/-1;">🚫 هذا اليوم عطلة</p>'; return;
+      }
+
+      const taken = DB.bookings.filter(b => b.date === date && b.status !== 'cancelled').map(b => b.time);
+
+      grid.innerHTML = DB.slots.map(t => {
+        const isTaken = taken.includes(t);
+        return `<button type="button" class="slot" ${isTaken?'disabled':''} onclick="pickTime(this, '${t}')">${t}</button>`;
+      }).join('');
+    }
+
+    function pickTime(btn, t) {
+      document.querySelectorAll('.slot').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      timeSelect = t;
+    }
+
+    async function submitBooking(e) {
+      e.preventDefault();
+      if(!srvSelect) return alert('اختر خدمة أولاً');
+      if(!timeSelect) return alert('اختر وقتاً متاحاً');
+
+      const name = document.getElementById('fName').value;
+      const phone = document.getElementById('fPhone').value;
+      const date = document.getElementById('fDate').value;
+      const note = document.getElementById('fNote').value;
+      const srv = DB.services.find(s => s.id === srvSelect);
+
+      // التحقق النهائي من التزامن
+      const isDouble = DB.bookings.some(b => b.date === date && b.time === timeSelect && b.status !== 'cancelled');
+      if(isDouble) { alert('عذراً، هذا الوقت تم حجزه للتو!'); renderSlots(); return; }
+
+      const booking = {
+        id: 'b' + Date.now(), name, phone, date, time: timeSelect, note,
+        serviceName: srv.name, price: srv.price, status: 'confirmed', createdAt: new Date().toISOString()
+      };
+
+      DB.bookings.push(booking);
+      localStorage.setItem(KEY, JSON.stringify(DB));
+
+      // ديسكورد
+      if(DB.site.webhook) {
+        fetch(DB.site.webhook, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: 'GOLDEN Booking',
+            embeds: [{ title: 'حجز جديد 🗓️', color: parseInt(DB.site.accent.replace('#',''), 16), fields: [
+              {name:'الاسم', value:name, inline:true}, {name:'الهاتف', value:phone, inline:true},
+              {name:'الخدمة', value:srv.name, inline:true}, {name:'التاريخ', value:date, inline:true},
+              {name:'الوقت', value:timeSelect, inline:true}, {name:'ملاحظات', value:note||'لا يوجد'}
+            ]}]
+          })
+        }).catch(e => console.log(e));
+      }
+
+      alert(`تم الحجز بنجاح يا ${name}!`);
+      document.getElementById('bookForm').reset();
+      document.querySelectorAll('.srv-card').forEach(c => c.classList.remove('active'));
+      document.getElementById('slotsGrid').innerHTML = '<p style="color:var(--muted); font-size:13px; grid-column:1/-1;">اختر التاريخ أولاً</p>';
+      srvSelect = null; timeSelect = null;
+    }
+
+    loadData();
+  </script>
 </body>
 </html>
