@@ -71,9 +71,10 @@
     }
     .input-group input:focus, .input-group select:focus { border-color: var(--accent); }
 
+    /* القوائم */
     .list-item { display: flex; flex-direction: column; gap: 10px; padding: 15px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 10px; }
     .list-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap; }
-    .list-actions { display: flex; gap: 8px; align-items: center; width: 100%; justify-content: flex-end; margin-top: 5px; }
+    .list-actions { display: flex; gap: 8px; align-items: center; width: 100%; justify-content: flex-end; margin-top: 5px; flex-wrap: wrap; }
     
     .badge { padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; }
     .badge.ok { background: rgba(50,215,75,0.15); color: var(--success); }
@@ -81,11 +82,18 @@
     .badge.warn { background: rgba(232,185,35,0.15); color: var(--accent); }
     .badge.blue { background: rgba(10,132,255,0.15); color: var(--blue); }
 
+    /* الإحصائيات السريعة */
+    .quick-stats { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
+    .quick-stats::-webkit-scrollbar { display: none; }
+    .qs-item { background: rgba(255,255,255,0.05); border: 1px solid var(--border); padding: 8px 15px; border-radius: 12px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+    .qs-item span { color: var(--accent); font-size: 16px; margin-right: 5px; }
+
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 20px; }
     .stat-card { text-align: center; padding: 20px 10px; }
     .stat-card h3 { font-size: 28px; color: var(--accent); margin-bottom: 5px; font-weight: 900; }
     .stat-card p { color: var(--muted); font-size: 13px; font-weight: 600; }
 
+    /* المودال والتوست */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; padding: 20px; }
     .modal-overlay.active { opacity: 1; pointer-events: all; }
     .modal { background: #1c1c1e; border: 1px solid var(--border); border-radius: 20px; width: 100%; max-width: 400px; padding: 25px; text-align: center; transform: scale(0.9); transition: 0.3s; max-height: 90vh; overflow-y: auto; }
@@ -115,7 +123,6 @@
   </style>
 </head>
 <body>
-  <!-- شاشة التحميل -->
   <div id="splash">
     <div class="splash-logo" id="splashName">ALAA SALON</div>
     <div class="spinner"></div>
@@ -165,10 +172,20 @@
       <div class="page-header">
         <h2>إدارة حجوزات اليوم</h2>
         <div style="display:flex; gap:5px; flex-wrap:wrap;">
+          <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ طباعة</button>
           <button class="btn btn-ghost btn-sm" onclick="openBlockTimeModal()">☕ إضافة استراحة</button>
           <button class="btn btn-primary btn-sm" onclick="openAddBookModal()">+ إضافة حجز</button>
         </div>
       </div>
+
+      <!-- إحصائيات سريعة -->
+      <div class="quick-stats">
+        <div class="qs-item">مؤكد: <span id="qsConfirmed">0</span></div>
+        <div class="qs-item">مكتمل: <span id="qsCompleted">0</span></div>
+        <div class="qs-item">استراحات: <span id="qsBlocked">0</span></div>
+        <div class="qs-item">ملغي: <span id="qsCancelled">0</span></div>
+      </div>
+
       <div class="card" style="display: flex; gap: 10px; flex-wrap: wrap;">
         <input type="text" id="searchBooks" placeholder="🔍 بحث بالاسم أو الهاتف..." style="flex: 1; min-width: 150px; padding: 12px; border-radius: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff;" oninput="renderBooks()">
         <select id="filterStatus" style="padding: 12px; border-radius: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff;" onchange="renderBooks()">
@@ -271,7 +288,13 @@
 
     function initDB() {
       const d = localStorage.getItem(KEY);
-      if(d) { DB = JSON.parse(d); if(!DB.logs) DB.logs = []; }
+      if(d) { 
+        DB = JSON.parse(d); 
+        if(!DB.logs) DB.logs = []; 
+        if(!DB.bookings) DB.bookings = [];
+        if(!DB.services) DB.services = [];
+        if(!DB.slots) DB.slots = [];
+      }
       else {
         DB = { site: { brand: 'ALAA SALON', logoText: 'A', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت', accent: '#e8b923', currency: '₪', webhook: '', adminPass: 'GOLDEN' }, services: [], slots: [], closedDays: [], bookings: [], logs: [] };
         save();
@@ -319,7 +342,7 @@
       document.getElementById('sToday').innerText = activeToday.length;
       document.getElementById('sRevenueToday').innerText = activeToday.reduce((s,b) => s + Number(b.price||0), 0);
       document.getElementById('sTotal').innerText = DB.bookings.length;
-      const uniquePhones = new Set(DB.bookings.map(b => b.phone).filter(p => p !== '-'));
+      const uniquePhones = new Set(DB.bookings.map(b => b.phone).filter(p => p !== '-' && p !== ''));
       document.getElementById('sCust').innerText = uniquePhones.size;
 
       document.getElementById('logList').innerHTML = DB.logs.map(l => `
@@ -332,21 +355,26 @@
 
     // 2. الحجوزات
     function renderBooks() {
+      // تحديث الإحصائيات السريعة
+      const todayBooks = DB.bookings.filter(b => b.date === todayStr);
+      document.getElementById('qsConfirmed').innerText = todayBooks.filter(b => b.status === 'confirmed').length;
+      document.getElementById('qsCompleted').innerText = todayBooks.filter(b => b.status === 'completed').length;
+      document.getElementById('qsBlocked').innerText = todayBooks.filter(b => b.status === 'blocked').length;
+      document.getElementById('qsCancelled').innerText = todayBooks.filter(b => b.status === 'cancelled').length;
+
       const q = document.getElementById('searchBooks').value.toLowerCase();
       const st = document.getElementById('filterStatus').value;
 
-      let filtered = DB.bookings.filter(b => {
-        const matchDay = b.date === todayStr;
+      let filtered = todayBooks.filter(b => {
         const matchQ = b.name.toLowerCase().includes(q) || b.phone.includes(q);
         const matchSt = st === 'all' || b.status === st;
-        return matchDay && matchQ && matchSt;
+        return matchQ && matchSt;
       }).sort((a,b) => a.time.localeCompare(b.time));
 
       document.getElementById('booksList').innerHTML = filtered.map(b => {
         let badgeClass = b.status === 'confirmed' ? 'warn' : b.status === 'completed' ? 'ok' : b.status === 'blocked' ? 'blue' : 'bad';
         let badgeText = b.status === 'confirmed' ? 'مؤكد' : b.status === 'completed' ? 'مكتمل' : b.status === 'blocked' ? 'استراحة' : 'ملغي';
         
-        // إذا كانت استراحة، نظهر بشكل مختلف
         if(b.status === 'blocked') {
           return `
           <div class="list-item" style="border-color: var(--blue); background: rgba(10,132,255,0.05);">
@@ -361,10 +389,20 @@
           </div>`;
         }
 
+        // زر الواتساب
+        let waBtn = '';
+        if(b.phone && b.phone !== '-') {
+          let waPhone = b.phone.replace(/^0/, '970'); // تحويل 05 لـ 9705
+          waBtn = `<a href="https://wa.me/${waPhone}?text=مرحباً ${b.name}، نذكرك بموعدك اليوم الساعة ${b.time} في ALAA SALON." target="_blank" class="btn btn-ghost btn-sm" style="color: #25D366; border-color: rgba(37,211,102,0.3);">💬 واتساب</a>`;
+        }
+
         return `
         <div class="list-item">
           <div class="list-row">
-            <div><b style="font-size: 16px;">${b.name}</b></div>
+            <div>
+              <b style="font-size: 16px;">${b.name}</b>
+              ${b.note ? `<div style="font-size: 11px; color: var(--warn); margin-top: 3px;">📝 ملاحظة: ${b.note}</div>` : ''}
+            </div>
             <span class="badge ${badgeClass}">${badgeText}</span>
           </div>
           <div style="font-size: 13px; color: var(--muted);">
@@ -372,6 +410,7 @@
             ⏰ ${b.time} | 💰 ${b.price} ₪
           </div>
           <div class="list-actions">
+            ${waBtn}
             <button class="btn btn-ghost btn-sm" onclick="editBook('${b.id}')">✏️ تعديل</button>
             ${b.status === 'confirmed' ? `<button class="btn btn-ghost btn-sm" onclick="setBookStatus('${b.id}', 'completed')">✅ إكمال</button>` : ''}
             ${b.status === 'confirmed' ? `<button class="btn btn-ghost btn-sm" onclick="setBookStatus('${b.id}', 'cancelled')">🚫 إلغاء</button>` : ''}
@@ -381,21 +420,21 @@
       `}).join('') || '<p style="color:var(--muted); text-align:center;">لا توجد حجوزات اليوم تطابق بحثك.</p>';
     }
 
+    // ---- إضافة حجز يدوي (تم إصلاحه) ----
     function openAddBookModal() {
+      const srvOptions = (DB.services || []).filter(s=>s.active).map(s => `<option value="${s.id}">${s.name} (${s.price}₪)</option>`).join('');
+      
       showModal(`
         <h3 style="margin-bottom:15px;">إضافة حجز يدوي</h3>
-        <div class="input-group"><label>الاسم</label><input type="text" id="mName"></div>
-        <div class="input-group"><label>الهاتف</label><input type="tel" id="mPhone" dir="ltr"></div>
+        <div class="input-group"><label>الاسم</label><input type="text" id="mName" placeholder="اسم الزبون"></div>
+        <div class="input-group"><label>الهاتف</label><input type="tel" id="mPhone" dir="ltr" placeholder="05XXXXXXXX"></div>
         <div class="input-group"><label>الخدمة</label>
-          <select id="mSrv">${DB.services.filter(s=>s.active).map(s => `<option value="${s.id}">${s.name} (${s.price}₪)</option>`).join('')}</select>
+          <select id="mSrv">${srvOptions || '<option value="">لا توجد خدمات</option>'}</select>
         </div>
-        <div class="input-group"><label>الوقت</label>
-          <select id="mTime">${DB.slots.map(t => {
-            const isTaken = DB.bookings.some(b => b.date === todayStr && b.time === t && b.status !== 'cancelled');
-            return `<option value="${t}" ${isTaken ? 'disabled' : ''}>${t} ${isTaken ? '(محجوز)' : ''}</option>`;
-          }).join('')}</select>
+        <div class="input-group"><label>الوقت (أدخل أي وقت)</label>
+          <input type="time" id="mTime" required>
         </div>
-        <button class="btn btn-primary" onclick="saveManualBook()">حفظ</button>
+        <button class="btn btn-primary" onclick="saveManualBook()">حفظ الحجز</button>
         <button class="btn btn-ghost" onclick="closeModal()">إلغاء</button>
       `);
     }
@@ -405,24 +444,30 @@
       const p = document.getElementById('mPhone').value;
       const sId = document.getElementById('mSrv').value;
       const t = document.getElementById('mTime').value;
-      if(!n || !p) return showToast('أكمل البيانات', 'error');
       
+      if(!n || !p || !t) return showToast('أكمل البيانات (الاسم، الهاتف، الوقت)', 'error');
+      
+      // التأكد من عدم تداخل الوقت
+      const isDouble = DB.bookings.some(b => b.date === todayStr && b.time === t && b.status !== 'cancelled');
+      if(isDouble) return showToast('هذا الوقت محجوز أو مستراحة بالفعل!', 'error');
+
       const srv = DB.services.find(s => s.id === sId);
-      DB.bookings.push({ id: 'b'+Date.now(), name: n, phone: p, date: todayStr, time: t, serviceName: srv.name, price: srv.price, status: 'confirmed', createdAt: new Date().toISOString() });
+      DB.bookings.push({ 
+        id: 'b'+Date.now(), name: n, phone: p, date: todayStr, time: t, 
+        serviceName: srv ? srv.name : 'مخصص', price: srv ? srv.price : 0, 
+        status: 'confirmed', note: 'حجز يدوي', createdAt: new Date().toISOString() 
+      });
       addLog(`حجز يدوي: ${n}`);
       save(); closeModal(); renderBooks(); showToast('تمت الإضافة', 'success');
     }
 
-    // ميزة الاستراحة
+    // ---- إضافة استراحة (تم إصلاحها) ----
     function openBlockTimeModal() {
-      const availableSlots = DB.slots.filter(t => !DB.bookings.some(b => b.date === todayStr && b.time === t && b.status !== 'cancelled'));
-      if(availableSlots.length === 0) return showToast('كل الأوقات محجوزة بالفعل اليوم', 'error');
-
       showModal(`
         <h3 style="margin-bottom:15px; color: var(--blue);">☕ حجب وقت (استراحة)</h3>
         <p style="color:var(--muted); font-size:13px; margin-bottom:15px;">سيظهر هذا الوقت للزبائن كـ "محجوز".</p>
-        <div class="input-group"><label>اختر الوقت</label>
-          <select id="blockTime">${availableSlots.map(t => `<option value="${t}">${t}</option>`).join('')}</select>
+        <div class="input-group"><label>الوقت (من - إلى)</label>
+          <input type="time" id="blockTime" required>
         </div>
         <div class="input-group"><label>السبب (اختياري)</label>
           <input type="text" id="blockReason" placeholder="مثال: غداء، صلاة، موعد شخصي...">
@@ -435,17 +480,14 @@
     function saveBlockTime() {
       const t = document.getElementById('blockTime').value;
       const reason = document.getElementById('blockReason').value || 'استراحة';
+      if(!t) return showToast('اختر الوقت أولاً', 'error');
+
+      const isDouble = DB.bookings.some(b => b.date === todayStr && b.time === t && b.status !== 'cancelled');
+      if(isDouble) return showToast('هذا الوقت محجوز بالفعل!', 'error');
       
       DB.bookings.push({ 
-        id: 'block_'+Date.now(), 
-        name: reason, 
-        phone: '-', 
-        date: todayStr, 
-        time: t, 
-        serviceName: 'استراحة', 
-        price: 0, 
-        status: 'blocked', 
-        createdAt: new Date().toISOString() 
+        id: 'block_'+Date.now(), name: reason, phone: '-', date: todayStr, time: t, 
+        serviceName: 'استراحة', price: 0, status: 'blocked', createdAt: new Date().toISOString() 
       });
       
       addLog(`حجب وقت: ${t} (${reason})`);
@@ -607,7 +649,12 @@
     function doConfirm() { if(confirmCb) confirmCb(); closeModal(); }
     function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
 
-    // المزامنة الفورية عند تغيير البيانات من نافذة أخرى
+    function showModal(html) {
+      document.getElementById('modalContent').innerHTML = html;
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    // المزامنة الفورية
     window.addEventListener('storage', (e) => {
       if (e.key === KEY) {
         DB = JSON.parse(e.newValue);
