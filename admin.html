@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#050505">
-  <title>لوحة الإدارة | ALAA SALON</title>
+  <title>لوحة الإدارة | ALAA SALOON</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -71,6 +71,28 @@
     }
     .input-group input:focus, .input-group select:focus { border-color: var(--accent); }
 
+    /* أزرار التبديل (iOS Toggle) */
+    .switch-container {
+      display: flex; justify-content: space-between; align-items: center; 
+      padding: 15px 0; border-bottom: 1px solid var(--border);
+    }
+    .switch-container:last-child { border-bottom: none; padding-bottom: 0; }
+    .switch-info h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .switch-info p { font-size: 12px; color: var(--muted); }
+    
+    .switch { position: relative; display: inline-block; width: 54px; height: 30px; flex-shrink: 0; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { 
+      position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
+      background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 34px; border: 1px solid var(--border);
+    }
+    .slider:before { 
+      position: absolute; content: ""; height: 22px; width: 22px; left: 4px; bottom: 3px; 
+      background-color: #fff; transition: .4s; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    input:checked + .slider { background-color: var(--danger); border-color: var(--danger); }
+    input:checked + .slider:before { transform: translateX(-23px); } /* حركة المربع في الوضع العربي */
+
     /* القوائم */
     .list-item { display: flex; flex-direction: column; gap: 10px; padding: 15px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 10px; }
     .list-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap; }
@@ -124,7 +146,7 @@
 </head>
 <body>
   <div id="splash">
-    <div class="splash-logo" id="splashName">ALAA SALON</div>
+    <div class="splash-logo" id="splashName">ALAA SALOON</div>
     <div class="spinner"></div>
   </div>
 
@@ -132,7 +154,7 @@
 
   <div id="loginScreen">
     <div class="card" style="width: 100%; max-width: 350px; text-align: center;">
-      <h2 style="color: var(--accent); margin-bottom: 10px; font-weight:900;" id="loginBrand">ALAA SALON</h2>
+      <h2 style="color: var(--accent); margin-bottom: 10px; font-weight:900;" id="loginBrand">ALAA SALOON</h2>
       <p style="color: var(--muted); margin-bottom: 25px; font-size: 14px;">لوحة الإدارة المتقدمة</p>
       <div class="input-group"><input type="password" id="loginPass" placeholder="كلمة المرور" style="text-align: center; letter-spacing: 3px;"></div>
       <button class="btn btn-primary" style="width: 100%;" onclick="login()">دخول النظام</button>
@@ -140,7 +162,7 @@
   </div>
 
   <div class="sidebar">
-    <div class="brand" id="sideBrand">ALAA SALON</div>
+    <div class="brand" id="sideBrand">ALAA SALOON</div>
     <button class="nav-btn active" onclick="go('dash', this)">📊<br>الرئيسية</button>
     <button class="nav-btn" onclick="go('books', this)">📋<br>حجوزات اليوم</button>
     <button class="nav-btn" onclick="go('services', this)">💼<br>الخدمات</button>
@@ -178,7 +200,6 @@
         </div>
       </div>
 
-      <!-- إحصائيات سريعة -->
       <div class="quick-stats">
         <div class="qs-item">مؤكد: <span id="qsConfirmed">0</span></div>
         <div class="qs-item">مكتمل: <span id="qsCompleted">0</span></div>
@@ -249,6 +270,45 @@
     <!-- 7. الإعدادات -->
     <div id="page-settings" class="page">
       <div class="page-header"><h2>الإعدادات</h2></div>
+      
+      <!-- التوجلز الجديدة -->
+      <div class="card">
+        <h3 style="margin-bottom: 15px; font-size: 16px;">🔴 حالة الموقع (التحكم بالزوار)</h3>
+        
+        <div class="switch-container">
+          <div class="switch-info">
+            <h4>وضع الصيانة</h4>
+            <p>إيقاف الموقع مؤقتاً وإظهار شاشة الصيانة</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="sw-maintenance" onchange="toggleStatus('maintenance', this.checked)">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="switch-container">
+          <div class="switch-info">
+            <h4>عطلة اليوم</h4>
+            <p>إظهار أن العيادة في عطلة رسمية اليوم</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="sw-holiday" onchange="toggleStatus('holiday', this.checked)">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="switch-container">
+          <div class="switch-info">
+            <h4>ظروف خاصة</h4>
+            <p>إظهار أن المحل مغلق اليوم لظروف خاصة</p>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="sw-closed" onchange="toggleStatus('closed', this.checked)">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
       <div class="card">
         <h3 style="margin-bottom: 10px; font-size: 16px;">🔗 Discord Webhook</h3>
         <div class="input-group"><input type="text" id="dWebhook" dir="ltr" oninput="updateSite('webhook', this.value)"></div>
@@ -294,9 +354,12 @@
         if(!DB.bookings) DB.bookings = [];
         if(!DB.services) DB.services = [];
         if(!DB.slots) DB.slots = [];
+        if(DB.site.maintenance === undefined) DB.site.maintenance = false;
+        if(DB.site.holiday === undefined) DB.site.holiday = false;
+        if(DB.site.closed === undefined) DB.site.closed = false;
       }
       else {
-        DB = { site: { brand: 'ALAA SALON', logoText: 'A', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت', accent: '#e8b923', currency: '₪', webhook: '', adminPass: 'GOLDEN' }, services: [], slots: [], closedDays: [], bookings: [], logs: [] };
+        DB = { site: { brand: 'ALAA SALOON', logoText: 'A', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت', accent: '#e8b923', currency: '₪', webhook: '', adminPass: 'GOLDEN', maintenance: false, holiday: false, closed: false }, services: [], slots: [], closedDays: [], bookings: [], logs: [] };
         save();
       }
       applyGlobalTheme();
@@ -336,6 +399,21 @@
     }
     function refreshData() { initDB(); loadDashboard(); showToast('تم التحديث'); }
 
+    // دالة تفعيل / إلغاء الحالة
+    function toggleStatus(key, val) {
+      DB.site[key] = val;
+      // إلغاء الباقي إذا تم تفعيل واحد
+      if (val) {
+        if (key === 'maintenance') { DB.site.holiday = false; DB.site.closed = false; }
+        if (key === 'holiday') { DB.site.maintenance = false; DB.site.closed = false; }
+        if (key === 'closed') { DB.site.maintenance = false; DB.site.holiday = false; }
+      }
+      save();
+      renderSettings(); // لتحديث باقي المفاتيح
+      addLog(`تم ${val ? 'تفعيل' : 'إلغاء'} حالة: ${key}`);
+      showToast(val ? 'تم تفعيل الحالة' : 'تم إلغاء الحالة', 'success');
+    }
+
     // 1. لوحة القيادة
     function loadDashboard() {
       const activeToday = DB.bookings.filter(b => b.date === todayStr && b.status === 'confirmed');
@@ -355,7 +433,6 @@
 
     // 2. الحجوزات
     function renderBooks() {
-      // تحديث الإحصائيات السريعة
       const todayBooks = DB.bookings.filter(b => b.date === todayStr);
       document.getElementById('qsConfirmed').innerText = todayBooks.filter(b => b.status === 'confirmed').length;
       document.getElementById('qsCompleted').innerText = todayBooks.filter(b => b.status === 'completed').length;
@@ -389,11 +466,10 @@
           </div>`;
         }
 
-        // زر الواتساب
         let waBtn = '';
         if(b.phone && b.phone !== '-') {
           let waPhone = b.phone.replace(/^0/, '970'); // تحويل 05 لـ 9705
-          waBtn = `<a href="https://wa.me/${waPhone}?text=مرحباً ${b.name}، نذكرك بموعدك اليوم الساعة ${b.time} في ALAA SALON." target="_blank" class="btn btn-ghost btn-sm" style="color: #25D366; border-color: rgba(37,211,102,0.3);">💬 واتساب</a>`;
+          waBtn = `<a href="https://wa.me/${waPhone}?text=مرحباً ${b.name}، نذكرك بموعدك اليوم الساعة ${b.time} في ALAA SALOON." target="_blank" class="btn btn-ghost btn-sm" style="color: #25D366; border-color: rgba(37,211,102,0.3);">💬 واتساب</a>`;
         }
 
         return `
@@ -420,7 +496,6 @@
       `}).join('') || '<p style="color:var(--muted); text-align:center;">لا توجد حجوزات اليوم تطابق بحثك.</p>';
     }
 
-    // ---- إضافة حجز يدوي (تم إصلاحه) ----
     function openAddBookModal() {
       const srvOptions = (DB.services || []).filter(s=>s.active).map(s => `<option value="${s.id}">${s.name} (${s.price}₪)</option>`).join('');
       
@@ -447,7 +522,6 @@
       
       if(!n || !p || !t) return showToast('أكمل البيانات (الاسم، الهاتف، الوقت)', 'error');
       
-      // التأكد من عدم تداخل الوقت
       const isDouble = DB.bookings.some(b => b.date === todayStr && b.time === t && b.status !== 'cancelled');
       if(isDouble) return showToast('هذا الوقت محجوز أو مستراحة بالفعل!', 'error');
 
@@ -461,12 +535,11 @@
       save(); closeModal(); renderBooks(); showToast('تمت الإضافة', 'success');
     }
 
-    // ---- إضافة استراحة (تم إصلاحها) ----
     function openBlockTimeModal() {
       showModal(`
         <h3 style="margin-bottom:15px; color: var(--blue);">☕ حجب وقت (استراحة)</h3>
         <p style="color:var(--muted); font-size:13px; margin-bottom:15px;">سيظهر هذا الوقت للزبائن كـ "محجوز".</p>
-        <div class="input-group"><label>الوقت (من - إلى)</label>
+        <div class="input-group"><label>الوقت</label>
           <input type="time" id="blockTime" required>
         </div>
         <div class="input-group"><label>السبب (اختياري)</label>
@@ -554,7 +627,7 @@
     function toggleSrv(i) { DB.services[i].active = DB.services[i].active === false; save(); renderServices(); }
     function delSrv(i) { showConfirm('حذف الخدمة؟', () => { addLog('حذف خدمة'); DB.services.splice(i, 1); save(); renderServices(); showToast('تم الحذف', 'success'); }); }
 
-    // 4. العملاء (CRM)
+    // 4. العملاء
     function renderCustomers() {
       const customers = {};
       DB.bookings.filter(b => b.status !== 'blocked').forEach(b => {
@@ -609,13 +682,19 @@
       if(k === 'accent' || k === 'brand') applyGlobalTheme();
     }
 
-    // 7. الإعدادات
-    function renderSettings() { document.getElementById('dWebhook').value = DB.site.webhook; document.getElementById('dPass').value = DB.site.adminPass; }
+    // 7. الإعدادات (تحديث حالة المفاتيح)
+    function renderSettings() { 
+      document.getElementById('dWebhook').value = DB.site.webhook; 
+      document.getElementById('dPass').value = DB.site.adminPass; 
+      document.getElementById('sw-maintenance').checked = !!DB.site.maintenance;
+      document.getElementById('sw-holiday').checked = !!DB.site.holiday;
+      document.getElementById('sw-closed').checked = !!DB.site.closed;
+    }
 
     // 8. النسخ الاحتياطي
     function exportData() {
       const blob = new Blob([JSON.stringify(DB, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `ALAA_SALON_Backup_${todayStr}.json`; a.click();
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `ALAA_SALOON_Backup_${todayStr}.json`; a.click();
       showToast('تم التصدير', 'success');
     }
     function importData(file) {
@@ -654,7 +733,6 @@
       document.getElementById('modalOverlay').classList.add('active');
     }
 
-    // المزامنة الفورية
     window.addEventListener('storage', (e) => {
       if (e.key === KEY) {
         DB = JSON.parse(e.newValue);
@@ -662,7 +740,6 @@
       }
     });
 
-    // التشغيل
     window.onload = () => { 
       initDB(); 
       document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key === 'Enter') login(); });
