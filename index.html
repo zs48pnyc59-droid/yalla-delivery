@@ -4,16 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
-  <title>GOLDEN - حجز المواعيد</title>
+  <title>ALAA SALON - حجز المواعيد</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #000; --glass: rgba(30, 30, 35, 0.7); --border: rgba(255, 255, 255, 0.1);
-      --text: #fff; --muted: #a1a1a6; --accent: #e8b923; --radius: 20px;
+      --text: #fff; --muted: #a1a1a6; --accent: #e8b923; --radius: 20px; --danger: #ff453a;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
     
+    /* شاشة التحميل (Splash) */
+    #splash {
+      position: fixed; inset: 0; z-index: 9999; background: var(--bg);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: opacity 0.6s ease, visibility 0.6s; opacity: 1; visibility: visible;
+    }
+    #splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .splash-logo { font-size: 38px; font-weight: 900; color: var(--accent); margin-bottom: 20px; letter-spacing: 2px; animation: pulse 1.5s infinite alternate; }
+    .spinner { width: 35px; height: 35px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { from { opacity: 0.7; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
     /* خلفية متحركة */
     .bg-blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
     .blob { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.5; }
@@ -22,10 +34,7 @@
 
     .container { max-width: 600px; margin: 0 auto; padding: 15px; padding-bottom: 50px; }
 
-    .glass {
-      background: var(--glass); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-      border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    }
+    .glass { background: var(--glass); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
 
     /* الهيدر */
     header { display: flex; justify-content: center; align-items: center; padding: 15px 20px; margin-top: 10px; }
@@ -36,7 +45,6 @@
     .hero { text-align: center; padding: 30px 10px; }
     .hero h1 { font-size: 32px; font-weight: 900; margin-bottom: 8px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .hero p { color: var(--muted); font-size: 15px; }
-
     .section-title { font-size: 18px; font-weight: 800; margin: 25px 0 15px 5px; display: flex; align-items: center; gap: 8px; }
 
     /* بطاقات الخدمات */
@@ -51,17 +59,10 @@
     .form-box { padding: 20px; margin-top: 15px; }
     .input-group { margin-bottom: 15px; }
     .input-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
-    .input-group input, .input-group textarea {
-      width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border);
-      color: #fff; padding: 14px; border-radius: 14px; font-size: 16px; outline: none; transition: 0.2s;
-    }
+    .input-group input, .input-group textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 14px; font-size: 16px; outline: none; transition: 0.2s; }
     .input-group input:focus { border-color: var(--accent); }
     
-    /* اليوم المحدد */
-    .today-badge { 
-      background: rgba(232, 185, 35, 0.15); border: 1px solid var(--accent); color: var(--accent); 
-      padding: 12px; border-radius: 12px; text-align: center; font-weight: 800; font-size: 16px; margin-bottom: 15px;
-    }
+    .today-badge { background: rgba(232, 185, 35, 0.15); border: 1px solid var(--accent); color: var(--accent); padding: 12px; border-radius: 12px; text-align: center; font-weight: 800; font-size: 16px; margin-bottom: 15px; }
 
     /* الأوقات */
     .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -69,10 +70,7 @@
     .slot.selected { background: var(--accent); color: #000; border-color: var(--accent); }
     .slot:disabled { opacity: 0.3; text-decoration: line-through; cursor: not-allowed; }
 
-    .btn-submit {
-      width: 100%; padding: 16px; border-radius: 14px; background: var(--accent); color: #000;
-      font-size: 18px; font-weight: 900; border: none; cursor: pointer; margin-top: 10px; transition: 0.2s;
-    }
+    .btn-submit { width: 100%; padding: 16px; border-radius: 14px; background: var(--accent); color: #000; font-size: 18px; font-weight: 900; border: none; cursor: pointer; margin-top: 10px; transition: 0.2s; }
     .btn-submit:active { transform: scale(0.96); }
 
     .fade { animation: fade 0.5s ease forwards; opacity: 0; transform: translateY(10px); }
@@ -80,6 +78,12 @@
   </style>
 </head>
 <body>
+  <!-- شاشة التحميل -->
+  <div id="splash">
+    <div class="splash-logo" id="splashName">ALAA SALON</div>
+    <div class="spinner"></div>
+  </div>
+
   <div class="bg-blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div></div>
 
   <div class="container">
@@ -130,9 +134,8 @@
       const d = localStorage.getItem(KEY);
       if(d) { DB = JSON.parse(d); }
       else {
-        // بيانات افتراضية في حال فتح الموقع قبل الأدمن
         DB = {
-          site: { brand: 'GOLDEN', logoText: 'G', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت المناسب', accent: '#e8b923', currency: '₪', webhook: '', adminPass: 'GOLDEN' },
+          site: { brand: 'ALAA SALON', logoText: 'A', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت المناسب', accent: '#e8b923', currency: '₪', webhook: '', adminPass: 'GOLDEN' },
           services: [{id:'s1', name:'قص شعر', price:50, duration:30, active:true}, {id:'s2', name:'حلاقة', price:30, duration:20, active:true}],
           slots: ['09:00','10:00','11:00','12:00','16:00','17:00','18:00'],
           closedDays: [5],
@@ -145,12 +148,12 @@
 
     function applyData() {
       document.documentElement.style.setProperty('--accent', DB.site.accent);
+      document.getElementById('splashName').innerText = DB.site.brand;
       document.getElementById('siteBrand').innerText = DB.site.brand;
       document.getElementById('siteLogo').innerText = DB.site.logoText;
       document.getElementById('siteTitle').innerText = DB.site.title;
       document.getElementById('siteSubtitle').innerText = DB.site.subtitle;
       
-      // عرض التاريخ الحالي بالعربي
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       const todayArabic = new Date().toLocaleDateString('ar-EG', options);
       document.getElementById('todayDisplay').innerText = "📅 " + todayArabic;
@@ -189,7 +192,7 @@
         return;
       }
 
-      // جلب الأوقات المحجوزة لهذا اليوم فقط
+      // جلب الأوقات المحجوزة (بما فيها الاستراحات)
       const taken = DB.bookings.filter(b => b.date === todayStr && b.status !== 'cancelled').map(b => b.time);
 
       if(DB.slots.length === 0) {
@@ -218,7 +221,6 @@
       const note = document.getElementById('fNote').value;
       const srv = DB.services.find(s => s.id === srvSelect);
 
-      // التحقق المزدوج من الوقت
       const isDouble = DB.bookings.some(b => b.date === todayStr && b.time === timeSelect && b.status !== 'cancelled');
       if(isDouble) { alert('عذراً، تم حجز هذا الوقت للتو!'); renderSlots(); return; }
 
@@ -236,7 +238,7 @@
         fetch(DB.site.webhook, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            username: 'GOLDEN Booking',
+            username: 'ALAA SALON',
             embeds: [{ title: 'حجز جديد 🗓️', color: parseInt(DB.site.accent.replace('#',''), 16), fields: [
               {name:'الاسم', value:name, inline:true}, {name:'الهاتف', value:phone, inline:true},
               {name:'الخدمة', value:srv.name, inline:true}, {name:'الوقت', value:timeSelect, inline:true},
@@ -253,7 +255,21 @@
       renderSlots();
     }
 
-    loadData();
+    // مزامنة فورية إذا تم تغيير شيء في لوحة الإدارة
+    window.addEventListener('storage', (e) => {
+      if (e.key === KEY) {
+        DB = JSON.parse(e.newValue);
+        applyData();
+      }
+    });
+
+    // تشغيل شاشة التحميل وإخفاؤها
+    window.onload = () => {
+      loadData();
+      setTimeout(() => {
+        document.getElementById('splash').classList.add('hidden');
+      }, 1200); // تختفي بعد 1.2 ثانية
+    };
   </script>
 </body>
 </html>
