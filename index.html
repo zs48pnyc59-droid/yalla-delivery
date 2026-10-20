@@ -13,7 +13,7 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-    
+
     /* شاشة التحميل (Splash) */
     #splash {
       position: fixed; inset: 0; z-index: 9999; background: var(--bg);
@@ -26,6 +26,26 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes pulse { from { opacity: 0.7; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
 
+    /* شاشة الحالة (صيانة / عطلة / مغلق) */
+    #stateScreen {
+      position: fixed; inset: 0; z-index: 10000; background: var(--bg);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; padding: 20px; opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity 0.6s ease, visibility 0.6s;
+    }
+    #stateScreen.active { opacity: 1; visibility: visible; pointer-events: all; }
+    .state-icon { font-size: 90px; margin-bottom: 25px; animation: bounce 2s infinite ease-in-out; }
+    .state-title { 
+      font-size: 42px; font-weight: 900; margin-bottom: 15px; letter-spacing: 3px;
+      background: linear-gradient(90deg, #fff, var(--accent), #fff);
+      background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      animation: shine 3s linear infinite;
+    }
+    .state-msg { font-size: 18px; color: var(--muted); max-width: 350px; line-height: 1.6; animation: fadeIn 1s ease; }
+    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+    @keyframes shine { to { background-position: 200% center; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
     /* خلفية متحركة */
     .bg-blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
     .blob { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.5; }
@@ -33,21 +53,17 @@
     .blob-2 { width: 250px; height: 250px; background: #007aff; bottom: -50px; left: -50px; }
 
     .container { max-width: 600px; margin: 0 auto; padding: 15px; padding-bottom: 50px; }
-
     .glass { background: var(--glass); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
 
-    /* الهيدر */
     header { display: flex; justify-content: center; align-items: center; padding: 15px 20px; margin-top: 10px; }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 22px; }
     .logo { width: 38px; height: 38px; background: var(--accent); border-radius: 10px; display: grid; place-items: center; color: #000; font-weight: 900; }
 
-    /* العناوين */
     .hero { text-align: center; padding: 30px 10px; }
     .hero h1 { font-size: 32px; font-weight: 900; margin-bottom: 8px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .hero p { color: var(--muted); font-size: 15px; }
     .section-title { font-size: 18px; font-weight: 800; margin: 25px 0 15px 5px; display: flex; align-items: center; gap: 8px; }
 
-    /* بطاقات الخدمات */
     .services-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
     .srv-card { flex: 1 1 calc(50% - 12px); min-width: 140px; padding: 15px; cursor: pointer; transition: 0.3s; border: 2px solid transparent; text-align: center; }
     .srv-card.active { border-color: var(--accent); background: rgba(232, 185, 35, 0.1); }
@@ -55,7 +71,6 @@
     .srv-card .price { color: var(--accent); font-weight: 900; font-size: 18px; }
     .srv-card .time { color: var(--muted); font-size: 12px; }
 
-    /* النموذج */
     .form-box { padding: 20px; margin-top: 15px; }
     .input-group { margin-bottom: 15px; }
     .input-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
@@ -64,7 +79,6 @@
     
     .today-badge { background: rgba(232, 185, 35, 0.15); border: 1px solid var(--accent); color: var(--accent); padding: 12px; border-radius: 12px; text-align: center; font-weight: 800; font-size: 16px; margin-bottom: 15px; }
 
-    /* الأوقات */
     .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .slot { padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-weight: 800; cursor: pointer; transition: 0.2s; }
     .slot.selected { background: var(--accent); color: #000; border-color: var(--accent); }
@@ -80,15 +94,22 @@
 <body>
   <!-- شاشة التحميل -->
   <div id="splash">
-    <div class="splash-logo" id="splashName">ALAA SALON</div>
+    <div class="splash-logo" id="splashName">ALAA SALOON</div>
     <div class="spinner"></div>
+  </div>
+
+  <!-- شاشة الحالة (مخفية افتراضياً) -->
+  <div id="stateScreen">
+    <div class="state-icon" id="stateIcon">🛠️</div>
+    <div class="state-title">ALAA SALOON</div>
+    <div class="state-msg" id="stateMsg"></div>
   </div>
 
   <div class="bg-blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div></div>
 
   <div class="container">
     <header class="glass fade">
-      <div class="brand"><div class="logo" id="siteLogo">G</div><span id="siteBrand">GOLDEN</span></div>
+      <div class="brand"><div class="logo" id="siteLogo">A</div><span id="siteBrand">ALAA SALOON</span></div>
     </header>
 
     <div class="hero fade" style="animation-delay: 0.1s">
@@ -135,8 +156,8 @@
       if(d) { DB = JSON.parse(d); }
       else {
         DB = {
-          site: { brand: 'ALAA SALON', logoText: 'A', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت المناسب', accent: '#e8b923', currency: '₪', webhook: '', adminPass: 'GOLDEN' },
-          services: [{id:'s1', name:'قص شعر', price:50, duration:30, active:true}, {id:'s2', name:'حلاقة', price:30, duration:20, active:true}],
+          site: { brand: 'ALAA SALOON', logoText: 'A', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت المناسب', accent: '#e8b923', currency: '₪', webhook: '', adminPass: 'GOLDEN', maintenance: false, holiday: false, closed: false },
+          services: [{id:'s1', name:'قص شعر', price:50, duration:30, active:true}],
           slots: ['09:00','10:00','11:00','12:00','16:00','17:00','18:00'],
           closedDays: [5],
           bookings: [], logs: []
@@ -157,6 +178,24 @@
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       const todayArabic = new Date().toLocaleDateString('ar-EG', options);
       document.getElementById('todayDisplay').innerText = "📅 " + todayArabic;
+
+      // التحقق من حالة الموقع (صيانة / عطلة / مغلق)
+      const stateScreen = document.getElementById('stateScreen');
+      if (DB.site.maintenance) {
+        stateScreen.classList.add('active');
+        document.getElementById('stateIcon').innerText = '🛠️';
+        document.getElementById('stateMsg').innerText = 'الموقع تحت الصيانة حالياً... نعتذر عن الإزعاج، نراكم قريباً.';
+      } else if (DB.site.holiday) {
+        stateScreen.classList.add('active');
+        document.getElementById('stateIcon').innerText = '🏖️';
+        document.getElementById('stateMsg').innerText = 'اليوم عطلة رسمية... نتمنى لكم يوماً سعيداً، ونراكم غداً.';
+      } else if (DB.site.closed) {
+        stateScreen.classList.add('active');
+        document.getElementById('stateIcon').innerText = '🚫';
+        document.getElementById('stateMsg').innerText = 'المحل مغلق اليوم لظروف خاصة... نعتذر عن الإزعاج.';
+      } else {
+        stateScreen.classList.remove('active');
+      }
 
       renderServices();
       renderSlots();
@@ -192,9 +231,7 @@
         return;
       }
 
-      // جلب الأوقات المحجوزة (بما فيها الاستراحات)
       const taken = DB.bookings.filter(b => b.date === todayStr && b.status !== 'cancelled').map(b => b.time);
-
       if(DB.slots.length === 0) {
          grid.innerHTML = '<p style="color:var(--muted); font-size:14px; grid-column:1/-1;">لم يتم إضافة أوقات عمل بعد.</p>'; return;
       }
@@ -238,7 +275,7 @@
         fetch(DB.site.webhook, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            username: 'ALAA SALON',
+            username: 'ALAA SALOON',
             embeds: [{ title: 'حجز جديد 🗓️', color: parseInt(DB.site.accent.replace('#',''), 16), fields: [
               {name:'الاسم', value:name, inline:true}, {name:'الهاتف', value:phone, inline:true},
               {name:'الخدمة', value:srv.name, inline:true}, {name:'الوقت', value:timeSelect, inline:true},
@@ -263,12 +300,11 @@
       }
     });
 
-    // تشغيل شاشة التحميل وإخفاؤها
     window.onload = () => {
       loadData();
       setTimeout(() => {
         document.getElementById('splash').classList.add('hidden');
-      }, 1200); // تختفي بعد 1.2 ثانية
+      }, 1200);
     };
   </script>
 </body>
