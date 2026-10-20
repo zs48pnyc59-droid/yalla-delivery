@@ -4,23 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#050505">
-  <title>لوحة الإدارة | GOLDEN</title>
+  <title>لوحة الإدارة | ALAA SALON</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #050505; --glass: rgba(30, 30, 35, 0.75); --glass-heavy: rgba(20, 20, 25, 0.95);
       --border: rgba(255, 255, 255, 0.08); --text: #fff; --muted: #8e8e93;
-      --accent: #e8b923; --danger: #ff453a; --success: #32d74b; --warn: #ff9f0a;
+      --accent: #e8b923; --danger: #ff453a; --success: #32d74b; --warn: #ff9f0a; --blue: #0a84ff;
       --radius: 16px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: var(--bg); color: var(--text); height: 100vh; height: 100dvh; display: flex; overflow: hidden; }
 
+    /* شاشة التحميل */
+    #splash {
+      position: fixed; inset: 0; z-index: 9999; background: var(--bg);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transition: opacity 0.6s ease, visibility 0.6s; opacity: 1; visibility: visible;
+    }
+    #splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .splash-logo { font-size: 38px; font-weight: 900; color: var(--accent); margin-bottom: 20px; letter-spacing: 2px; animation: pulse 1.5s infinite alternate; }
+    .spinner { width: 35px; height: 35px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { from { opacity: 0.7; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
     .bg-blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
     .blob { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.4; }
     .blob-1 { width: 350px; height: 350px; background: var(--accent); top: -100px; left: -100px; }
 
-    /* الشريط الجانبي (كمبيوتر) */
+    /* الشريط الجانبي */
     .sidebar {
       width: 260px; background: var(--glass-heavy); backdrop-filter: blur(30px);
       border-left: 1px solid var(--border); padding: 20px 10px; display: flex; flex-direction: column; gap: 5px; z-index: 10;
@@ -43,7 +55,6 @@
     .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
     .page-header h2 { font-size: 22px; font-weight: 900; }
 
-    /* البطاقات والأزرار */
     .card { background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 15px; }
     .btn { padding: 10px 16px; border-radius: 12px; border: none; font-weight: 700; font-size: 14px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
     .btn:active { transform: scale(0.95); }
@@ -52,7 +63,6 @@
     .btn-danger { background: rgba(255,69,58,0.15); color: var(--danger); border: 1px solid rgba(255,69,58,0.3); }
     .btn-sm { padding: 6px 10px; font-size: 12px; border-radius: 8px; }
 
-    /* الحقول */
     .input-group { margin-bottom: 15px; }
     .input-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
     .input-group input, .input-group select, .input-group textarea {
@@ -61,36 +71,33 @@
     }
     .input-group input:focus, .input-group select:focus { border-color: var(--accent); }
 
-    /* القوائم */
     .list-item { display: flex; flex-direction: column; gap: 10px; padding: 15px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 10px; }
     .list-row { display: flex; justify-content: space-between; align-items: center; width: 100%; gap: 10px; flex-wrap: wrap; }
     .list-actions { display: flex; gap: 8px; align-items: center; width: 100%; justify-content: flex-end; margin-top: 5px; }
+    
     .badge { padding: 4px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; }
     .badge.ok { background: rgba(50,215,75,0.15); color: var(--success); }
     .badge.bad { background: rgba(255,69,58,0.15); color: var(--danger); }
     .badge.warn { background: rgba(232,185,35,0.15); color: var(--accent); }
-    .badge.blue { background: rgba(10,132,255,0.15); color: #0a84ff; }
+    .badge.blue { background: rgba(10,132,255,0.15); color: var(--blue); }
 
-    /* الإحصائيات */
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 20px; }
     .stat-card { text-align: center; padding: 20px 10px; }
     .stat-card h3 { font-size: 28px; color: var(--accent); margin-bottom: 5px; font-weight: 900; }
     .stat-card p { color: var(--muted); font-size: 13px; font-weight: 600; }
 
-    /* المودال والتوست */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; padding: 20px; }
     .modal-overlay.active { opacity: 1; pointer-events: all; }
     .modal { background: #1c1c1e; border: 1px solid var(--border); border-radius: 20px; width: 100%; max-width: 400px; padding: 25px; text-align: center; transform: scale(0.9); transition: 0.3s; max-height: 90vh; overflow-y: auto; }
     .modal-overlay.active .modal { transform: scale(1); }
+    
     .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--glass-heavy); backdrop-filter: blur(20px); border: 1px solid var(--border); padding: 12px 24px; border-radius: 30px; font-weight: 700; z-index: 2000; transition: 0.4s; opacity: 0; }
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
     .toast.success { border-color: var(--success); color: var(--success); }
     .toast.error { border-color: var(--danger); color: var(--danger); }
 
-    /* شاشة الدخول */
-    #loginScreen { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    #loginScreen { position: fixed; inset: 0; background: var(--bg); z-index: 9998; display: flex; align-items: center; justify-content: center; padding: 20px; }
 
-    /* الموبايل */
     @media (max-width: 768px) {
       body { flex-direction: column; }
       .sidebar { 
@@ -108,12 +115,17 @@
   </style>
 </head>
 <body>
+  <!-- شاشة التحميل -->
+  <div id="splash">
+    <div class="splash-logo" id="splashName">ALAA SALON</div>
+    <div class="spinner"></div>
+  </div>
 
   <div class="bg-blobs"><div class="blob blob-1"></div></div>
 
   <div id="loginScreen">
     <div class="card" style="width: 100%; max-width: 350px; text-align: center;">
-      <h2 style="color: var(--accent); margin-bottom: 10px; font-weight:900;">GOLDEN</h2>
+      <h2 style="color: var(--accent); margin-bottom: 10px; font-weight:900;" id="loginBrand">ALAA SALON</h2>
       <p style="color: var(--muted); margin-bottom: 25px; font-size: 14px;">لوحة الإدارة المتقدمة</p>
       <div class="input-group"><input type="password" id="loginPass" placeholder="كلمة المرور" style="text-align: center; letter-spacing: 3px;"></div>
       <button class="btn btn-primary" style="width: 100%;" onclick="login()">دخول النظام</button>
@@ -121,7 +133,7 @@
   </div>
 
   <div class="sidebar">
-    <div class="brand">GOLDEN ⚙️</div>
+    <div class="brand" id="sideBrand">ALAA SALON</div>
     <button class="nav-btn active" onclick="go('dash', this)">📊<br>الرئيسية</button>
     <button class="nav-btn" onclick="go('books', this)">📋<br>حجوزات اليوم</button>
     <button class="nav-btn" onclick="go('services', this)">💼<br>الخدمات</button>
@@ -152,7 +164,10 @@
     <div id="page-books" class="page">
       <div class="page-header">
         <h2>إدارة حجوزات اليوم</h2>
-        <button class="btn btn-primary btn-sm" onclick="openAddBookModal()">+ إضافة حجز</button>
+        <div style="display:flex; gap:5px; flex-wrap:wrap;">
+          <button class="btn btn-ghost btn-sm" onclick="openBlockTimeModal()">☕ إضافة استراحة</button>
+          <button class="btn btn-primary btn-sm" onclick="openAddBookModal()">+ إضافة حجز</button>
+        </div>
       </div>
       <div class="card" style="display: flex; gap: 10px; flex-wrap: wrap;">
         <input type="text" id="searchBooks" placeholder="🔍 بحث بالاسم أو الهاتف..." style="flex: 1; min-width: 150px; padding: 12px; border-radius: 10px; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff;" oninput="renderBooks()">
@@ -160,6 +175,7 @@
           <option value="all">كل الحالات</option>
           <option value="confirmed">مؤكد</option>
           <option value="completed">مكتمل</option>
+          <option value="blocked">استراحة</option>
           <option value="cancelled">ملغي</option>
         </select>
       </div>
@@ -204,7 +220,7 @@
     <div id="page-design" class="page">
       <div class="page-header"><h2>التصميم</h2></div>
       <div class="card">
-        <div class="input-group"><label>اسم الموقع</label><input type="text" id="dBrand" oninput="updateSite('brand', this.value)"></div>
+        <div class="input-group"><label>اسم الموقع (يظهر في شاشة التحميل)</label><input type="text" id="dBrand" oninput="updateSite('brand', this.value)"></div>
         <div class="input-group"><label>حرف الشعار</label><input type="text" id="dLogo" maxlength="2" oninput="updateSite('logoText', this.value)"></div>
         <div class="input-group"><label>العنوان الرئيسي</label><input type="text" id="dTitle" oninput="updateSite('title', this.value)"></div>
         <div class="input-group"><label>الوصف الفرعي</label><input type="text" id="dSub" oninput="updateSite('subtitle', this.value)"></div>
@@ -257,12 +273,20 @@
       const d = localStorage.getItem(KEY);
       if(d) { DB = JSON.parse(d); if(!DB.logs) DB.logs = []; }
       else {
-        DB = { site: { brand: 'GOLDEN', logoText: 'G', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت', accent: '#e8b923', currency: '₪', webhook: '', adminPass: 'GOLDEN' }, services: [], slots: [], closedDays: [], bookings: [], logs: [] };
+        DB = { site: { brand: 'ALAA SALON', logoText: 'A', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت', accent: '#e8b923', currency: '₪', webhook: '', adminPass: 'GOLDEN' }, services: [], slots: [], closedDays: [], bookings: [], logs: [] };
         save();
       }
+      applyGlobalTheme();
     }
     function save() { localStorage.setItem(KEY, JSON.stringify(DB)); }
     function addLog(text) { DB.logs.unshift({ id: 'l'+Date.now(), text: text, date: new Date().toISOString() }); if(DB.logs.length > 50) DB.logs.pop(); save(); }
+
+    function applyGlobalTheme() {
+      document.documentElement.style.setProperty('--accent', DB.site.accent);
+      document.getElementById('splashName').innerText = DB.site.brand;
+      document.getElementById('loginBrand').innerText = DB.site.brand;
+      document.getElementById('sideBrand').innerText = DB.site.brand + " ⚙️";
+    }
 
     function login() {
       if(document.getElementById('loginPass').value === DB.site.adminPass) {
@@ -291,11 +315,11 @@
 
     // 1. لوحة القيادة
     function loadDashboard() {
-      const activeToday = DB.bookings.filter(b => b.date === todayStr && b.status !== 'cancelled');
+      const activeToday = DB.bookings.filter(b => b.date === todayStr && b.status === 'confirmed');
       document.getElementById('sToday').innerText = activeToday.length;
       document.getElementById('sRevenueToday').innerText = activeToday.reduce((s,b) => s + Number(b.price||0), 0);
       document.getElementById('sTotal').innerText = DB.bookings.length;
-      const uniquePhones = new Set(DB.bookings.map(b => b.phone));
+      const uniquePhones = new Set(DB.bookings.map(b => b.phone).filter(p => p !== '-'));
       document.getElementById('sCust').innerText = uniquePhones.size;
 
       document.getElementById('logList').innerHTML = DB.logs.map(l => `
@@ -306,12 +330,11 @@
       `).join('') || '<p style="color:var(--muted); font-size:13px;">لا توجد نشاطات</p>';
     }
 
-    // 2. الحجوزات (لليوم فقط)
+    // 2. الحجوزات
     function renderBooks() {
       const q = document.getElementById('searchBooks').value.toLowerCase();
       const st = document.getElementById('filterStatus').value;
 
-      // تصفية: تاريخ اليوم فقط + البحث
       let filtered = DB.bookings.filter(b => {
         const matchDay = b.date === todayStr;
         const matchQ = b.name.toLowerCase().includes(q) || b.phone.includes(q);
@@ -320,8 +343,24 @@
       }).sort((a,b) => a.time.localeCompare(b.time));
 
       document.getElementById('booksList').innerHTML = filtered.map(b => {
-        let badgeClass = b.status === 'confirmed' ? 'warn' : b.status === 'completed' ? 'ok' : 'bad';
-        let badgeText = b.status === 'confirmed' ? 'مؤكد' : b.status === 'completed' ? 'مكتمل' : 'ملغي';
+        let badgeClass = b.status === 'confirmed' ? 'warn' : b.status === 'completed' ? 'ok' : b.status === 'blocked' ? 'blue' : 'bad';
+        let badgeText = b.status === 'confirmed' ? 'مؤكد' : b.status === 'completed' ? 'مكتمل' : b.status === 'blocked' ? 'استراحة' : 'ملغي';
+        
+        // إذا كانت استراحة، نظهر بشكل مختلف
+        if(b.status === 'blocked') {
+          return `
+          <div class="list-item" style="border-color: var(--blue); background: rgba(10,132,255,0.05);">
+            <div class="list-row">
+              <div><b style="font-size: 16px; color: var(--blue);">☕ ${b.name}</b></div>
+              <span class="badge blue">${badgeText}</span>
+            </div>
+            <div style="font-size: 13px; color: var(--muted);">⏰ ${b.time}</div>
+            <div class="list-actions">
+              <button class="btn btn-danger btn-sm" onclick="delBook('${b.id}')">🗑️ إزالة الاستراحة</button>
+            </div>
+          </div>`;
+        }
+
         return `
         <div class="list-item">
           <div class="list-row">
@@ -372,6 +411,45 @@
       DB.bookings.push({ id: 'b'+Date.now(), name: n, phone: p, date: todayStr, time: t, serviceName: srv.name, price: srv.price, status: 'confirmed', createdAt: new Date().toISOString() });
       addLog(`حجز يدوي: ${n}`);
       save(); closeModal(); renderBooks(); showToast('تمت الإضافة', 'success');
+    }
+
+    // ميزة الاستراحة
+    function openBlockTimeModal() {
+      const availableSlots = DB.slots.filter(t => !DB.bookings.some(b => b.date === todayStr && b.time === t && b.status !== 'cancelled'));
+      if(availableSlots.length === 0) return showToast('كل الأوقات محجوزة بالفعل اليوم', 'error');
+
+      showModal(`
+        <h3 style="margin-bottom:15px; color: var(--blue);">☕ حجب وقت (استراحة)</h3>
+        <p style="color:var(--muted); font-size:13px; margin-bottom:15px;">سيظهر هذا الوقت للزبائن كـ "محجوز".</p>
+        <div class="input-group"><label>اختر الوقت</label>
+          <select id="blockTime">${availableSlots.map(t => `<option value="${t}">${t}</option>`).join('')}</select>
+        </div>
+        <div class="input-group"><label>السبب (اختياري)</label>
+          <input type="text" id="blockReason" placeholder="مثال: غداء، صلاة، موعد شخصي...">
+        </div>
+        <button class="btn btn-primary" style="background: var(--blue); color: #fff;" onclick="saveBlockTime()">حجب الوقت</button>
+        <button class="btn btn-ghost" onclick="closeModal()">إلغاء</button>
+      `);
+    }
+
+    function saveBlockTime() {
+      const t = document.getElementById('blockTime').value;
+      const reason = document.getElementById('blockReason').value || 'استراحة';
+      
+      DB.bookings.push({ 
+        id: 'block_'+Date.now(), 
+        name: reason, 
+        phone: '-', 
+        date: todayStr, 
+        time: t, 
+        serviceName: 'استراحة', 
+        price: 0, 
+        status: 'blocked', 
+        createdAt: new Date().toISOString() 
+      });
+      
+      addLog(`حجب وقت: ${t} (${reason})`);
+      save(); closeModal(); renderBooks(); showToast('تم حجب الوقت بنجاح', 'success');
     }
 
     function editBook(id) {
@@ -437,7 +515,7 @@
     // 4. العملاء (CRM)
     function renderCustomers() {
       const customers = {};
-      DB.bookings.forEach(b => {
+      DB.bookings.filter(b => b.status !== 'blocked').forEach(b => {
         if(!customers[b.phone]) { customers[b.phone] = { name: b.name, phone: b.phone, visits: 0, total: 0 }; }
         if(b.status !== 'cancelled') { customers[b.phone].visits++; customers[b.phone].total += Number(b.price || 0); }
       });
@@ -483,7 +561,11 @@
       document.getElementById('dColor').value = DB.site.accent;
       document.getElementById('dCurr').value = DB.site.currency;
     }
-    function updateSite(k, v) { DB.site[k] = v; save(); }
+    function updateSite(k, v) { 
+      DB.site[k] = v; 
+      save(); 
+      if(k === 'accent' || k === 'brand') applyGlobalTheme();
+    }
 
     // 7. الإعدادات
     function renderSettings() { document.getElementById('dWebhook').value = DB.site.webhook; document.getElementById('dPass').value = DB.site.adminPass; }
@@ -491,7 +573,7 @@
     // 8. النسخ الاحتياطي
     function exportData() {
       const blob = new Blob([JSON.stringify(DB, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `GOLDEN_Backup_${todayStr}.json`; a.click();
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `ALAA_SALON_Backup_${todayStr}.json`; a.click();
       showToast('تم التصدير', 'success');
     }
     function importData(file) {
@@ -500,7 +582,7 @@
       reader.onload = e => {
         try {
           const data = JSON.parse(e.target.result);
-          if(data.site && data.services) { DB = data; if(!DB.logs) DB.logs = []; addLog('استيراد بيانات'); save(); loadDashboard(); showToast('تم الاستيراد', 'success'); }
+          if(data.site && data.services) { DB = data; if(!DB.logs) DB.logs = []; addLog('استيراد بيانات'); save(); loadDashboard(); applyGlobalTheme(); showToast('تم الاستيراد', 'success'); }
           else showToast('ملف غير صالح', 'error');
         } catch { showToast('خطأ في القراءة', 'error'); }
       };
@@ -525,7 +607,22 @@
     function doConfirm() { if(confirmCb) confirmCb(); closeModal(); }
     function closeModal() { document.getElementById('modalOverlay').classList.remove('active'); }
 
-    window.onload = () => { initDB(); document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key === 'Enter') login(); }); };
+    // المزامنة الفورية عند تغيير البيانات من نافذة أخرى
+    window.addEventListener('storage', (e) => {
+      if (e.key === KEY) {
+        DB = JSON.parse(e.newValue);
+        applyGlobalTheme();
+      }
+    });
+
+    // التشغيل
+    window.onload = () => { 
+      initDB(); 
+      document.getElementById('loginPass').addEventListener('keypress', e => { if(e.key === 'Enter') login(); });
+      setTimeout(() => {
+        document.getElementById('splash').classList.add('hidden');
+      }, 1200);
+    };
   </script>
 </body>
 </html>
