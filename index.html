@@ -35,10 +35,9 @@
     }
 
     /* الهيدر */
-    header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; margin-top: 10px; }
+    header { display: flex; justify-content: center; align-items: center; padding: 15px 20px; margin-top: 10px; }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; }
     .logo { width: 35px; height: 35px; background: var(--accent); border-radius: 10px; display: grid; place-items: center; color: #000; font-weight: 900; }
-    .btn-icon { background: rgba(255,255,255,0.1); border: none; color: #fff; width: 40px; height: 40px; border-radius: 50%; font-size: 18px; cursor: pointer; }
 
     /* العناوين */
     .hero { text-align: center; padding: 30px 10px; }
@@ -48,8 +47,21 @@
     .section-title { font-size: 18px; font-weight: 700; margin: 25px 0 15px 5px; }
 
     /* بطاقات الخدمات */
-    .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .srv-card { padding: 15px; cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
+    .services-grid { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 12px; 
+      justify-content: center; 
+    }
+    .srv-card { 
+      flex: 1 1 calc(50% - 12px); 
+      min-width: 140px;
+      padding: 15px; 
+      cursor: pointer; 
+      transition: 0.3s; 
+      border: 1px solid transparent; 
+      text-align: center;
+    }
     .srv-card.active { border-color: var(--accent); background: rgba(232, 185, 35, 0.1); }
     .srv-card h3 { font-size: 16px; margin-bottom: 5px; }
     .srv-card .price { color: var(--accent); font-weight: 800; font-size: 18px; }
@@ -88,7 +100,6 @@
   <div class="container">
     <header class="glass fade">
       <div class="brand"><div class="logo" id="siteLogo">G</div><span id="siteBrand">GOLDEN</span></div>
-      <button class="btn-icon" onclick="window.location.href='admin.html'">⚙️</button>
     </header>
 
     <div class="hero fade" style="animation-delay: 0.1s">
@@ -143,7 +154,7 @@
             {id:'s3', name:'باقة كاملة', price:80, duration:45, active:true}
           ],
           slots: ['09:00','10:00','11:00','12:00','13:00','16:00','17:00','18:00','19:00','20:00'],
-          closedDays: [5], // 5 = الجمعة
+          closedDays: [5],
           bookings: []
         };
         localStorage.setItem(KEY, JSON.stringify(DB));
@@ -217,7 +228,6 @@
       const note = document.getElementById('fNote').value;
       const srv = DB.services.find(s => s.id === srvSelect);
 
-      // التحقق النهائي من التزامن
       const isDouble = DB.bookings.some(b => b.date === date && b.time === timeSelect && b.status !== 'cancelled');
       if(isDouble) { alert('عذراً، هذا الوقت تم حجزه للتو!'); renderSlots(); return; }
 
@@ -229,7 +239,6 @@
       DB.bookings.push(booking);
       localStorage.setItem(KEY, JSON.stringify(DB));
 
-      // ديسكورد
       if(DB.site.webhook) {
         fetch(DB.site.webhook, {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
