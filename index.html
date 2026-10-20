@@ -5,91 +5,76 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
   <title>GOLDEN - حجز المواعيد</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #000;
-      --glass: rgba(30, 30, 35, 0.65);
-      --glass-border: rgba(255, 255, 255, 0.1);
-      --text: #fff;
-      --muted: #a1a1a6;
-      --accent: #e8b923;
-      --radius: 20px;
+      --bg: #000; --glass: rgba(30, 30, 35, 0.7); --border: rgba(255, 255, 255, 0.1);
+      --text: #fff; --muted: #a1a1a6; --accent: #e8b923; --radius: 20px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
     body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
     
-    /* خلفية متحركة زجاجية */
+    /* خلفية متحركة */
     .bg-blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
-    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.6; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.5; }
     .blob-1 { width: 350px; height: 350px; background: var(--accent); top: -50px; right: -50px; }
     .blob-2 { width: 250px; height: 250px; background: #007aff; bottom: -50px; left: -50px; }
 
     .container { max-width: 600px; margin: 0 auto; padding: 15px; padding-bottom: 50px; }
 
-    /* زجاج */
     .glass {
       background: var(--glass); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-      border: 1px solid var(--glass-border); border-radius: var(--radius);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0,0,0,0.4);
     }
 
     /* الهيدر */
     header { display: flex; justify-content: center; align-items: center; padding: 15px 20px; margin-top: 10px; }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; }
-    .logo { width: 35px; height: 35px; background: var(--accent); border-radius: 10px; display: grid; place-items: center; color: #000; font-weight: 900; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 22px; }
+    .logo { width: 38px; height: 38px; background: var(--accent); border-radius: 10px; display: grid; place-items: center; color: #000; font-weight: 900; }
 
     /* العناوين */
     .hero { text-align: center; padding: 30px 10px; }
-    .hero h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .hero h1 { font-size: 32px; font-weight: 900; margin-bottom: 8px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .hero p { color: var(--muted); font-size: 15px; }
 
-    .section-title { font-size: 18px; font-weight: 700; margin: 25px 0 15px 5px; }
+    .section-title { font-size: 18px; font-weight: 800; margin: 25px 0 15px 5px; display: flex; align-items: center; gap: 8px; }
 
     /* بطاقات الخدمات */
-    .services-grid { 
-      display: flex; 
-      flex-wrap: wrap; 
-      gap: 12px; 
-      justify-content: center; 
-    }
-    .srv-card { 
-      flex: 1 1 calc(50% - 12px); 
-      min-width: 140px;
-      padding: 15px; 
-      cursor: pointer; 
-      transition: 0.3s; 
-      border: 1px solid transparent; 
-      text-align: center;
-    }
+    .services-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+    .srv-card { flex: 1 1 calc(50% - 12px); min-width: 140px; padding: 15px; cursor: pointer; transition: 0.3s; border: 2px solid transparent; text-align: center; }
     .srv-card.active { border-color: var(--accent); background: rgba(232, 185, 35, 0.1); }
     .srv-card h3 { font-size: 16px; margin-bottom: 5px; }
-    .srv-card .price { color: var(--accent); font-weight: 800; font-size: 18px; }
+    .srv-card .price { color: var(--accent); font-weight: 900; font-size: 18px; }
     .srv-card .time { color: var(--muted); font-size: 12px; }
 
     /* النموذج */
     .form-box { padding: 20px; margin-top: 15px; }
     .input-group { margin-bottom: 15px; }
-    .input-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .input-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
     .input-group input, .input-group textarea {
-      width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--glass-border);
-      color: #fff; padding: 14px; border-radius: 14px; font-size: 15px; outline: none; transition: 0.2s;
+      width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+      color: #fff; padding: 14px; border-radius: 14px; font-size: 16px; outline: none; transition: 0.2s;
     }
     .input-group input:focus { border-color: var(--accent); }
+    
+    /* اليوم المحدد */
+    .today-badge { 
+      background: rgba(232, 185, 35, 0.15); border: 1px solid var(--accent); color: var(--accent); 
+      padding: 12px; border-radius: 12px; text-align: center; font-weight: 800; font-size: 16px; margin-bottom: 15px;
+    }
 
     /* الأوقات */
     .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .slot { padding: 10px; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; font-weight: 700; cursor: pointer; transition: 0.2s; }
+    .slot { padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-weight: 800; cursor: pointer; transition: 0.2s; }
     .slot.selected { background: var(--accent); color: #000; border-color: var(--accent); }
     .slot:disabled { opacity: 0.3; text-decoration: line-through; cursor: not-allowed; }
 
     .btn-submit {
       width: 100%; padding: 16px; border-radius: 14px; background: var(--accent); color: #000;
-      font-size: 16px; font-weight: 800; border: none; cursor: pointer; margin-top: 10px; transition: 0.2s;
+      font-size: 18px; font-weight: 900; border: none; cursor: pointer; margin-top: 10px; transition: 0.2s;
     }
     .btn-submit:active { transform: scale(0.96); }
 
-    /* أنيميشن */
     .fade { animation: fade 0.5s ease forwards; opacity: 0; transform: translateY(10px); }
     @keyframes fade { to { opacity: 1; transform: translateY(0); } }
   </style>
@@ -107,30 +92,28 @@
       <p id="siteSubtitle">اختر الخدمة والوقت المناسب</p>
     </div>
 
-    <div class="section-title fade" style="animation-delay: 0.2s">الخدمات المتاحة</div>
+    <div class="section-title fade" style="animation-delay: 0.2s">💼 الخدمات المتاحة</div>
     <div class="services-grid fade" id="servicesGrid" style="animation-delay: 0.2s"></div>
 
-    <div class="section-title fade" style="animation-delay: 0.3s">تفاصيل الحجز</div>
+    <div class="section-title fade" style="animation-delay: 0.3s">📝 تفاصيل الحجز (لليوم فقط)</div>
     <form class="form-box glass fade" id="bookForm" onsubmit="submitBooking(event)" style="animation-delay: 0.3s">
+      <div class="today-badge" id="todayDisplay">جاري تحميل التاريخ...</div>
+
       <div class="input-group">
         <label>الاسم الكامل</label>
-        <input type="text" id="fName" required placeholder="الاسم">
+        <input type="text" id="fName" required placeholder="الاسم الثلاثي">
       </div>
       <div class="input-group">
         <label>رقم الهاتف</label>
         <input type="tel" id="fPhone" required placeholder="05XXXXXXXX" dir="ltr">
       </div>
       <div class="input-group">
-        <label>التاريخ</label>
-        <input type="date" id="fDate" required onchange="renderSlots()">
-      </div>
-      <div class="input-group">
-        <label>الوقت</label>
-        <div class="slots" id="slotsGrid"><p style="color:var(--muted); font-size:13px; grid-column:1/-1;">اختر التاريخ أولاً</p></div>
+        <label>الوقت المتاح</label>
+        <div class="slots" id="slotsGrid"><p style="color:var(--muted); font-size:13px; grid-column:1/-1;">جاري التحميل...</p></div>
       </div>
       <div class="input-group">
         <label>ملاحظات (اختياري)</label>
-        <textarea id="fNote" rows="2" placeholder="أي تفاصيل..."></textarea>
+        <textarea id="fNote" rows="2" placeholder="أي تفاصيل إضافية..."></textarea>
       </div>
       <button type="submit" class="btn-submit">تأكيد الحجز</button>
     </form>
@@ -141,21 +124,19 @@
     let DB = {};
     let srvSelect = null;
     let timeSelect = null;
+    const todayStr = new Date().toISOString().split('T')[0];
 
     function loadData() {
       const d = localStorage.getItem(KEY);
       if(d) { DB = JSON.parse(d); }
       else {
+        // بيانات افتراضية في حال فتح الموقع قبل الأدمن
         DB = {
-          site: { brand: 'GOLDEN', logoText: 'G', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت المناسب', accent: '#e8b923', currency: '₪', webhook: 'https://discord.com/api/webhooks/1556726586407919630/5VrORfaR4NdN4kIInRwKLpD0wkhNwe-uAXjfQ_igAojxucCjtoyRs14RYM23VxctVhsL', adminPass: 'GOLDEN' },
-          services: [
-            {id:'s1', name:'قص شعر', price:50, duration:30, active:true},
-            {id:'s2', name:'حلاقة ذقن', price:30, duration:20, active:true},
-            {id:'s3', name:'باقة كاملة', price:80, duration:45, active:true}
-          ],
-          slots: ['09:00','10:00','11:00','12:00','13:00','16:00','17:00','18:00','19:00','20:00'],
+          site: { brand: 'GOLDEN', logoText: 'G', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت المناسب', accent: '#e8b923', currency: '₪', webhook: '', adminPass: 'GOLDEN' },
+          services: [{id:'s1', name:'قص شعر', price:50, duration:30, active:true}, {id:'s2', name:'حلاقة', price:30, duration:20, active:true}],
+          slots: ['09:00','10:00','11:00','12:00','16:00','17:00','18:00'],
           closedDays: [5],
-          bookings: []
+          bookings: [], logs: []
         };
         localStorage.setItem(KEY, JSON.stringify(DB));
       }
@@ -168,13 +149,20 @@
       document.getElementById('siteLogo').innerText = DB.site.logoText;
       document.getElementById('siteTitle').innerText = DB.site.title;
       document.getElementById('siteSubtitle').innerText = DB.site.subtitle;
+      
+      // عرض التاريخ الحالي بالعربي
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      const todayArabic = new Date().toLocaleDateString('ar-EG', options);
+      document.getElementById('todayDisplay').innerText = "📅 " + todayArabic;
+
       renderServices();
+      renderSlots();
     }
 
     function renderServices() {
       const grid = document.getElementById('servicesGrid');
       const active = DB.services.filter(s => s.active !== false);
-      if(active.length === 0) { grid.innerHTML = '<p style="color:var(--muted)">لا توجد خدمات</p>'; return; }
+      if(active.length === 0) { grid.innerHTML = '<p style="color:var(--muted); grid-column: 1/-1; text-align:center;">لا توجد خدمات متاحة اليوم</p>'; return; }
       
       grid.innerHTML = active.map(s => `
         <div class="srv-card glass" id="card-${s.id}" onclick="selectSrv('${s.id}')">
@@ -192,18 +180,21 @@
     }
 
     function renderSlots() {
-      const date = document.getElementById('fDate').value;
       const grid = document.getElementById('slotsGrid');
       timeSelect = null;
       
-      if(!date) { grid.innerHTML = '<p style="color:var(--muted); font-size:13px; grid-column:1/-1;">اختر التاريخ أولاً</p>'; return; }
-      
-      const day = new Date(date).getDay();
+      const day = new Date(todayStr).getDay();
       if(DB.closedDays.includes(day)) {
-        grid.innerHTML = '<p style="color:var(--muted); font-size:13px; grid-column:1/-1;">🚫 هذا اليوم عطلة</p>'; return;
+        grid.innerHTML = '<p style="color:var(--danger); font-size:14px; grid-column:1/-1; font-weight:bold;">🚫 نعتذر، العيادة مغلقة اليوم. نراكم غداً!</p>'; 
+        return;
       }
 
-      const taken = DB.bookings.filter(b => b.date === date && b.status !== 'cancelled').map(b => b.time);
+      // جلب الأوقات المحجوزة لهذا اليوم فقط
+      const taken = DB.bookings.filter(b => b.date === todayStr && b.status !== 'cancelled').map(b => b.time);
+
+      if(DB.slots.length === 0) {
+         grid.innerHTML = '<p style="color:var(--muted); font-size:14px; grid-column:1/-1;">لم يتم إضافة أوقات عمل بعد.</p>'; return;
+      }
 
       grid.innerHTML = DB.slots.map(t => {
         const isTaken = taken.includes(t);
@@ -219,24 +210,26 @@
 
     async function submitBooking(e) {
       e.preventDefault();
-      if(!srvSelect) return alert('اختر خدمة أولاً');
-      if(!timeSelect) return alert('اختر وقتاً متاحاً');
+      if(!srvSelect) return alert('يرجى اختيار خدمة أولاً');
+      if(!timeSelect) return alert('يرجى اختيار وقت متاح');
 
       const name = document.getElementById('fName').value;
       const phone = document.getElementById('fPhone').value;
-      const date = document.getElementById('fDate').value;
       const note = document.getElementById('fNote').value;
       const srv = DB.services.find(s => s.id === srvSelect);
 
-      const isDouble = DB.bookings.some(b => b.date === date && b.time === timeSelect && b.status !== 'cancelled');
-      if(isDouble) { alert('عذراً، هذا الوقت تم حجزه للتو!'); renderSlots(); return; }
+      // التحقق المزدوج من الوقت
+      const isDouble = DB.bookings.some(b => b.date === todayStr && b.time === timeSelect && b.status !== 'cancelled');
+      if(isDouble) { alert('عذراً، تم حجز هذا الوقت للتو!'); renderSlots(); return; }
 
       const booking = {
-        id: 'b' + Date.now(), name, phone, date, time: timeSelect, note,
+        id: 'b' + Date.now(), name, phone, date: todayStr, time: timeSelect, note,
         serviceName: srv.name, price: srv.price, status: 'confirmed', createdAt: new Date().toISOString()
       };
 
       DB.bookings.push(booking);
+      if(!DB.logs) DB.logs = [];
+      DB.logs.unshift({ id: 'l'+Date.now(), text: `حجز جديد: ${name} - ${srv.name}`, date: new Date().toISOString() });
       localStorage.setItem(KEY, JSON.stringify(DB));
 
       if(DB.site.webhook) {
@@ -246,18 +239,18 @@
             username: 'GOLDEN Booking',
             embeds: [{ title: 'حجز جديد 🗓️', color: parseInt(DB.site.accent.replace('#',''), 16), fields: [
               {name:'الاسم', value:name, inline:true}, {name:'الهاتف', value:phone, inline:true},
-              {name:'الخدمة', value:srv.name, inline:true}, {name:'التاريخ', value:date, inline:true},
-              {name:'الوقت', value:timeSelect, inline:true}, {name:'ملاحظات', value:note||'لا يوجد'}
+              {name:'الخدمة', value:srv.name, inline:true}, {name:'الوقت', value:timeSelect, inline:true},
+              {name:'ملاحظات', value:note||'لا يوجد'}
             ]}]
           })
         }).catch(e => console.log(e));
       }
 
-      alert(`تم الحجز بنجاح يا ${name}!`);
+      alert(`تم الحجز بنجاح يا ${name}! موعدك اليوم الساعة ${timeSelect}.`);
       document.getElementById('bookForm').reset();
       document.querySelectorAll('.srv-card').forEach(c => c.classList.remove('active'));
-      document.getElementById('slotsGrid').innerHTML = '<p style="color:var(--muted); font-size:13px; grid-column:1/-1;">اختر التاريخ أولاً</p>';
       srvSelect = null; timeSelect = null;
+      renderSlots();
     }
 
     loadData();
