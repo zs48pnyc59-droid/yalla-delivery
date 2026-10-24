@@ -1,311 +1,381 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#000000">
-  <title>ALAA SALON - حجز المواعيد</title>
-  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #000; --glass: rgba(30, 30, 35, 0.7); --border: rgba(255, 255, 255, 0.1);
-      --text: #fff; --muted: #a1a1a6; --accent: #e8b923; --radius: 20px; --danger: #ff453a;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-
-    /* شاشة التحميل (Splash) */
-    #splash {
-      position: fixed; inset: 0; z-index: 9999; background: var(--bg);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      transition: opacity 0.6s ease, visibility 0.6s; opacity: 1; visibility: visible;
-    }
-    #splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-    .splash-logo { font-size: 38px; font-weight: 900; color: var(--accent); margin-bottom: 20px; letter-spacing: 2px; animation: pulse 1.5s infinite alternate; }
-    .spinner { width: 35px; height: 35px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes pulse { from { opacity: 0.7; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
-
-    /* شاشة الحالة (صيانة / عطلة / مغلق) */
-    #stateScreen {
-      position: fixed; inset: 0; z-index: 10000; background: var(--bg);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      text-align: center; padding: 20px; opacity: 0; visibility: hidden; pointer-events: none;
-      transition: opacity 0.6s ease, visibility 0.6s;
-    }
-    #stateScreen.active { opacity: 1; visibility: visible; pointer-events: all; }
-    .state-icon { font-size: 90px; margin-bottom: 25px; animation: bounce 2s infinite ease-in-out; }
-    .state-title { 
-      font-size: 42px; font-weight: 900; margin-bottom: 15px; letter-spacing: 3px;
-      background: linear-gradient(90deg, #fff, var(--accent), #fff);
-      background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      animation: shine 3s linear infinite;
-    }
-    .state-msg { font-size: 18px; color: var(--muted); max-width: 350px; line-height: 1.6; animation: fadeIn 1s ease; }
-    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-    @keyframes shine { to { background-position: 200% center; } }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* خلفية متحركة */
-    .bg-blobs { position: fixed; inset: 0; z-index: -1; overflow: hidden; }
-    .blob { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.5; }
-    .blob-1 { width: 350px; height: 350px; background: var(--accent); top: -50px; right: -50px; }
-    .blob-2 { width: 250px; height: 250px; background: #007aff; bottom: -50px; left: -50px; }
-
-    .container { max-width: 600px; margin: 0 auto; padding: 15px; padding-bottom: 50px; }
-    .glass { background: var(--glass); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
-
-    header { display: flex; justify-content: center; align-items: center; padding: 15px 20px; margin-top: 10px; }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; font-size: 22px; }
-    .logo { width: 38px; height: 38px; background: var(--accent); border-radius: 10px; display: grid; place-items: center; color: #000; font-weight: 900; }
-
-    .hero { text-align: center; padding: 30px 10px; }
-    .hero h1 { font-size: 32px; font-weight: 900; margin-bottom: 8px; background: linear-gradient(to bottom, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .hero p { color: var(--muted); font-size: 15px; }
-    .section-title { font-size: 18px; font-weight: 800; margin: 25px 0 15px 5px; display: flex; align-items: center; gap: 8px; }
-
-    .services-grid { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
-    .srv-card { flex: 1 1 calc(50% - 12px); min-width: 140px; padding: 15px; cursor: pointer; transition: 0.3s; border: 2px solid transparent; text-align: center; }
-    .srv-card.active { border-color: var(--accent); background: rgba(232, 185, 35, 0.1); }
-    .srv-card h3 { font-size: 16px; margin-bottom: 5px; }
-    .srv-card .price { color: var(--accent); font-weight: 900; font-size: 18px; }
-    .srv-card .time { color: var(--muted); font-size: 12px; }
-
-    .form-box { padding: 20px; margin-top: 15px; }
-    .input-group { margin-bottom: 15px; }
-    .input-group label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
-    .input-group input, .input-group textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); color: #fff; padding: 14px; border-radius: 14px; font-size: 16px; outline: none; transition: 0.2s; }
-    .input-group input:focus { border-color: var(--accent); }
-    
-    .today-badge { background: rgba(232, 185, 35, 0.15); border: 1px solid var(--accent); color: var(--accent); padding: 12px; border-radius: 12px; text-align: center; font-weight: 800; font-size: 16px; margin-bottom: 15px; }
-
-    .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .slot { padding: 12px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; font-weight: 800; cursor: pointer; transition: 0.2s; }
-    .slot.selected { background: var(--accent); color: #000; border-color: var(--accent); }
-    .slot:disabled { opacity: 0.3; text-decoration: line-through; cursor: not-allowed; }
-
-    .btn-submit { width: 100%; padding: 16px; border-radius: 14px; background: var(--accent); color: #000; font-size: 18px; font-weight: 900; border: none; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-    .btn-submit:active { transform: scale(0.96); }
-
-    .fade { animation: fade 0.5s ease forwards; opacity: 0; transform: translateY(10px); }
-    @keyframes fade { to { opacity: 1; transform: translateY(0); } }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" content="#0b1030">
+<title>روابطي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  margin:0;min-height:100dvh;overflow-x:hidden;
+  font-family:'Cairo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color:var(--text);
+  transition:color .5s ease;
+  background:#070a18;
+}
+:root{
+  --text:#fff;
+  --text-soft:rgba(255,255,255,.72);
+  --glass:rgba(255,255,255,.10);
+  --glass-brd:rgba(255,255,255,.20);
+  --radius:28px;
+  --btn-radius:18px;
+  --shadow:0 26px 70px -26px rgba(0,0,0,.7);
+  --blur:22px;
+  --c1:#7c5cff; --c2:#00d4ff; --c3:#ff4d94;
+  --accent:#7c5cff;
+}
+body.light{
+  --text:#0f1326;
+  --text-soft:rgba(15,19,38,.62);
+  --glass:rgba(255,255,255,.55);
+  --glass-brd:rgba(255,255,255,.9);
+  --shadow:0 26px 70px -26px rgba(30,40,90,.28);
+}
+#bg{position:fixed;inset:0;z-index:-3;transition:background .7s ease;background:#0b1030}
+#bg::after{content:'';position:absolute;inset:0;background:#fff;opacity:0;transition:opacity .6s ease}
+body.light #bg::after{opacity:.78}
+.blobs{position:fixed;inset:0;z-index:-2;overflow:hidden;pointer-events:none}
+.blob{position:absolute;width:48vmax;height:48vmax;border-radius:50%;filter:blur(90px);opacity:.55;will-change:transform}
+.blob.b1{background:var(--c1);top:-18vmax;right:-14vmax;animation:float1 22s ease-in-out infinite}
+.blob.b2{background:var(--c2);bottom:-20vmax;left:-16vmax;animation:float2 26s ease-in-out infinite}
+.blob.b3{background:var(--c3);top:35%;left:30%;width:34vmax;height:34vmax;opacity:.4;animation:float3 30s ease-in-out infinite}
+body.light .blob{opacity:.38}
+@keyframes float1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-6vmax,7vmax) scale(1.15)}}
+@keyframes float2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(7vmax,-5vmax) scale(1.12)}}
+@keyframes float3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-5vmax,-6vmax) scale(1.2)}}
+#loader{
+  position:fixed;inset:0;z-index:9999;display:grid;place-items:center;
+  background:radial-gradient(circle at 50% 40%, rgba(124,92,255,.20), transparent 60%), #070a18;
+  transition:opacity .7s ease, visibility .7s ease;
+}
+#loader.hide{opacity:0;visibility:hidden}
+.loader-inner{display:flex;flex-direction:column;align-items:center;gap:26px}
+.loader-logo{
+  width:112px;height:112px;border-radius:30px;object-fit:contain;
+  animation:pop 1.8s ease-in-out infinite;
+  filter:drop-shadow(0 14px 40px rgba(124,92,255,.55));
+}
+.loader-fallback{
+  width:112px;height:112px;border-radius:30px;display:grid;place-items:center;
+  font-size:44px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,#7c5cff,#00d4ff);
+  box-shadow:0 14px 40px rgba(124,92,255,.5);
+  animation:pop 1.8s ease-in-out infinite;
+}
+@keyframes pop{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.spinner{width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.15);border-top-color:#7c5cff;animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#app{
+  position:relative;z-index:1;min-height:100dvh;
+  display:flex;align-items:center;justify-content:center;
+  padding:calc(env(safe-area-inset-top,0px) + 24px) 16px calc(env(safe-area-inset-bottom,0px) + 24px);
+}
+.card{
+  width:min(100%,460px);
+  padding:30px 20px 22px;
+  background:var(--glass);
+  border:1px solid var(--glass-brd);
+  border-radius:var(--radius);
+  -webkit-backdrop-filter:blur(var(--blur)) saturate(170%);
+  backdrop-filter:blur(var(--blur)) saturate(170%);
+  box-shadow:var(--shadow), inset 0 1px 0 rgba(255,255,255,.22);
+  animation:cardIn .8s cubic-bezier(.2,.9,.25,1) both;
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:none}}
+.top-logo{
+  width:96px;height:96px;border-radius:26px;object-fit:cover;display:block;margin:0 auto 16px;
+  border:1px solid var(--glass-brd);
+  box-shadow:0 12px 34px -10px rgba(0,0,0,.5);
+  background:rgba(255,255,255,.08);
+}
+.top-logo-fallback{
+  width:96px;height:96px;border-radius:26px;display:grid;place-items:center;margin:0 auto 16px;
+  font-size:38px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,var(--c1),var(--c2));
+  box-shadow:0 12px 34px -10px rgba(0,0,0,.5);
+}
+h1.title{
+  margin:0 0 6px;text-align:center;font-size:23px;font-weight:800;letter-spacing:-.3px;
+  color:var(--text);
+}
+p.subtitle{margin:0 0 22px;text-align:center;font-size:14.5px;color:var(--text-soft);font-weight:400}
+#accounts{display:flex;flex-direction:column;gap:12px}
+#accounts.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.account{
+  display:flex;align-items:center;gap:13px;
+  padding:13px 15px;
+  background:var(--glass);
+  border:1px solid var(--glass-brd);
+  border-radius:var(--btn-radius);
+  color:var(--text);text-decoration:none;
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  backdrop-filter:blur(14px) saturate(160%);
+  box-shadow:0 8px 24px -14px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.16);
+  transition:transform .3s cubic-bezier(.2,.9,.25,1), background .3s, box-shadow .3s, border-color .3s;
+  opacity:0;animation:itemIn .6s cubic-bezier(.2,.9,.25,1) forwards;
+  will-change:transform;
+  min-height:60px;
+}
+@keyframes itemIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.account:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 16px 34px -16px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.25);border-color:rgba(255,255,255,.35)}
+.account:active{transform:scale(.975)}
+.ico{
+  flex:0 0 auto;width:38px;height:38px;border-radius:calc(var(--btn-radius) * .7);
+  display:grid;place-items:center;overflow:hidden;
+  background:linear-gradient(135deg,var(--c1),var(--c2));
+  color:#fff;font-weight:800;font-size:15px;
+}
+body.light .ico{box-shadow:0 4px 14px -4px rgba(80,60,200,.5)}
+.ico img{width:100%;height:100%;object-fit:cover}
+.ico svg{width:60%;height:60%;display:block}
+.txt{flex:1;font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arrow{opacity:.45;font-size:15px;transition:transform .3s,opacity .3s}
+.account:hover .arrow{opacity:.9;transform:translate(-2px,-2px)}
+#accounts.grid .account{flex-direction:column;text-align:center;gap:8px;padding:16px 10px}
+#accounts.grid .txt{font-size:13px;width:100%}
+#accounts.grid .arrow{display:none}
+.fab{
+  position:fixed;z-index:20;
+  width:46px;height:46px;border-radius:50%;
+  display:grid;place-items:center;
+  background:var(--glass);border:1px solid var(--glass-brd);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  color:var(--text);cursor:pointer;font-size:18px;
+  box-shadow:0 10px 26px -12px rgba(0,0,0,.6);
+  transition:transform .25s, background .25s;
+}
+.fab:active{transform:scale(.9)}
+.fab:hover{background:rgba(255,255,255,.2)}
+#themeBtn{top:calc(env(safe-area-inset-top,0px) + 16px);left:16px}
+#shareBtn{top:calc(env(safe-area-inset-top,0px) + 16px);right:16px}
+#statusScreen{position:fixed;inset:0;z-index:500;display:none;place-items:center;padding:24px}
+#statusScreen.show{display:grid}
+.status-card{
+  width:min(100%,420px);text-align:center;padding:40px 26px;
+  background:var(--glass);border:1px solid var(--glass-brd);border-radius:var(--radius);
+  -webkit-backdrop-filter:blur(var(--blur)) saturate(170%);backdrop-filter:blur(var(--blur)) saturate(170%);
+  box-shadow:var(--shadow);animation:cardIn .7s cubic-bezier(.2,.9,.25,1) both;
+}
+.status-emoji{font-size:56px;display:block;margin-bottom:16px;animation:pop 2.4s ease-in-out infinite}
+.status-card h2{margin:0 0 10px;font-size:21px;font-weight:800;color:var(--text)}
+.status-card p{margin:0 0 22px;color:var(--text-soft);font-size:14.5px;line-height:1.8}
+.status-btn{
+  display:inline-block;padding:11px 26px;border-radius:999px;border:1px solid var(--glass-brd);
+  background:linear-gradient(135deg,var(--c1),var(--c2));color:#fff;font-weight:700;font-size:14px;
+  text-decoration:none;cursor:pointer;font-family:inherit;transition:transform .25s;
+}
+.status-btn:active{transform:scale(.95)}
+#toast{
+  position:fixed;left:50%;bottom:30px;transform:translate(-50%,20px);
+  background:rgba(20,22,40,.9);color:#fff;padding:12px 22px;border-radius:999px;
+  font-size:14px;font-weight:600;opacity:0;pointer-events:none;transition:.4s cubic-bezier(.2,.9,.25,1);
+  z-index:9999;border:1px solid rgba(255,255,255,.15);backdrop-filter:blur(10px);
+}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:420px){
+  .card{padding:24px 15px 18px}
+  h1.title{font-size:20px}
+  .top-logo,.top-logo-fallback{width:84px;height:84px}
+  #accounts.grid{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
+}
+</style>
 </head>
 <body>
-  <!-- شاشة التحميل -->
-  <div id="splash">
-    <div class="splash-logo" id="splashName">ALAA SALOON</div>
+<div id="bg"></div>
+<div class="blobs"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+<div id="loader">
+  <div class="loader-inner">
+    <div id="loaderLogoBox"></div>
     <div class="spinner"></div>
   </div>
-
-  <!-- شاشة الحالة (مخفية افتراضياً) -->
-  <div id="stateScreen">
-    <div class="state-icon" id="stateIcon">🛠️</div>
-    <div class="state-title">ALAA SALOON</div>
-    <div class="state-msg" id="stateMsg"></div>
+</div>
+<main id="app">
+  <div class="card">
+    <div id="topLogoBox"></div>
+    <h1 class="title" id="siteTitle">اسمك هنا</h1>
+    <p class="subtitle" id="siteSubtitle">تابعني على منصاتي</p>
+    <div id="accounts"></div>
   </div>
-
-  <div class="bg-blobs"><div class="blob blob-1"></div><div class="blob blob-2"></div></div>
-
-  <div class="container">
-    <header class="glass fade">
-      <div class="brand"><div class="logo" id="siteLogo">A</div><span id="siteBrand">ALAA SALOON</span></div>
-    </header>
-
-    <div class="hero fade" style="animation-delay: 0.1s">
-      <h1 id="siteTitle">احجز موعدك</h1>
-      <p id="siteSubtitle">اختر الخدمة والوقت المناسب</p>
-    </div>
-
-    <div class="section-title fade" style="animation-delay: 0.2s">💼 الخدمات المتاحة</div>
-    <div class="services-grid fade" id="servicesGrid" style="animation-delay: 0.2s"></div>
-
-    <div class="section-title fade" style="animation-delay: 0.3s">📝 تفاصيل الحجز (لليوم فقط)</div>
-    <form class="form-box glass fade" id="bookForm" onsubmit="submitBooking(event)" style="animation-delay: 0.3s">
-      <div class="today-badge" id="todayDisplay">جاري تحميل التاريخ...</div>
-
-      <div class="input-group">
-        <label>الاسم الكامل</label>
-        <input type="text" id="fName" required placeholder="الاسم الثلاثي">
-      </div>
-      <div class="input-group">
-        <label>رقم الهاتف</label>
-        <input type="tel" id="fPhone" required placeholder="05XXXXXXXX" dir="ltr">
-      </div>
-      <div class="input-group">
-        <label>الوقت المتاح</label>
-        <div class="slots" id="slotsGrid"><p style="color:var(--muted); font-size:13px; grid-column:1/-1;">جاري التحميل...</p></div>
-      </div>
-      <div class="input-group">
-        <label>ملاحظات (اختياري)</label>
-        <textarea id="fNote" rows="2" placeholder="أي تفاصيل إضافية..."></textarea>
-      </div>
-      <button type="submit" class="btn-submit">تأكيد الحجز</button>
-    </form>
+</main>
+<div id="statusScreen">
+  <div class="status-card">
+    <span class="status-emoji" id="statusEmoji">🔧</span>
+    <h2 id="statusTitle">الموقع قيد الصيانة</h2>
+    <p id="statusDesc">نعمل على تحسين الموقع، عد لنا قريباً.</p>
+    <button class="status-btn" onclick="location.reload()">تحديث الصفحة</button>
   </div>
-
-  <script>
-    const KEY = 'GOLDEN_SYSTEM_V5';
-    let DB = {};
-    let srvSelect = null;
-    let timeSelect = null;
-    const todayStr = new Date().toISOString().split('T')[0];
-
-    function loadData() {
-      const d = localStorage.getItem(KEY);
-      if(d) { DB = JSON.parse(d); }
-      else {
-        DB = {
-          site: { brand: 'ALAA SALOON', logoText: 'A', title: 'احجز موعدك', subtitle: 'اختر الخدمة والوقت المناسب', accent: '#e8b923', currency: '₪', webhook: '', adminPass: 'GOLDEN', maintenance: false, holiday: false, closed: false },
-          services: [{id:'s1', name:'قص شعر', price:50, duration:30, active:true}],
-          slots: ['09:00','10:00','11:00','12:00','16:00','17:00','18:00'],
-          closedDays: [5],
-          bookings: [], logs: []
-        };
-        localStorage.setItem(KEY, JSON.stringify(DB));
-      }
-      applyData();
-    }
-
-    function applyData() {
-      document.documentElement.style.setProperty('--accent', DB.site.accent);
-      document.getElementById('splashName').innerText = DB.site.brand;
-      document.getElementById('siteBrand').innerText = DB.site.brand;
-      document.getElementById('siteLogo').innerText = DB.site.logoText;
-      document.getElementById('siteTitle').innerText = DB.site.title;
-      document.getElementById('siteSubtitle').innerText = DB.site.subtitle;
-      
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const todayArabic = new Date().toLocaleDateString('ar-EG', options);
-      document.getElementById('todayDisplay').innerText = "📅 " + todayArabic;
-
-      // التحقق من حالة الموقع (صيانة / عطلة / مغلق)
-      const stateScreen = document.getElementById('stateScreen');
-      if (DB.site.maintenance) {
-        stateScreen.classList.add('active');
-        document.getElementById('stateIcon').innerText = '🛠️';
-        document.getElementById('stateMsg').innerText = 'الموقع تحت الصيانة حالياً... نعتذر عن الإزعاج، نراكم قريباً.';
-      } else if (DB.site.holiday) {
-        stateScreen.classList.add('active');
-        document.getElementById('stateIcon').innerText = '🏖️';
-        document.getElementById('stateMsg').innerText = 'اليوم عطلة رسمية... نتمنى لكم يوماً سعيداً، ونراكم غداً.';
-      } else if (DB.site.closed) {
-        stateScreen.classList.add('active');
-        document.getElementById('stateIcon').innerText = '🚫';
-        document.getElementById('stateMsg').innerText = 'المحل مغلق اليوم لظروف خاصة... نعتذر عن الإزعاج.';
-      } else {
-        stateScreen.classList.remove('active');
-      }
-
-      renderServices();
-      renderSlots();
-    }
-
-    function renderServices() {
-      const grid = document.getElementById('servicesGrid');
-      const active = DB.services.filter(s => s.active !== false);
-      if(active.length === 0) { grid.innerHTML = '<p style="color:var(--muted); grid-column: 1/-1; text-align:center;">لا توجد خدمات متاحة اليوم</p>'; return; }
-      
-      grid.innerHTML = active.map(s => `
-        <div class="srv-card glass" id="card-${s.id}" onclick="selectSrv('${s.id}')">
-          <h3>${s.name}</h3>
-          <div class="price">${s.price} ${DB.site.currency}</div>
-          <div class="time">${s.duration} دقيقة</div>
-        </div>
-      `).join('');
-    }
-
-    function selectSrv(id) {
-      srvSelect = id;
-      document.querySelectorAll('.srv-card').forEach(c => c.classList.remove('active'));
-      document.getElementById(`card-${id}`).classList.add('active');
-    }
-
-    function renderSlots() {
-      const grid = document.getElementById('slotsGrid');
-      timeSelect = null;
-      
-      const day = new Date(todayStr).getDay();
-      if(DB.closedDays.includes(day)) {
-        grid.innerHTML = '<p style="color:var(--danger); font-size:14px; grid-column:1/-1; font-weight:bold;">🚫 نعتذر، العيادة مغلقة اليوم. نراكم غداً!</p>'; 
-        return;
-      }
-
-      const taken = DB.bookings.filter(b => b.date === todayStr && b.status !== 'cancelled').map(b => b.time);
-      if(DB.slots.length === 0) {
-         grid.innerHTML = '<p style="color:var(--muted); font-size:14px; grid-column:1/-1;">لم يتم إضافة أوقات عمل بعد.</p>'; return;
-      }
-
-      grid.innerHTML = DB.slots.map(t => {
-        const isTaken = taken.includes(t);
-        return `<button type="button" class="slot" ${isTaken?'disabled':''} onclick="pickTime(this, '${t}')">${t}</button>`;
-      }).join('');
-    }
-
-    function pickTime(btn, t) {
-      document.querySelectorAll('.slot').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      timeSelect = t;
-    }
-
-    async function submitBooking(e) {
-      e.preventDefault();
-      if(!srvSelect) return alert('يرجى اختيار خدمة أولاً');
-      if(!timeSelect) return alert('يرجى اختيار وقت متاح');
-
-      const name = document.getElementById('fName').value;
-      const phone = document.getElementById('fPhone').value;
-      const note = document.getElementById('fNote').value;
-      const srv = DB.services.find(s => s.id === srvSelect);
-
-      const isDouble = DB.bookings.some(b => b.date === todayStr && b.time === timeSelect && b.status !== 'cancelled');
-      if(isDouble) { alert('عذراً، تم حجز هذا الوقت للتو!'); renderSlots(); return; }
-
-      const booking = {
-        id: 'b' + Date.now(), name, phone, date: todayStr, time: timeSelect, note,
-        serviceName: srv.name, price: srv.price, status: 'confirmed', createdAt: new Date().toISOString()
-      };
-
-      DB.bookings.push(booking);
-      if(!DB.logs) DB.logs = [];
-      DB.logs.unshift({ id: 'l'+Date.now(), text: `حجز جديد: ${name} - ${srv.name}`, date: new Date().toISOString() });
-      localStorage.setItem(KEY, JSON.stringify(DB));
-
-      if(DB.site.webhook) {
-        fetch(DB.site.webhook, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: 'ALAA SALOON',
-            embeds: [{ title: 'حجز جديد 🗓️', color: parseInt(DB.site.accent.replace('#',''), 16), fields: [
-              {name:'الاسم', value:name, inline:true}, {name:'الهاتف', value:phone, inline:true},
-              {name:'الخدمة', value:srv.name, inline:true}, {name:'الوقت', value:timeSelect, inline:true},
-              {name:'ملاحظات', value:note||'لا يوجد'}
-            ]}]
-          })
-        }).catch(e => console.log(e));
-      }
-
-      alert(`تم الحجز بنجاح يا ${name}! موعدك اليوم الساعة ${timeSelect}.`);
-      document.getElementById('bookForm').reset();
-      document.querySelectorAll('.srv-card').forEach(c => c.classList.remove('active'));
-      srvSelect = null; timeSelect = null;
-      renderSlots();
-    }
-
-    // مزامنة فورية إذا تم تغيير شيء في لوحة الإدارة
-    window.addEventListener('storage', (e) => {
-      if (e.key === KEY) {
-        DB = JSON.parse(e.newValue);
-        applyData();
-      }
-    });
-
-    window.onload = () => {
-      loadData();
-      setTimeout(() => {
-        document.getElementById('splash').classList.add('hidden');
-      }, 1200);
-    };
-  </script>
+</div>
+<button class="fab" id="themeBtn" title="تبديل الثيم" aria-label="تبديل الثيم">🌙</button>
+<button class="fab" id="shareBtn" title="مشاركة الموقع" aria-label="مشاركة">🔗</button>
+<div id="toast"></div>
+<script>
+const KEY = 'linkhub_settings_v1';
+const DEFAULT = {
+  siteTitle:'اسمك هنا',
+  siteSubtitle:'تابعني على منصاتي',
+  loadingLogo:'',
+  topLogo:'',
+  bgType:'gradient',
+  bg1:'#0b1030',
+  bg2:'#1b0f3a',
+  bg3:'#06202e',
+  bgImage:'',
+  color1:'#7c5cff',
+  color2:'#00d4ff',
+  color3:'#ff4d94',
+  btnShape:'soft',
+  layout:'list',
+  theme:'dark',
+  showThemeToggle:true,
+  showShare:true,
+  accounts:[
+    {id:1,name:'إنستغرام',url:'https://instagram.com/',icon:'instagram'},
+    {id:2,name:'واتساب',url:'https://wa.me/',icon:'whatsapp'},
+    {id:3,name:'تيك توك',url:'https://tiktok.com/',icon:'tiktok'},
+    {id:4,name:'يوتيوب',url:'https://youtube.com/',icon:'youtube'}
+  ],
+  status:'open',
+  password:'123'
+};
+const ICONS = {
+  facebook:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3.1h-3.1V7.9c0-.9.25-1.5 1.55-1.5h1.65V3.6c-.29-.04-1.28-.12-2.43-.12-2.4 0-4.05 1.47-4.05 4.16v2.32H7.5V13h2.72v8h3.28z"/></svg>',
+  instagram:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.3" cy="6.7" r="1.15" fill="currentColor" stroke="none"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 3h3.2l-7 8 8.2 10h-6.4l-5-6.1L4.7 21H1.5l7.5-8.6L1.1 3h6.6l4.5 5.6L17.5 3zm-1.1 16h1.8L7.7 4.8H5.8L16.4 19z"/></svg>',
+  tiktok:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>',
+  youtube:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.4-.43-5.03a2.6 2.6 0 0 0-1.84-1.85C19.1 4.7 12 4.7 12 4.7s-7.1 0-8.73.42A2.6 2.6 0 0 0 1.43 6.97C1 8.6 1 12 1 12s0 3.4.43 5.03a2.6 2.6 0 0 0 1.84 1.85C4.9 19.3 12 19.3 12 19.3s7.1 0 8.73-.42a2.6 2.6 0 0 0 1.84-1.85C23 15.4 23 12 23 12zM9.75 15.02V8.98L15.5 12l-5.75 3.02z"/></svg>',
+  whatsapp:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm0 18.15a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07s.89 2.4 1.01 2.56c.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29z"/></svg>',
+  telegram:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.94 4.3 18.9 19.1c-.23 1.02-.84 1.27-1.7.79l-4.7-3.47-2.27 2.19c-.25.25-.46.46-.94.46l.34-4.79 8.72-7.88c.38-.34-.08-.53-.59-.19L6.95 13.02l-724.63-1.45c-1-.-32-1.02-1 .21-1.48L20.5 2.5c.84-.31 1.57.2 1.44 1.8z"/></svg>',
+  snapchat:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.9 0 4.6 2 4.6 4.7 0 1-.1 1.9-.2 2.6.4.1.8.2 1.1.2.6 0 1.2-.3 1.5-.3.5 0 .9.4.9.9 0 .7-.9 1-1.9 1.4-.5.2-.7.5-.7.9 0 .7 1.4 2.6 3.4 3.1.5.1.7.4.7.8 0 .6-.9 1-2.1 1.2-.3.4-.3 1.1-.7 1.3-.3.2-.9.1-1.5 0-.6-.1-1.2-.2-1.9.1-.8.3-1.4 1-2.2 1.5-.6.4-1.1.5-1.9.5s-1.3-.1-1.9-.5c-.8-.5-1.4-1.2-2.2-1.5-.7-.3-1.3-.2-1.9-.1-.6.1-1.2.2-1.5 0-.4-.2-.4-.9-.7-1.3-1.2-.2-2.1-.6-2.1-1.2 0-.4.2-.7.7-.8 2-.5 3.4-2.4 3.4-3.1 0-.4-.2-.7-.7-.9-1-.4-1.9-.7-1.9-1.4 0-.5.4-.9.9-.9.3 0 .9.3 1.5.3.3 0 .7-.1 1.1-.2-.1-.7-.2-1.6-.2-2.6C7.4 4 9.1 2 12 2z"/></svg>',
+  linkedin:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5zM3 9h4v12H3V9zm7 0h3.8v1.7h.05c.53-1 1.83-2.05 3.76-2.05 4.02 0 4.76 2.65 4.76 6.1V21h-4v-5.4c0-1.3-.02-2.96-1.8-2.96-1.8 0-2.08 1.4-2.08 2.86V21h-4V9z"/></svg>',
+  github:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5A12 12 0 0 0 8.2 23.9c.6.1.8-.25.8-.57v-2.2c-3.34.4.04-1.42-4.04-1.42-.55-1.4-1.34-1.77-1.34-1.77-1.1-.75.08-.73.08-.73 1.21.08 1.85 1.24 1.85 1.24 1.08 1.84 2.83 1.31 3.52 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.17 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.65 1.65.24 2.87.12 3.17.77.84 1.23 1.9 1.23 3.22 0 4.61-2.8 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.68.82.57A12 12 0 0 0 12 .5z"/></svg>',
+  discord:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.3 4.4A19 19 0 0 0 15.5 3l-.25.5a17 17 0 0 0-6.5 0L8.5 3a19 19 0 0 0-4.8 1.4C.7 8.9-.1 13.3.3 17.6a19 19 0 0 0 5.8 3l.5-.8c-.5-.2-1-.4-1.4-.7l.3-.2a13.6 13.6 0 0 0 11.6 0l.3.2c-.4.3-.9.5-1.4.7l.5.8a19 19 0 0 0 5.8-3c.5-5-.8-9.4-3-13.2zM8.3 15c-1.1 0-2-1-2-2.3s.9-2.3 2-2.3 2 1 2 2.3-.9 2.3-2 2.3zm7.4 0c-1.1 0-2-1-2-2.3s.9-2.3 2-2.3 2 1 2 2.3-.9 2.3-2 2.3z"/></svg>',
+  email:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="5" width="19" height="14" rx="3"/><path d="m3.5 7 8.5 6 8.5-6"/></svg>',
+  website:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.6 3.8 9s-1.3 6.5-3.8 9c-2.5-2.5-3.8-5.6-3.8-9S9.5 5.5 12 3z"/></svg>'
+};
+const $ = s => document.querySelector(s);
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function escAttr(s){return esc(s)}
+function loadSettings(){
+  try{
+    const raw = localStorage.getItem(KEY);
+    if(!raw) return {...DEFAULT, accounts: DEFAULT.accounts.map(a=>({...a}))};
+    const p = JSON.parse(raw);
+    return {...DEFAULT, ...p, accounts: Array.isArray(p.accounts)? p.accounts : DEFAULT.accounts.map(a=>({...a}))};
+  }catch(e){ return {...DEFAULT, accounts: DEFAULT.accounts.map(a=>({...a}))}; }
+}
+function iconHTML(key, name){
+  if(!key) return esc((name||'?').trim().charAt(0) || '?');
+  if(/^(https?:|data:)/i.test(key)) return `<img src="${escAttr(key)}" alt="">`;
+  if(ICONS[key]) return ICONS[key];
+  return esc(String(key).slice(0,2));
+}
+const s = loadSettings();
+let themeOverride = localStorage.getItem('linkhub_theme_override');
+function applyAll(){
+  const root = document.documentElement;
+  root.style.setProperty('--c1', s.color1);
+  root.style.setProperty('--c2', s.color2);
+  root.style.setProperty('--c3', s.color3);
+  const theme = themeOverride || s.theme || 'dark';
+  document.body.classList.toggle('light', theme === 'light');
+  $('#themeBtn').textContent = theme === 'light' ? '☀️' : '🌙';
+  const bg = $('#bg');
+  if(s.bgType === 'image' && s.bgImage){
+    bg.style.backgroundImage = `url("${s.bgImage}")`;
+    bg.style.backgroundSize = 'cover';
+    bg.style.backgroundPosition = 'center';
+    bg.style.backgroundRepeat = 'no-repeat';
+  }else{
+    bg.style.backgroundImage = 'none';
+    bg.style.background = `radial-gradient(circle at 20% 10%, ${s.bg1}, transparent 55%), radial-gradient(circle at 85% 90%, ${s.bg3}, transparent 55%), linear-gradient(160deg, ${s.bg1}, ${s.bg2})`;
+  }
+  const shapes = {pill:'999px', soft:'18px', square:'6px', glass:'26px'};
+  root.style.setProperty('--btn-radius', shapes[s.btnShape] || '18px');
+  $('#topLogoBox').innerHTML = s.topLogo
+    ? `<img class="top-logo" src="${escAttr(s.topLogo)}" alt="logo">`
+    : `<div class="top-logo-fallback">${esc((s.siteTitle||'?').trim().charAt(0))}</div>`;
+  $('#siteTitle').textContent = s.siteTitle || '';
+  $('#siteSubtitle').textContent = s.siteSubtitle || '';
+  document.title = s.siteTitle || 'روابطي';
+  const accEl = $('#accounts');
+  accEl.className = s.layout === 'grid' ? 'grid' : '';
+  accEl.innerHTML = (s.accounts||[]).map((a,i)=>`
+    <a class="account" href="${escAttr(a.url||'#')}" target="_blank" rel="noopener noreferrer"
+       style="animation-delay:${Math.min(i*70,700)}ms">
+      <span class="ico">${iconHTML(a.icon, a.name)}</span>
+      <span class="txt">${esc(a.name||'رابط')}</span>
+      <span class="arrow">↗</span>
+    </a>`).join('');
+  $('#themeBtn').style.display = s.showThemeToggle === false ? 'none' : 'grid';
+  $('#shareBtn').style.display = s.showShare === false ? 'none' : 'grid';
+  applyStatus();
+}
+function applyStatus(){
+  const map = {
+    maintenance:{emoji:'🔧', title:'الموقع قيد الصيانة', desc:'نعمل حالياً على تحسين الموقع، الرجاء العودة لاحقاً.'},
+    closed:{emoji:'🌙', title:'مغلق اليوم', desc:'نأخذ استراحة اليوم، نراك غداً بإذن الله.'},
+    updating:{emoji:'⚙️', title:'البرنامج قيد التحديث', desc:'نقوم بترقية النظام حالياً، تابعنا قريباً.'}
+  };
+  const st = s.status || 'open';
+  if(st !== 'open' && map[st]){
+    $('#statusEmoji').textContent = map[st].emoji;
+    $('#statusTitle').textContent = map[st].title;
+    $('#statusDesc').textContent = map[st].desc;
+    $('#statusScreen').classList.add('show');
+  }else{
+    $('#statusScreen').classList.remove('show');
+  }
+}
+function renderLoaderLogo(){
+  $('#loaderLogoBox').innerHTML = s.loadingLogo
+    ? `<img class="loader-logo" src="${escAttr(s.loadingLogo)}" alt="loading">`
+    : `<div class="loader-fallback">${esc((s.siteTitle||'?').trim().charAt(0))}</div>`;
+}
+function hideLoader(){ $('#loader').classList.add('hide'); }
+function toast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(()=>t.classList.remove('show'), 2200);
+}
+$('#themeBtn').addEventListener('click', ()=>{
+  const cur = themeOverride || s.theme || 'dark';
+  const next = cur === 'light' ? 'dark' : 'light';
+  themeOverride = next;
+  localStorage.setItem('linkhub_theme_override', next);
+  applyAll();
+});
+$('#shareBtn').addEventListener('click', async ()=>{
+  const data = {title: s.siteTitle, text: s.siteSubtitle, url: location.href};
+  try{
+    if(navigator.share){ await navigator.share(data); }
+    else if(navigator.clipboard){ await navigator.clipboard.writeText(location.href); toast('تم نسخ الرابط'); }
+  }catch(e){}
+});
+renderLoaderLogo();
+applyAll();
+const t0 = Date.now();
+const start = ()=>{
+  const wait = Math.max(0, 1700 - (Date.now()-t0));
+  setTimeout(hideLoader, wait);
+};
+if(document.readyState === 'complete') start();
+else window.addEventListener('load', start);
+setTimeout(hideLoader, 4000);
+window.addEventListener('storage', e=>{
+  if(e.key === KEY || e.key === 'linkhub_theme_override') location.reload();
+});
+</script>
 </body>
 </html>
