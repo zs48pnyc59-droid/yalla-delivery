@@ -151,6 +151,10 @@ function loadNotifications(id){
 }
 
 function render(){
+  // جلب أحدث بيانات الزبون من التخزين لتحديث الأختام فوراً عند تعديل المشرفة
+  const customers = JSON.parse(localStorage.getItem("salon_customers") || "{}");
+  if(customers[me.id]) me = customers[me.id];
+
   const g = +S.goal || 5, n = Math.min(me.stamps || 0, g);
   $("who").textContent = "أهلاً " + me.name;
   $("sub").textContent = n >= g ? "بطاقتك مكتملة! 🎉 مكافأتك: "+S.reward : `باقي ${g-n} ختم للحصول على: ${S.reward}`;
@@ -173,6 +177,14 @@ $("req").onclick = () => {
   toast("وصل طلبك للصالون ✨");
   $("req").classList.add("hide");
 };
+
+// تحديث تلقائي للصفحة كل ثانيتين لمزامنة الأختام مع المشرفة
+setInterval(() => {
+  if(savedCur) {
+    const customers = JSON.parse(localStorage.getItem("salon_customers") || "{}");
+    if(customers[savedCur]) { render(); loadNotifications(savedCur); }
+  }
+}, 2000);
 </script>
 </body>
 </html>
