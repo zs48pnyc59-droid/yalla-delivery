@@ -5,65 +5,174 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>ALAA SALON</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Playfair+Display:wght@600;800&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <style>
 :root{--a:#d9a38f;--bg:#1b1218;--tx:#f7e9e4;--r:22px}
 *{box-sizing:border-box}.hide{display:none!important}
-body{margin:0;min-height:100vh;color:var(--tx);font-family:Cairo,Tahoma,sans-serif;background:var(--bg);padding:20px}
+body{margin:0;min-height:100vh;color:var(--tx);font-family:Cairo,Tahoma,sans-serif;background:var(--bg);
+background-image:radial-gradient(circle at 15% 0,color-mix(in srgb,var(--a) 25%,transparent),transparent 50%),radial-gradient(circle at 90% 100%,color-mix(in srgb,var(--a) 15%,transparent),transparent 45%);
+padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
 main{max-width:440px;margin:0 auto;padding:18px}
-.card{border-radius:var(--r);background:#221721;border:1px solid #d9a38f40;padding:20px;margin-bottom:14px}
-h2{margin:0 0 10px;font-size:22px;font-weight:800}.mut{opacity:.7;font-size:14px}
-input{width:100%;padding:13px;border-radius:14px;border:1px solid #d9a38f40;background:#0003;color:var(--tx);margin-top:10px;font-size:16px;text-align:center}
-.btn{width:100%;margin-top:12px;border:0;border-radius:14px;padding:13px;font:800 16px Cairo;color:var(--bg);background:var(--a);cursor:pointer}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Playfair Display",serif;font-weight:800;font-size:22px;letter-spacing:.18em;direction:ltr}
+.brand img{height:38px;border-radius:50%}.brand small{display:block;font-size:10px;letter-spacing:.5em;color:var(--a);font-weight:600}
+.card{border-radius:var(--r);background:color-mix(in srgb,var(--tx) 7%,transparent);border:1px solid color-mix(in srgb,var(--a) 40%,transparent);backdrop-filter:blur(14px);padding:20px;transition:transform .15s;margin-bottom:14px}
+.hero{height:140px;border-radius:var(--r);background:center/cover;margin-bottom:14px;box-shadow:inset 0 -60px 60px -20px var(--bg)}
+h2{margin:0 0 4px;font-size:22px;font-weight:800}.mut{opacity:.7;font-size:14px;margin:0}
+input{width:100%;font:inherit;padding:13px 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--a) 40%,transparent);background:#0003;color:var(--tx);margin:10px 0 0;font-size:16px}
+.btn{width:100%;margin-top:12px;border:0;border-radius:14px;padding:13px;font:800 16px Cairo;color:var(--bg);background:linear-gradient(135deg,#fff8,var(--a) 60%);cursor:pointer}
+.btn.g{background:none;color:var(--tx);border:1px solid color-mix(in srgb,var(--a) 50%,transparent)}
 .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:16px 0}
-.s{aspect-ratio:1;border-radius:50%;border:1.5px dashed #d9a38f55;display:grid;place-items:center}
-.s.on{border-style:solid;background:var(--a);color:var(--bg);font-weight:bold}
+.s{aspect-ratio:1;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--a) 55%,transparent);display:grid;place-items:center}
+.s b{font:800 20px "Playfair Display",serif;color:var(--bg);transform:scale(0)}
+.s.on{border-style:solid;background:radial-gradient(circle at 30% 25%,#fffa,var(--a))}.s.on b{transform:scale(1)}
+.s.new{animation:st .8s cubic-bezier(.2,1.5,.4,1)}
+@keyframes st{0%{transform:scale(2.4) rotate(-30deg);opacity:0}100%{transform:none;opacity:1}}
+.bar{height:6px;border-radius:9px;background:#fff2;overflow:hidden}.bar i{display:block;height:100%;background:var(--a);transition:width .8s}
+.qr{background:#fff;border-radius:16px;padding:12px;width:190px;margin:12px auto 6px}.qr svg{width:100%;height:auto;display:block}
+.id{text-align:center;letter-spacing:.3em;font-weight:800;direction:ltr;color:var(--a)}
+.bell{position:relative;background:none;border:1px solid color-mix(in srgb,var(--a) 50%,transparent);color:var(--tx);border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer}
+.bell em{position:absolute;top:-4px;left:-4px;background:#e5484d;color:#fff;font:700 11px Cairo;border-radius:9px;padding:1px 6px;font-style:normal}
+.n{padding:10px 0;border-top:1px solid #fff2;font-size:14px}.n small{display:block;opacity:.55}
+.log div{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid #fff2;font-size:14px}
+#toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0));left:50%;transform:translate(-50%,-120px);background:var(--a);color:var(--bg);font-weight:800;padding:12px 18px;border-radius:99px;transition:transform .5s;z-index:9;max-width:90%}
+#toast.on{transform:translate(-50%,0)}
+#mt{position:fixed;inset:0;z-index:10;background:var(--bg);display:grid;place-items:center;text-align:center;padding:30px}
+#mt .gear{font-size:60px;display:inline-block;animation:sp 6s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.cf{position:fixed;top:-20px;width:9px;height:14px;z-index:9;animation:fall 2.6s ease-in forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.8}}
+.err{color:#ff8a8a;font-size:14px;margin-top:8px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+<div id="mt" class="hide"><div><div class="gear">⚙</div><h2 style="margin-top:14px" id="mtt"></h2><p class="mut">ALAA SALON</p></div></div>
+<div id="toast"></div>
 <main>
- <div class="card" id="loginCard">
-  <h2>ALAA SALON</h2>
-  <p class="mut">أدخل اسمك أو رقم بطاقتك للدخول:</p>
-  <input id="username" placeholder="اسم العميل">
-  <button class="btn" id="loginBtn">دخول</button>
- </div>
+ <div class="top"><div class="brand" id="brand"></div><button class="bell hide" id="bell">🔔<em id="bc" class="hide">0</em></button></div>
+ <div class="hero hide" id="hero"></div>
 
- <div class="card hide" id="appCard">
-  <h2 id="welcomeUser">أهلاً بك</h2>
-  <p class="mut">أختام الولاء الخاصة بك:</p>
-  <div class="grid" id="stampsGrid">
-   <div class="s">1</div><div class="s">2</div><div class="s">3</div><div class="s">4</div><div class="s">5</div>
+ <section id="login" class="card">
+  <h2 id="wel">أهلاً بك في عالم الجمال</h2><p class="mut">سجّل دخولك برقم بطاقتك والرمز السري اللي أعطاك إياه الصالون.</p>
+  <input id="id" placeholder="رقم البطاقة" autocomplete="off" style="text-transform:uppercase;direction:ltr;text-align:center;letter-spacing:.2em">
+  <input id="pin" placeholder="الرمز السري" inputmode="numeric" type="password" style="direction:ltr;text-align:center;letter-spacing:.4em">
+  <div class="err" id="err"></div>
+  <button class="btn" id="go">دخول</button>
+ </section>
+
+ <section id="app" class="hide">
+  <div class="card hide" id="nl"><h2 style="font-size:18px">الإشعارات</h2><div id="nlist"></div></div>
+  <div class="card" id="loy">
+   <h2 id="who"></h2><p class="mut" id="sub"></p>
+   <div class="grid" id="st"></div>
+   <div class="bar"><i id="pr"></i></div>
+   <button class="btn hide" id="req">🎁 اطلب مكافأتي</button>
+   <div class="qr" id="qr"></div><div class="id" id="cid"></div>
+   <p class="mut" style="text-align:center;margin-top:8px">اعرض الرمز للموظفة لإضافة ختم</p>
   </div>
-  <button class="btn" id="logoutBtn" style="background:#444;color:#fff;margin-top:20px">خروج</button>
- </div>
+  <div class="card log"><h2 style="font-size:18px">آخر العمليات</h2><div id="log"></div></div>
+  <button class="btn g" id="out">تسجيل خروج</button>
+ </section>
 </main>
 
 <script>
-const $ = id => document.getElementById(id);
-$("loginBtn").onclick = () => {
-  const name = $("username").value.trim();
-  if(!name) return alert("اكتب الاسم من فضلك");
-  localStorage.setItem("salon_user", name);
-  loadApp(name);
-};
-$("logoutBtn").onclick = () => {
-  localStorage.removeItem("salon_user");
-  $("appCard").classList.add("hide");
-  $("loginCard").classList.remove("hide");
-};
-function loadApp(name){
-  $("loginCard").classList.add("hide");
-  $("appCard").classList.remove("hide");
-  $("welcomeUser").textContent = "أهلاً بك، " + name;
-  let stamps = +(localStorage.getItem("stamps_" + name) || 0);
-  const grid = $("stampsGrid").children;
-  for(let i=0; i<grid.length; i++){
-    if(i < stamps) grid[i].classList.add("on");
-    else grid[i].classList.remove("on");
-  }
+const $ = i => document.getElementById(i);
+let S = JSON.parse(localStorage.getItem("salon_settings")) || {name:"ALAA SALON",accent:"#d9a38f",bg:"#1b1218",text:"#f7e9e4",radius:22,goal:5,reward:"خدمة مجانية",welcome:"أهلاً بك في عالم الجمال",maintenance:false,maintMsg:"الموقع قيد الصيانة، نعود قريبًا.",logo:"",hero:""};
+let me = null;
+
+function applySettings(){
+  const r = document.documentElement.style;
+  r.setProperty("--a", S.accent);
+  r.setProperty("--bg", S.bg);
+  r.setProperty("--tx", S.text);
+  r.setProperty("--r", S.radius + "px");
+  $("brand").innerHTML = (S.logo?`<img src="${S.logo}">`:"") + `<div>${esc(S.name.split(" ")[0])}<small>${esc(S.name.split(" ").slice(1).join(" "))}</small></div>`;
+  $("hero").style.backgroundImage = S.hero ? `url(${S.hero})` : "";
+  $("hero").classList.toggle("hide", !S.hero);
+  $("wel").textContent = S.welcome;
+  $("mtt").textContent = S.maintMsg;
+  $("mt").classList.toggle("hide", !S.maintenance);
+  document.title = S.name;
 }
-const savedUser = localStorage.getItem("salon_user");
-if(savedUser) loadApp(savedUser);
+applySettings();
+
+const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),3500)}
+function confetti(){for(let i=0;i<40;i++){const s=document.createElement("span");s.className="cf";s.style.cssText=`left:${Math.random()*100}%;background:${["#fff",S.accent,"#ffd27a"][i%3]};animation-delay:${Math.random()*.6}s`;document.body.appendChild(s);setTimeout(()=>s.remove(),3500)}}
+
+$("go").onclick = () => {
+  const cid = $("id").value.trim().toUpperCase();
+  const pin = $("pin").value.trim();
+  $("err").textContent = "";
+  const customers = JSON.parse(localStorage.getItem("salon_customers") || "{}");
+  const c = customers[cid];
+  if(!c || c.pin !== pin){
+    $("err").textContent = "رقم البطاقة أو الرمز غير صحيح";
+    return;
+  }
+  localStorage.setItem("salon_current_customer", cid);
+  start(cid);
+};
+
+$("out").onclick = () => {
+  localStorage.removeItem("salon_current_customer");
+  location.reload();
+};
+
+const savedCur = localStorage.getItem("salon_current_customer");
+if(savedCur) start(savedCur);
+
+function start(id){
+  const customers = JSON.parse(localStorage.getItem("salon_customers") || "{}");
+  me = customers[id];
+  if(!me){ localStorage.removeItem("salon_current_customer"); return location.reload(); }
+  $("login").classList.add("hide");
+  $("app").classList.remove("hide");
+  $("bell").classList.remove("hide");
+  render();
+  loadNotifications(id);
+}
+
+function loadNotifications(id){
+  const notifs = JSON.parse(localStorage.getItem("salon_notifications") || "[]").filter(n => n.to === "all" || n.to === id);
+  const seen = +localStorage.getItem("seen_"+id) || 0;
+  $("nlist").innerHTML = notifs.map(n=>`<div class="n">${esc(n.text)}<small>${new Date(n.ts).toLocaleString("ar")}</small></div>`).join("") || '<p class="mut">لا توجد إشعارات</p>';
+  const unread = notifs.filter(x=>x.ts>seen).length;
+  $("bc").textContent = unread;
+  $("bc").classList.toggle("hide", !unread);
+  
+  $("bell").onclick = () => {
+    $("nl").classList.toggle("hide");
+    if(!$("nl").classList.contains("hide")){
+      localStorage.setItem("seen_"+id, Date.now());
+      $("bc").classList.add("hide");
+    }
+  };
+}
+
+function render(){
+  const g = +S.goal || 5, n = Math.min(me.stamps || 0, g);
+  $("who").textContent = "أهلاً " + me.name;
+  $("sub").textContent = n >= g ? "بطاقتك مكتملة! 🎉 مكافأتك: "+S.reward : `باقي ${g-n} ختم للحصول على: ${S.reward}`;
+  $("st").style.gridTemplateColumns = `repeat(${g>5?5:g},1fr)`;
+  $("st").innerHTML = Array.from({length:g},(_,i)=>`<div class="s${i<n?" on":""}"><b>✓</b></div>`).join("");
+  $("pr").style.width = (n/g*100) + "%";
+  $("req").classList.toggle("hide", n < g);
+  
+  const q = qrcode(0,"M"); q.addData(me.id); q.make();
+  $("qr").innerHTML = q.createSvgTag(4,0);
+  $("cid").textContent = me.id;
+  
+  $("log").innerHTML = (me.log || []).slice(-6).reverse().map(l=>`<div><span>${esc(l.x)}</span><span class="mut">${new Date(l.t).toLocaleDateString("ar")}</span></div>`).join("") || '<p class="mut">لا توجد عمليات بعد</p>';
+}
+
+$("req").onclick = () => {
+  const alerts = JSON.parse(localStorage.getItem("salon_alerts") || "[]");
+  alerts.push({id: Date.now(), text: `${me.name} (${me.id}) جاهز لاستلام: ${S.reward}`, ts: Date.now()});
+  localStorage.setItem("salon_alerts", JSON.stringify(alerts));
+  toast("وصل طلبك للصالون ✨");
+  $("req").classList.add("hide");
+};
 </script>
 </body>
 </html>
