@@ -3,154 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>لوحة تحكم ALAA SALON</title>
+<title>لوحة الإدارة - ALAA SALON</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 <style>
 :root{--a:#d9a38f;--b:#14101a;--p:#1f1927;--t:#f1e9ee}
 *{box-sizing:border-box}.hide{display:none!important}
-body{margin:0;background:var(--b);color:var(--t);font-family:Cairo,Tahoma,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
-main{max-width:760px;margin:0 auto;padding:14px}
+body{margin:0;background:var(--b);color:var(--t);font-family:Cairo,sans-serif;padding:20px}
+main{max-width:500px;margin:0 auto}
 .bx{background:var(--p);border:1px solid #fff1;border-radius:16px;padding:16px;margin-bottom:12px}
-h2,h3{margin:0 0 10px}h3{font-size:16px}.mut{opacity:.6;font-size:13px}
-input,select,textarea{width:100%;font:inherit;padding:11px;border-radius:11px;border:1px solid #fff2;background:#0004;color:var(--t);margin-top:8px}
-input[type=color]{padding:2px;height:42px}input[type=checkbox]{width:auto;margin:0 0 0 8px}
-button{font:700 14px Cairo;border:0;border-radius:10px;padding:10px 14px;background:var(--a);color:#1a1214;cursor:pointer}
-button.g{background:#fff1;color:var(--t)}button.d{background:#e5484d;color:#fff}button.w{width:100%;margin-top:10px}
-.hd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px}.tabs button{background:#fff1;color:var(--t);white-space:nowrap}.tabs button.on{background:var(--a);color:#1a1214}
-.row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-top:1px solid #fff1;flex-wrap:wrap}
-.row .ac{display:flex;gap:5px;flex-wrap:wrap}.row .ac button{padding:7px 10px}
-.pill{background:#fff1;border-radius:99px;padding:3px 10px;font-weight:700;font-size:13px}.pill.ok{background:#2fb35a;color:#fff}
-.cred{background:#0006;border:1px dashed var(--a);border-radius:12px;padding:12px;margin-top:10px;direction:ltr;text-align:center;font-size:18px;letter-spacing:.15em}
-.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:13px;opacity:.85;display:block}
-video{width:100%;border-radius:14px;aspect-ratio:1;object-fit:cover;background:#000;margin-top:10px}
-#tt{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0));left:50%;transform:translate(-50%,100px);background:var(--a);color:#1a1214;font-weight:800;padding:11px 18px;border-radius:99px;transition:transform .4s;z-index:9}#tt.on{transform:translate(-50%,0)}
+input{width:100%;padding:11px;border-radius:11px;border:1px solid #fff2;background:#0004;color:var(--t);margin-top:8px}
+button{font:700 14px Cairo;border:0;border-radius:10px;padding:10px 14px;background:var(--a);color:#1a1214;cursor:pointer;width:100%;margin-top:10px}
 </style>
 </head>
 <body>
-<div id="tt"></div>
 <main>
-<section id="lg" class="bx" style="margin-top:12vh"><h2>ALAA SALON — دخول الإدارة</h2>
- <input id="em" type="email" placeholder="البريد الإلكتروني" style="direction:ltr"><input id="pw" type="password" placeholder="كلمة المرور" style="direction:ltr">
- <p class="mut" id="le"></p><button class="w" id="li">دخول</button></section>
+<section id="loginSec" class="bx">
+ <h2>تسجيل دخول المشرفة</h2>
+ <p style="font-size:12px;opacity:0.7">كلمة المرور الافتراضية هي: <b>12345</b></p>
+ <input id="adminPass" type="password" placeholder="كلمة المرور">
+ <button id="adminLogin">دخول</button>
+</section>
 
-<section id="app" class="hide">
- <div class="hd"><h2 id="ttl">لوحة التحكم</h2><div><span class="pill" id="al">0 تنبيه</span> <button id="mt" class="g">الصيانة: —</button> <button class="g" id="lo">خروج</button></div></div>
- <div class="tabs" id="tabs"><button data-t="c" class="on">العملاء</button><button data-t="s">مسح QR</button><button data-t="n">الإشعارات</button><button data-t="e">التخصيص</button><button data-t="r">إعادة ضبط</button></div>
-
- <div data-p="c">
-  <div class="bx"><h3>إنشاء حساب عميل جديد</h3><div class="f2"><input id="nn" placeholder="اسم العميل"><input id="np" placeholder="رقم الهاتف (مع رمز الدولة)" inputmode="tel" style="direction:ltr"></div>
-   <button class="w" id="mk">إنشاء الحساب</button><div id="cr"></div></div>
-  <div class="bx"><div class="hd"><h3>الحسابات (<span id="cn">0</span>)</h3><input id="q" placeholder="بحث بالاسم أو الرقم" style="max-width:220px;margin:0"></div><div id="cl"></div></div>
- </div>
-
- <div data-p="s" class="hide"><div class="bx"><h3>مسح بطاقة عميل</h3><video id="cam" playsinline muted class="hide"></video><button class="w" id="sc">تشغيل الكاميرا</button>
-  <input id="mc" placeholder="أو اكتب رقم البطاقة" style="direction:ltr;text-transform:uppercase"><button class="w g" id="ma">إضافة ختم</button></div></div>
-
- <div data-p="n" class="hide">
-  <div class="bx"><h3>إرسال إشعار</h3><select id="nt"></select><textarea id="nx" rows="3" placeholder="نص الإشعار"></textarea><button class="w" id="ns">إرسال</button></div>
-  <div class="bx"><div class="hd"><h3>تنبيهات من العملاء</h3><button class="g" id="ac">مسح الكل</button></div><div id="alist"></div></div>
- </div>
-
- <div data-p="e" class="hide"><div class="bx"><h3>الموقع</h3><div class="f2">
-  <label>اسم الصالون<input data-k="name"></label><label>رسالة الترحيب<input data-k="welcome"></label>
-  <label>لون التمييز<input type="color" data-k="accent"></label><label>لون الخلفية<input type="color" data-k="bg"></label>
-  <label>لون النص<input type="color" data-k="text"></label><label>استدارة الحواف (px)<input type="number" data-k="radius" min="0" max="40"></label>
-  <label>عدد الأختام للمكافأة<input type="number" data-k="goal" min="2" max="10"></label><label>المكافأة<input data-k="reward"></label>
-  <label>الشعار<input type="file" accept="image/*" data-img="logo"></label><label>صورة الغلاف<input type="file" accept="image/*" data-img="hero"></label></div>
-  <label style="margin-top:12px"><input type="checkbox" data-k="maintenance">وضع الصيانة</label><label>رسالة الصيانة<input data-k="maintMsg"></label>
-  <h3 style="margin-top:16px">لوحة التحكم</h3><div class="f2"><label>لون التمييز<input type="color" data-k="aAccent"></label><label>لون الخلفية<input type="color" data-k="aBg"></label></div>
-  <button class="w" id="sv">حفظ التغييرات</button></div></div>
-
- <div data-p="r" class="hide"><div class="bx"><h3>إعادة ضبط</h3><p class="mut">كل زر يطلب تأكيدًا قبل التنفيذ.</p>
-  <button class="w g" data-r="stamps">تصفير أختام كل العملاء</button><button class="w g" data-r="nots">حذف كل الإشعارات</button>
-  <button class="w g" data-r="set">إرجاع إعدادات الموقع للافتراضي</button><button class="w d" data-r="cust">حذف كل الحسابات</button></div></div>
+<section id="controlSec" class="bx hide">
+ <h2>لوحة التحكم</h2>
+ <p>أدخل اسم العميل لإضافة ختم له:</p>
+ <input id="clientName" placeholder="اسم العميل">
+ <button id="addStampBtn">إضافة ختم (+1)</button>
+ <button id="adminLogout" style="background:#444;color:#fff;margin-top:20px">تسجيل خروج</button>
 </section>
 </main>
 
-<script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,doc,setDoc,updateDoc,deleteDoc,collection,onSnapshot,addDoc,getDocs,writeBatch,increment,arrayUnion} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-/* ===== إعدادات مشروعك على فايربيس (salonn-bdf1b) ===== */
-const CFG={apiKey:"AIzaSy...",authDomain:"salonn-bdf1b.firebaseapp.com",projectId:"salonn-bdf1b",appId:"1:..."};
-const app=initializeApp(CFG),db=getFirestore(app),au=getAuth(app),$=i=>document.getElementById(i);
-let S={goal:5,reward:"خدمة مجانية",name:"ALAA SALON"},C={},ran=0,stream=null,raf=null,lastC="",lastT=0;
-const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-const H=async s=>[...new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)))].map(x=>x.toString(16).padStart(2,"0")).join("");
-const T=t=>{const e=$("tt");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),2500)};
-const ok=m=>confirm(m+"\nهل أنت متأكد؟");
-const notify=(to,text)=>addDoc(collection(db,"notifications"),{to,text,ts:Date.now()});
-
-$("li").onclick=()=>signInWithEmailAndPassword(au,$("em").value,$("pw").value).catch(()=>$("le").textContent="بيانات الدخول غير صحيحة");
-$("lo").onclick=()=>signOut(au);
-onAuthStateChanged(au,u=>{$("lg").classList.toggle("hide",!!u);$("app").classList.toggle("hide",!u);if(u&&!ran){ran=1;init()}});
-$("tabs").onclick=e=>{const t=e.target.dataset.t;if(!t)return;document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b==e.target));document.querySelectorAll("[data-p]").forEach(p=>p.classList.toggle("hide",p.dataset.p!=t));if(t!="s")stopCam()};
-
-function init(){
- onSnapshot(doc(db,"settings","site"),s=>{S={goal:5,reward:"خدمة مجانية",name:"ALAA SALON",...(s.data()||{})};const r=document.documentElement.style;
-  r.setProperty("--a",S.aAccent||"#d9a38f");r.setProperty("--b",S.aBg||"#14101a");$("ttl").textContent="لوحة "+S.name;
-  $("mt").textContent="الصيانة: "+(S.maintenance?"مفعّلة":"متوقفة");
-  document.querySelectorAll("[data-k]").forEach(i=>{if(document.activeElement===i)return;const v=S[i.dataset.k];if(i.type=="checkbox")i.checked=!!v;else if(v!==undefined)i.value=v});renderC()});
- onSnapshot(collection(db,"customers"),s=>{C={};s.forEach(d=>C[d.id]={id:d.id,...d.data()});renderC();
-  $("nt").innerHTML='<option value="all">كل العملاء</option>'+Object.values(C).map(c=>`<option value="${c.id}">${esc(c.name)} (${c.id})</option>`).join("")});
- onSnapshot(collection(db,"alerts"),s=>{const L=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>b.ts-a.ts);$("al").textContent=L.length+" تنبيه";
-  $("alist").innerHTML=L.map(a=>`<div class="row"><span>${esc(a.text)}<br><span class="mut">${new Date(a.ts).toLocaleString("ar")}</span></span><button class="g" data-da="${a.id}">تم</button></div>`).join("")||'<p class="mut">لا توجد تنبيهات</p>'});
-}
-$("mt").onclick=()=>setDoc(doc(db,"settings","site"),{maintenance:!S.maintenance},{merge:true});
-
-/* العملاء */
-$("mk").onclick=async()=>{const name=$("nn").value.trim(),phone=$("np").value.trim();if(!name)return T("اكتب الاسم");
- const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let id="";for(let i=0;i<6;i++)id+=A[Math.floor(Math.random()*A.length)];
- const pin=String(Math.floor(1000+Math.random()*9000));
- await setDoc(doc(db,"customers",id),{name,phone,ph:await H(id+pin),stamps:0,rewards:0,log:[],created:Date.now()});
- await notify(id,`أهلاً ${name}! تم إنشاء بطاقة الولاء الخاصة بك 🎉`);
- const msg=`أهلاً ${name}، بطاقة ولاء ${S.name}\nرقم البطاقة: ${id}\nالرمز السري: ${pin}`;
- $("cr").innerHTML=`<div class="cred">${id} · ${pin}</div><p class="mut">احفظ الرمز الآن، لن يظهر مرة ثانية.</p>${phone?`<a href="https://wa.me/${phone.replace(/\D/g,"")}?text=${encodeURIComponent(msg)}" target="_blank"><button class="w g">إرسال عبر واتساب</button></a>`:""}`;
- $("nn").value=$("np").value=""};
-function renderC(){const q=$("q").value.trim().toLowerCase(),g=+S.goal||5,L=Object.values(C).filter(c=>!q||(c.name+c.id).toLowerCase().includes(q)).sort((a,b)=>b.created-a.created);
- $("cn").textContent=Object.keys(C).length;
- $("cl").innerHTML=L.map(c=>`<div class="row"><div><b>${esc(c.name)}</b> <span class="mut" style="direction:ltr;display:inline-block">${c.id}</span><br><span class="pill${c.stamps>=g?" ok":""}">${c.stamps}/${g}</span> <span class="mut">مكافآت: ${c.rewards||0}</span></div>
- <div class="ac">${c.stamps>=g?`<button data-a="rd" data-id="${c.id}">تسليم المكافأة</button>`:`<button data-a="+" data-id="${c.id}">+1</button>`}<button class="g" data-a="-" data-id="${c.id}">−1</button><button class="g" data-a="0" data-id="${c.id}">تصفير</button><button class="d" data-a="x" data-id="${c.id}">حذف</button></div></div>`).join("")||'<p class="mut">لا توجد حسابات</p>'}
-$("q").oninput=renderC;
-async function stamp(id){const c=C[id];if(!c)return T("البطاقة غير موجودة");const g=+S.goal||5;if(c.stamps>=g)return T("البطاقة مكتملة، سلّم المكافأة");
- await updateDoc(doc(db,"customers",id),{stamps:increment(1),log:arrayUnion({t:Date.now(),x:"ختم جديد"})});
- const n=c.stamps+1;await notify(id,n>=g?`🎉 اكتملت بطاقتك! مكافأتك: ${S.reward}`:`✨ تمت إضافة ختم. بقي ${g-n} للمكافأة`);T(`${c.name}: ${n}/${g}`)}
-document.addEventListener("click",async e=>{const b=e.target,id=b.dataset.id,a=b.dataset.a,r=doc(db,"customers",id||"x");
- if(b.dataset.da)return deleteDoc(doc(db,"alerts",b.dataset.da));
- if(a=="+")stamp(id);
- if(a=="-"&&C[id].stamps>0)updateDoc(r,{stamps:increment(-1),log:arrayUnion({t:Date.now(),x:"تعديل: -1"})});
- if(a=="0"&&ok("تصفير أختام "+C[id].name))updateDoc(r,{stamps:0,log:arrayUnion({t:Date.now(),x:"تصفير"})});
- if(a=="rd"){await updateDoc(r,{stamps:0,rewards:increment(1),log:arrayUnion({t:Date.now(),x:"استلام مكافأة 🎁"})});notify(id,"بالهنا! تم تسليم مكافأتك 🎁 بطاقتك جاهزة من جديد")}
- if(a=="x"&&ok("حذف حساب "+C[id].name))deleteDoc(r);
- const rs=b.dataset.r;if(rs&&ok("سيتم تنفيذ: "+b.textContent)){const bt=writeBatch(db);
-  if(rs=="stamps")Object.keys(C).forEach(k=>bt.update(doc(db,"customers",k),{stamps:0}));
-  if(rs=="cust")Object.keys(C).forEach(k=>bt.delete(doc(db,"customers",k)));
-  if(rs=="nots")(await getDocs(collection(db,"notifications"))).forEach(d=>bt.delete(d.ref));
-  if(rs=="set")bt.delete(doc(db,"settings","site"));
-  await bt.commit();T("تم")}});
-
-/* المسح */
-const stopCam=()=>{cancelAnimationFrame(raf);if(stream)stream.getTracks().forEach(t=>t.stop());stream=null;$("cam").classList.add("hide");$("sc").textContent="تشغيل الكاميرا"};
-$("sc").onclick=async()=>{if(stream)return stopCam();
- try{stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}})}catch(e){return T("تعذّر تشغيل الكاميرا")}
- const v=$("cam");v.srcObject=stream;v.classList.remove("hide");v.play();$("sc").textContent="إيقاف الكاميرا";
- const cv=document.createElement("canvas"),cx=cv.getContext("2d",{willReadFrequently:true});
- (function loop(){if(v.readyState==4){cv.width=v.videoWidth;cv.height=v.videoHeight;cx.drawImage(v,0,0);const d=cx.getImageData(0,0,cv.width,cv.height),r=jsQR(d.data,d.width,d.height);
-  if(r&&(r.data!=lastC||Date.now()-lastT>4000)){lastC=r.data;lastT=Date.now();stamp(r.data.trim().toUpperCase())}}raf=requestAnimationFrame(loop)})()};
-$("ma").onclick=()=>{stamp($("mc").value.trim().toUpperCase());$("mc").value=""};
-
-/* الإشعارات */
-$("ns").onclick=async()=>{const t=$("nx").value.trim();if(!t)return;await notify($("nt").value,t);$("nx").value="";T("تم الإرسال")};
-$("ac").onclick=async()=>{if(!ok("مسح كل التنبيهات"))return;const bt=writeBatch(db);(await getDocs(collection(db,"alerts"))).forEach(d=>bt.delete(d.ref));bt.commit()};
-
-/* التخصيص */
-document.querySelectorAll("[data-img]").forEach(i=>i.onchange=()=>{const f=i.files[0];if(!f)return;const k=i.dataset.img,rd=new FileReader();
- rd.onload=()=>{const im=new Image();im.onload=()=>{const m=k=="logo"?240:800,s=Math.min(1,m/im.width),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);
-  setDoc(doc(db,"settings","site"),{[k]:c.toDataURL(k=="logo"?"image/png":"image/jpeg",.75)},{merge:true});T("تم رفع الصورة")};im.src=rd.result};rd.readAsDataURL(f)});
-$("sv").onclick=async()=>{const o={};document.querySelectorAll("[data-k]").forEach(i=>{o[i.dataset.k]=i.type=="checkbox"?i.checked:i.type=="number"?+i.value:i.value});
- await setDoc(doc(db,"settings","site"),o,{merge:true});T("تم الحفظ")};
+<script>
+const $ = id => document.getElementById(id);
+$("adminLogin").onclick = () => {
+  if($("adminPass").value === "12345"){
+    $("loginSec").classList.add("hide");
+    $("controlSec").classList.remove("hide");
+  } else {
+    alert("كلمة المرور خطأ (جرب 12345)");
+  }
+};
+$("adminLogout").onclick = () => {
+  $("controlSec").classList.add("hide");
+  $("loginSec").classList.remove("hide");
+  $("adminPass").value = "";
+};
+$("addStampBtn").onclick = () => {
+  const name = $("clientName").value.trim();
+  if(!name) return alert("اكتب اسم العميل");
+  let current = +(localStorage.getItem("stamps_" + name) || 0);
+  if(current >= 5) current = 0; // تصفير عند الاكتمال
+  localStorage.setItem("stamps_" + name, current + 1);
+  alert("تمت إضافة ختم للعميل: " + name + " (المجموع: " + (current + 1) + ")");
+  $("clientName").value = "";
+};
 </script>
 </body>
 </html>
