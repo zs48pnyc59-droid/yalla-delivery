@@ -283,6 +283,13 @@ $("sv").onclick = () => {
   localStorage.setItem("salon_settings", JSON.stringify(S));
   T("تم الحفظ");
 };
+
+// تحديث التنبيهات والأختام تلقائياً كل ثانيتين في لوحة التحكم
+setInterval(() => {
+  if(localStorage.getItem("salon_admin_logged") === "true"){
+    renderAlerts();
+  }
+}, 2000);
 </script>
 </body>
 </html>
