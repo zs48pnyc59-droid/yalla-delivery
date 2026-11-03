@@ -3,293 +3,197 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>لوحة تحكم ALAA SALON</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap">
+<title>لوحة التحكم</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Playfair+Display:wght@700;800&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jsQR/1.4.0/jsQR.min.js"></script>
 <style>
-:root{--a:#d9a38f;--b:#14101a;--p:#1f1927;--t:#f1e9ee}
-*{box-sizing:border-box}.hide{display:none!important}
-body{margin:0;background:var(--b);color:var(--t);font-family:Cairo,Tahoma,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
-main{max-width:760px;margin:0 auto;padding:14px}
-.bx{background:var(--p);border:1px solid #fff1;border-radius:16px;padding:16px;margin-bottom:12px}
-h2,h3{margin:0 0 10px}h3{font-size:16px}.mut{opacity:.6;font-size:13px}
-input,select,textarea{width:100%;font:inherit;padding:11px;border-radius:11px;border:1px solid #fff2;background:#0004;color:var(--t);margin-top:8px}
-input[type=color]{padding:2px;height:42px}input[type=checkbox]{width:auto;margin:0 0 0 8px}
-button{font:700 14px Cairo;border:0;border-radius:10px;padding:10px 14px;background:var(--a);color:#1a1214;cursor:pointer}
-button.g{background:#fff1;color:var(--t)}button.d{background:#e5484d;color:#fff}button.w{width:100%;margin-top:10px}
-.hd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
-.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px}.tabs button{background:#fff1;color:var(--t);white-space:nowrap}.tabs button.on{background:var(--a);color:#1a1214}
-.row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 0;border-top:1px solid #fff1;flex-wrap:wrap}
-.row .ac{display:flex;gap:5px;flex-wrap:wrap}.row .ac button{padding:7px 10px}
-.pill{background:#fff1;border-radius:99px;padding:3px 10px;font-weight:700;font-size:13px}.pill.ok{background:#2fb35a;color:#fff}
-.cred{background:#0006;border:1px dashed var(--a);border-radius:12px;padding:12px;margin-top:10px;direction:ltr;text-align:center;font-size:18px;letter-spacing:.15em}
-.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{font-size:13px;opacity:.85;display:block}
-video{width:100%;border-radius:14px;aspect-ratio:1;object-fit:cover;background:#000;margin-top:10px}
-#tt{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0));left:50%;transform:translate(-50%,100px);background:var(--a);color:#1a1214;font-weight:800;padding:11px 18px;border-radius:99px;transition:transform .4s;z-index:9}#tt.on{transform:translate(-50%,0)}
+:root{--a:#ff7ab8;--c1:#7a5cff;--c2:#ff7ab8;--bg:#0b0714;--tx:#fff;--mu:rgba(255,255,255,.62);--gc:rgba(255,255,255,.16);--ln:rgba(255,255,255,.24);--sh:rgba(0,0,0,.45);--bl:28px;--r:26px;--sp:cubic-bezier(.34,1.56,.64,1)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}.hide{display:none!important}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--tx);font-family:-apple-system,"SF Pro Display","SF Arabic",Cairo,system-ui,sans-serif;padding:env(safe-area-inset-top,0) 0 calc(104px + env(safe-area-inset-bottom,0));transition:background .6s,color .4s}
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.bg i{position:absolute;width:62vmax;height:62vmax;border-radius:50%;filter:blur(80px);opacity:.5;animation:dr 24s ease-in-out infinite alternate}
+.bg i:nth-child(1){background:var(--c1);top:-20vmax;right:-15vmax}.bg i:nth-child(2){background:var(--c2);bottom:-22vmax;left:-18vmax;animation-delay:-8s}
+.bg i:nth-child(3){background:var(--a);width:30vmax;height:30vmax;top:40%;left:30%;opacity:.28;animation-delay:-14s}
+@keyframes dr{to{transform:translate(8vmax,-6vmax) scale(1.15)}}
+.g{position:relative;background:var(--gc);backdrop-filter:blur(var(--bl)) saturate(190%);-webkit-backdrop-filter:blur(var(--bl)) saturate(190%);border:1px solid var(--ln);border-radius:var(--r);box-shadow:0 12px 40px var(--sh),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(255,255,255,.07)}
+.g::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.3),transparent 38%);opacity:.45;pointer-events:none}
+main{max-width:760px;margin:0 auto;padding:14px}.pad{padding:18px;margin-bottom:14px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0 14px}
+.brand{display:flex;align-items:center;gap:8px;font:800 18px "Playfair Display",serif;letter-spacing:.14em;direction:ltr}.brand img{height:34px;width:34px;border-radius:50%;object-fit:cover}
+h2{margin:0 0 4px;font-size:21px;font-weight:800}h3{margin:0 0 10px;font-size:16px;font-weight:800}.mu{color:var(--mu);font-size:13px}
+input,select,textarea{width:100%;font:inherit;font-size:15px;color:var(--tx);padding:12px;margin-top:8px;border-radius:14px;border:1px solid var(--ln);background:rgba(127,127,127,.14);outline:0}
+input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--a) 50%,transparent)}
+select option{color:#111}input[type=color]{padding:2px;height:44px}input[type=range]{padding:0;accent-color:var(--a)}input[type=checkbox]{width:20px;height:20px;margin:0 0 0 8px;vertical-align:middle;accent-color:var(--a)}
+.b{border:0;border-radius:99px;padding:10px 16px;font:800 14px Cairo,system-ui;color:#fff;background:linear-gradient(180deg,color-mix(in srgb,var(--a) 70%,#fff),var(--a));box-shadow:0 6px 18px color-mix(in srgb,var(--a) 50%,transparent),inset 0 1px 0 rgba(255,255,255,.5);cursor:pointer;transition:transform .35s var(--sp)}
+.b:active{transform:scale(.94)}.b.s{background:var(--gc);color:var(--tx);box-shadow:inset 0 1px 0 var(--ln);border:1px solid var(--ln)}.b.d{background:#ff453a;box-shadow:none}.b.w{width:100%;margin-top:12px;padding:13px}.b.m{padding:7px 12px;font-size:13px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}label{display:block;font-size:13px;color:var(--mu);margin-top:6px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}.stat{padding:16px}.stat b{display:block;font-size:30px;font-weight:800;color:var(--a)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 0;border-top:1px solid var(--ln);flex-wrap:wrap}.row .ac{display:flex;gap:5px;flex-wrap:wrap}
+.pill{display:inline-block;background:rgba(127,127,127,.2);border-radius:99px;padding:2px 10px;font-weight:800;font-size:13px}.pill.ok{background:#30d158;color:#fff}
+.cred{margin-top:12px;padding:14px;border:1.5px dashed var(--a);border-radius:16px;text-align:center;font-size:20px;letter-spacing:.15em;direction:ltr;font-weight:800}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.pr{width:46px;height:46px;border-radius:50%;border:2px solid var(--ln);cursor:pointer;transition:transform .35s var(--sp)}.pr:active{transform:scale(.88)}
+video{width:100%;aspect-ratio:1;object-fit:cover;border-radius:20px;background:#000;margin-top:10px}
+.v{animation:in .45s var(--sp)}@keyframes in{from{opacity:0;transform:translateY(16px) scale(.98)}}
+.nav{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);display:flex;gap:2px;padding:5px;border-radius:99px;z-index:5;max-width:96vw}
+.nav button{border:0;background:none;color:var(--mu);font:700 10px Cairo;padding:7px 11px;border-radius:99px;cursor:pointer;display:grid;gap:1px;justify-items:center;transition:all .35s var(--sp);white-space:nowrap}
+.nav button span{font-size:18px}.nav button.on{background:rgba(255,255,255,.22);color:var(--tx);box-shadow:inset 0 1px 0 var(--ln)}
+#toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0));left:50%;transform:translate(-50%,-140px);padding:12px 20px;border-radius:99px;font-weight:700;z-index:20;max-width:92%;transition:transform .6s var(--sp)}#toast.on{transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div id="tt"></div>
+<div class="bg"><i></i><i></i><i></i></div><div id="toast" class="g"></div>
 <main>
-<section id="lg" class="bx" style="margin-top:12vh"><h2>ALAA SALON — دخول الإدارة</h2>
- <input id="em" type="text" placeholder="البريد الإلكتروني (karam)" style="direction:ltr">
- <input id="pw" type="password" placeholder="كلمة المرور (123122)" style="direction:ltr">
- <p class="mut" id="le"></p><button class="w" id="li">دخول</button></section>
+<section id="lg" class="g pad v" style="margin-top:14vh"><h2>🔐 دخول الإدارة</h2><p class="mu">أدخل بيانات الدخول للمتابعة.</p>
+ <input id="em" type="email" placeholder="البريد الإلكتروني" style="direction:ltr"><input id="pw" type="password" placeholder="كلمة المرور" style="direction:ltr">
+ <p class="mu" id="le" style="color:#ff6b6b;min-height:16px"></p><button class="b w" id="li">دخول</button></section>
 
 <section id="app" class="hide">
- <div class="hd"><h2 id="ttl">لوحة التحكم</h2><div><span class="pill" id="al">0 تنبيه</span> <button id="mt" class="g">الصيانة: —</button> <button class="g" id="lo">خروج</button></div></div>
- <div class="tabs" id="tabs"><button data-t="c" class="on">العملاء</button><button data-t="s">مسح QR</button><button data-t="n">الإشعارات</button><button data-t="e">التخصيص</button><button data-t="r">إعادة ضبط</button></div>
+ <div class="top"><div class="brand" id="brand"></div><div><button class="b s m" id="mt"></button> <button class="b s m" id="lo">خروج</button></div></div>
 
- <div data-p="c">
-  <div class="bx"><h3>إنشاء حساب عميل جديد</h3><div class="f2"><input id="nn" placeholder="اسم العميل"><input id="np" placeholder="رقم الهاتف (مع رمز الدولة)" inputmode="tel" style="direction:ltr"></div>
-   <button class="w" id="mk">إنشاء الحساب</button><div id="cr"></div></div>
-  <div class="bx"><div class="hd"><h3>الحسابات (<span id="cn">0</span>)</h3><input id="q" placeholder="بحث بالاسم أو الرقم" style="max-width:220px;margin:0"></div><div id="cl"></div></div>
- </div>
+ <div data-p="d" class="v"><div class="stats"><div class="g stat"><b id="s1">0</b>العملاء</div><div class="g stat"><b id="s2">0</b>أختام اليوم</div><div class="g stat"><b id="s3">0</b>مكافآت مسلّمة</div><div class="g stat"><b id="s4">0</b>تنبيهات</div></div>
+  <div class="g pad"><div class="top" style="margin:0 0 4px"><h3>تنبيهات العملاء</h3><button class="b s m" data-a="ca">مسح الكل</button></div><div id="al"></div></div>
+  <div class="g pad"><h3>الأكثر أختامًا</h3><div id="tp"></div></div></div>
 
- <div data-p="s" class="hide"><div class="bx"><h3>مسح بطاقة عميل</h3><video id="cam" playsinline muted class="hide"></video><button class="w" id="sc">تشغيل الكاميرا</button>
-  <input id="mc" placeholder="أو اكتب رقم البطاقة" style="direction:ltr;text-transform:uppercase"><button class="w g" id="ma">إضافة ختم</button></div></div>
+ <div data-p="c" class="hide"><div class="g pad"><h3>إنشاء حساب عميل</h3><div class="f2"><input id="nn" placeholder="اسم العميل"><input id="np" placeholder="الهاتف مع رمز الدولة" inputmode="tel" style="direction:ltr"></div>
+  <button class="b w" id="mk">إنشاء الحساب</button><div id="cr"></div></div>
+  <div class="g pad"><div class="top" style="margin:0"><h3>الحسابات (<span id="cn">0</span>)</h3><input id="q" placeholder="بحث" style="max-width:170px;margin:0"></div><div id="cl"></div></div></div>
 
- <div data-p="n" class="hide">
-  <div class="bx"><h3>إرسال إشعار</h3><select id="nt"></select><textarea id="nx" rows="3" placeholder="نص الإشعار"></textarea><button class="w" id="ns">إرسال</button></div>
-  <div class="bx"><div class="hd"><h3>تنبيهات من العملاء</h3><button class="g" id="ac">مسح الكل</button></div><div id="alist"></div></div>
- </div>
+ <div data-p="s" class="hide"><div class="g pad"><h3>مسح بطاقة عميل</h3><video id="cam" playsinline muted class="hide"></video><button class="b w" id="sc">تشغيل الكاميرا</button>
+  <input id="mc" placeholder="أو اكتب رقم البطاقة" style="direction:ltr;text-transform:uppercase"><button class="b s w" id="ma">إضافة ختم</button></div></div>
 
- <div data-p="e" class="hide"><div class="bx"><h3>الموقع</h3><div class="f2">
-  <label>اسم الصالون<input data-k="name"></label><label>رسالة الترحيب<input data-k="welcome"></label>
-  <label>لون التمييز<input type="color" data-k="accent"></label><label>لون الخلفية<input type="color" data-k="bg"></label>
-  <label>لون النص<input type="color" data-k="text"></label><label>استدارة الحواف (px)<input type="number" data-k="radius" min="0" max="40"></label>
-  <label>عدد الأختام للمكافأة<input type="number" data-k="goal" min="2" max="10"></label><label>المكافأة<input data-k="reward"></label>
-  <label>الشعار<input type="file" accept="image/*" data-img="logo"></label><label>صورة الغلاف<input type="file" accept="image/*" data-img="hero"></label></div>
-  <label style="margin-top:12px"><input type="checkbox" data-k="maintenance">وضع الصيانة</label><label>رسالة الصيانة<input data-k="maintMsg"></label>
-  <h3 style="margin-top:16px">لوحة التحكم</h3><div class="f2"><label>لون التمييز<input type="color" data-k="aAccent"></label><label>لون الخلفية<input type="color" data-k="aBg"></label></div>
-  <button class="w" id="sv">حفظ التغييرات</button></div></div>
+ <div data-p="n" class="hide"><div class="g pad"><h3>إرسال إشعار</h3><select id="nt"></select><textarea id="nx" rows="3" placeholder="نص الإشعار"></textarea>
+  <div class="chips" id="ch"></div><button class="b w" id="ns">إرسال</button></div>
+  <div class="g pad"><h3>الإشعارات المرسلة</h3><div id="nl"></div></div></div>
 
- <div data-p="r" class="hide"><div class="bx"><h3>إعادة ضبط</h3><p class="mut">كل زر يطلب تأكيدًا قبل التنفيذ.</p>
-  <button class="w g" data-r="stamps">تصفير أختام كل العملاء</button><button class="w g" data-r="nots">حذف كل الإشعارات</button>
-  <button class="w g" data-r="set">إرجاع إعدادات الموقع للافتراضي</button><button class="w d" data-r="cust">حذف كل الحسابات</button></div></div>
+ <div data-p="e" class="hide"><div class="g pad"><h3>🎨 الثيم (يتغير بالموقع واللوحة معًا)</h3><div class="chips" id="prs"></div>
+  <div class="f2"><label>لون التمييز<input type="color" data-k="accent"></label><label>لون الخلفية<input type="color" data-k="bg"></label>
+  <label>توهج 1<input type="color" data-k="c1"></label><label>توهج 2<input type="color" data-k="c2"></label>
+  <label>وضع العرض<select data-k="mode"><option value="dark">داكن</option><option value="light">فاتح</option><option value="auto">تلقائي</option></select></label>
+  <label>استدارة الحواف<input type="range" min="8" max="40" data-k="radius"></label>
+  <label>قوة الضبابية<input type="range" min="0" max="60" data-k="blur"></label><label>شفافية الزجاج<input type="range" min="0" max="100" data-k="glass"></label></div></div>
+  <div class="g pad"><h3>المحتوى</h3><div class="f2"><label>اسم الصالون<input data-k="name"></label><label>رسالة الترحيب<input data-k="welcome"></label>
+  <label>عدد الأختام للمكافأة<input type="number" min="2" max="10" data-k="goal"></label><label>المكافأة<input data-k="reward"></label>
+  <label>واتساب الصالون<input data-k="phone" placeholder="9627xxxxxxxx" style="direction:ltr"></label><label>الشعار<input type="file" accept="image/*" data-img="logo"></label>
+  <label>صورة الغلاف<input type="file" accept="image/*" data-img="hero"></label><label style="align-self:end"><button class="b s m" data-a="ri">حذف الصور</button></label></div></div>
+  <div class="g pad"><h3>🛠 الصيانة</h3><label><input type="checkbox" data-k="maintenance">تفعيل وضع الصيانة</label><label>رسالة الصيانة<input data-k="maintMsg"></label></div></div>
+
+ <div data-p="t" class="hide"><div class="g pad"><h3>حساب الإدارة</h3><div class="f2"><label>البريد<input id="ae" type="email" style="direction:ltr"></label><label>كلمة مرور جديدة<input id="ap" type="password" placeholder="اتركها فارغة لعدم التغيير" style="direction:ltr"></label></div><button class="b w" id="sa">حفظ</button></div>
+  <div class="g pad"><h3>نسخة احتياطية</h3><p class="mu">البيانات محفوظة على هذا الجهاز/المتصفح، فاحتفظ بنسخة دائمًا.</p><div class="f2"><button class="b" data-a="ex">تصدير</button><button class="b s" data-a="im">استيراد</button></div><input type="file" id="imf" accept=".json" class="hide"></div>
+  <div class="g pad"><h3>إعادة ضبط</h3><div class="f2"><button class="b s" data-r="st">تصفير كل الأختام</button><button class="b s" data-r="no">حذف الإشعارات</button><button class="b s" data-r="al">حذف التنبيهات</button><button class="b s" data-r="th">إرجاع الثيم والإعدادات</button></div>
+   <button class="b d w" data-r="cu">حذف كل الحسابات</button><button class="b d w" data-r="all">مسح كل شيء</button></div></div>
 </section>
 </main>
+<nav class="nav g hide" id="nav"><button data-p="d" class="on"><span>📊</span>الرئيسية</button><button data-p="c"><span>👥</span>العملاء</button><button data-p="s"><span>📷</span>مسح</button><button data-p="n"><span>🔔</span>إشعارات</button><button data-p="e"><span>🎨</span>تخصيص</button><button data-p="t"><span>⚙️</span>أدوات</button></nav>
 
 <script>
-const $ = i => document.getElementById(i);
-let S = JSON.parse(localStorage.getItem("salon_settings")) || {goal:5,reward:"خدمة مجانية",name:"ALAA SALON"};
-let C = JSON.parse(localStorage.getItem("salon_customers") || "{}");
-let stream = null, raf = null, lastC = "", lastT = 0;
+(function(){
+const K="alaa_db_v2",$=i=>document.getElementById(i);
+const DS={name:"ALAA SALON",welcome:"أهلاً بك في عالم الجمال",phone:"",accent:"#ff7ab8",c1:"#7a5cff",c2:"#ff7ab8",bg:"#0b0714",mode:"dark",blur:28,glass:50,radius:26,goal:5,reward:"خدمة مجانية",maintenance:false,maintMsg:"الموقع قيد الصيانة، نعود قريبًا.",logo:"",hero:""};
+const PR=[["#b388ff","#6c4bff","#ff6ad5","#0b0714","dark"],["#ff7ab8","#7a5cff","#ff7ab8","#0b0714","dark"],["#0a84ff","#0a84ff","#5ee0ff","#060b17","dark"],["#30d158","#00b894","#0a84ff","#06130e","dark"],["#ffd60a","#ff9f0a","#ff453a","#140d05","dark"],["#7a5cff","#a78bfa","#f9a8d4","#eef0f8","light"]];
+const CH=["عرض اليوم: خصم 20% على كل الخدمات 💅","لا تنسي موعدك غدًا، بانتظارك ✨","بطاقتك قربت تكتمل، تعالي خدي مكافأتك 🎁","عرض خاص لعميلاتنا المميزات 💖"];
+let db,cam=null,raf=null,lc="",lt=0;
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const load=()=>{let x={};try{x=JSON.parse(localStorage.getItem(K))||{}}catch(e){}db=Object.assign({customers:{},notifs:[],alerts:[],admin:{email:"karam@gmail.com",pass:""}},x);db.settings=Object.assign({},DS,x.settings)};
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(db))}catch(e){T("المساحة ممتلئة، صغّر الصور")}};
+const H=s=>crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(b=>Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join(""));
+const T=t=>{const e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(T.t);T.t=setTimeout(()=>e.classList.remove("on"),2600)};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const ok=m=>confirm(m+"\nهل أنت متأكد؟");
+function theme(){const s=db.settings,r=document.documentElement.style,dk=s.mode=="auto"?matchMedia("(prefers-color-scheme:dark)").matches:s.mode!="light";
+ r.setProperty("--a",s.accent);r.setProperty("--c1",s.c1);r.setProperty("--c2",s.c2);r.setProperty("--bg",dk?s.bg:"#eef0f8");
+ r.setProperty("--tx",dk?"#fff":"#17131f");r.setProperty("--mu",dk?"rgba(255,255,255,.62)":"rgba(23,19,31,.62)");
+ r.setProperty("--gc",dk?`rgba(255,255,255,${.05+s.glass*.0021})`:`rgba(255,255,255,${.3+s.glass*.0045})`);
+ r.setProperty("--ln",dk?"rgba(255,255,255,.24)":"rgba(255,255,255,.85)");r.setProperty("--sh",dk?"rgba(0,0,0,.45)":"rgba(70,60,120,.2)");
+ r.setProperty("--bl",s.blur+"px");r.setProperty("--r",s.radius+"px");document.title="لوحة "+s.name;
+ const w=s.name.split(" ");$("brand").innerHTML=(s.logo?`<img src="${s.logo}">`:"")+`<span>${esc(w[0])}</span>`;$("mt").textContent="الصيانة: "+(s.maintenance?"مفعّلة 🔴":"متوقفة 🟢")}
+const note=(to,text)=>db.notifs.push({id:uid(),to,text,ts:Date.now()});
 
-const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-const T = t => { const e = $("tt"); e.textContent = t; e.classList.add("on"); setTimeout(() => e.classList.remove("on"), 2500); };
-const ok = m => confirm(m + "\nهل أنت متأكد؟");
+/* دخول */
+$("li").onclick=async()=>{load();const h=await H($("pw").value),want=db.admin.pass||await H("123");
+ if($("em").value.trim().toLowerCase()==db.admin.email.toLowerCase()&&h==want){if(!db.admin.pass){db.admin.pass=want;save()}sessionStorage.setItem("alaa_adm","1");enter()}else $("le").textContent="بيانات الدخول غير صحيحة"};
+$("lo").onclick=()=>{sessionStorage.removeItem("alaa_adm");location.reload()};
+$("pw").onkeydown=e=>{if(e.key=="Enter")$("li").click()};
+function enter(){$("lg").classList.add("hide");$("app").classList.remove("hide");$("nav").classList.remove("hide");fill();R()}
+$("nav").onclick=e=>{const b=e.target.closest("button");if(!b)return;document.querySelectorAll("#nav button").forEach(x=>x.classList.toggle("on",x==b));
+ document.querySelectorAll("[data-p]").forEach(p=>{if(p.tagName=="BUTTON")return;p.classList.toggle("hide",p.dataset.p!=b.dataset.p);if(p.dataset.p==b.dataset.p){p.classList.remove("v");void p.offsetWidth;p.classList.add("v")}});if(b.dataset.p!="s")stopCam();R()};
 
-if(localStorage.getItem("salon_admin_logged") === "true"){
-  $("lg").classList.add("hide");
-  $("app").classList.remove("hide");
-  init();
-}
+/* عرض */
+const today=t=>new Date(t).toDateString()==new Date().toDateString();
+function R(){theme();const g=+db.settings.goal||5,C=Object.values(db.customers);
+ $("s1").textContent=C.length;$("s2").textContent=C.reduce((n,c)=>n+c.log.filter(l=>l.x=="ختم جديد"&&today(l.t)).length,0);$("s3").textContent=C.reduce((n,c)=>n+(c.rewards||0),0);$("s4").textContent=db.alerts.length;
+ $("al").innerHTML=db.alerts.slice().reverse().map(a=>`<div class="row"><span>${esc(a.text)}<br><span class="mu">${new Date(a.ts).toLocaleString("ar")}</span></span><button class="b s m" data-a="da" data-id="${a.id}">تم</button></div>`).join("")||'<p class="mu">لا توجد تنبيهات</p>';
+ $("tp").innerHTML=C.sort((a,b)=>b.stamps-a.stamps).slice(0,5).map(c=>`<div class="row"><b>${esc(c.name)}</b><span class="pill${c.stamps>=g?" ok":""}">${c.stamps}/${g}</span></div>`).join("")||'<p class="mu">لا يوجد عملاء</p>';
+ const q=$("q").value.trim().toLowerCase();$("cn").textContent=C.length;
+ $("cl").innerHTML=C.filter(c=>!q||(c.name+c.id).toLowerCase().includes(q)).sort((a,b)=>b.created-a.created).map(c=>`<div class="row"><div><b data-a="ed" data-id="${c.id}" style="cursor:pointer">${esc(c.name)} ✎</b> <span class="mu" style="direction:ltr;display:inline-block">${c.id}</span><br><span class="pill${c.stamps>=g?" ok":""}">${c.stamps}/${g}</span> <span class="mu">مكافآت: ${c.rewards||0}</span></div>
+  <div class="ac">${c.stamps>=g?`<button class="b m" data-a="rd" data-id="${c.id}">تسليم 🎁</button>`:`<button class="b m" data-a="+" data-id="${c.id}">+1</button>`}<button class="b s m" data-a="-" data-id="${c.id}">−1</button><button class="b s m" data-a="0" data-id="${c.id}">تصفير</button><button class="b s m" data-a="ln" data-id="${c.id}">🔗</button><button class="b s m" data-a="pn" data-id="${c.id}">🔑</button><button class="b d m" data-a="x" data-id="${c.id}">حذف</button></div></div>`).join("")||'<p class="mu">لا توجد حسابات</p>';
+ $("nt").innerHTML='<option value="all">كل العملاء</option>'+Object.values(db.customers).map(c=>`<option value="${c.id}">${esc(c.name)} (${c.id})</option>`).join("");
+ $("nl").innerHTML=db.notifs.slice().reverse().slice(0,30).map(n=>`<div class="row"><span>${esc(n.text)}<br><span class="mu">${n.to=="all"?"للكل":(db.customers[n.to]?esc(db.customers[n.to].name):n.to)} · ${new Date(n.ts).toLocaleString("ar")}</span></span><button class="b s m" data-a="dn" data-id="${n.id}">حذف</button></div>`).join("")||'<p class="mu">لا توجد إشعارات</p>'}
+$("q").oninput=R;
+function fill(){document.querySelectorAll("[data-k]").forEach(i=>{const v=db.settings[i.dataset.k];if(i.type=="checkbox")i.checked=!!v;else i.value=v});$("ae").value=db.admin.email;
+ $("prs").innerHTML=PR.map((p,i)=>`<div class="pr" data-pr="${i}" style="background:linear-gradient(135deg,${p[1]},${p[2]})"></div>`).join("");$("ch").innerHTML=CH.map(t=>`<button class="b s m" data-ch="${esc(t)}">${esc(t.slice(0,18))}…</button>`).join("")}
 
-$("li").onclick = () => {
-  const user = $("em").value.trim();
-  const pass = $("pw").value.trim();
-  if(user === "karam" && pass === "123122"){
-    localStorage.setItem("salon_admin_logged", "true");
-    $("lg").classList.add("hide");
-    $("app").classList.remove("hide");
-    init();
-  } else {
-    $("le").textContent = "بيانات الدخول غير صحيحة";
-  }
-};
+/* عملاء */
+const base=()=>location.href.split("#")[0].split("?")[0].replace(/[^\/]*$/,"")+"index.html";
+function link(c){const s=Object.assign({},db.settings);delete s.logo;delete s.hero;
+ return base()+"#d="+btoa(unescape(encodeURIComponent(JSON.stringify({c,s,n:db.notifs.filter(n=>n.to=="all"||n.to==c.id).slice(-8)}))))}
+function send(c){const u=link(c);if(c.phone)window.open("https://wa.me/"+c.phone.replace(/\D/g,"")+"?text="+encodeURIComponent("بطاقة ولاء "+db.settings.name+" 💖\n"+u));else navigator.clipboard&&navigator.clipboard.writeText(u).then(()=>T("تم نسخ رابط البطاقة"))}
+function pin4(){return String(Math.floor(1000+Math.random()*9000))}
+$("mk").onclick=async()=>{const name=$("nn").value.trim(),phone=$("np").value.trim();if(!name)return T("اكتب الاسم");
+ const A="ABCDEFGHJKLMNPQRSTUVWXYZ23456789";let id;do{id="";for(let i=0;i<6;i++)id+=A[Math.floor(Math.random()*A.length)]}while(db.customers[id]);
+ const pin=pin4(),c=db.customers[id]={id,name,phone,ph:await H(id+pin),stamps:0,rewards:0,log:[],created:Date.now()};
+ note(id,"أهلاً "+name+"! تم إنشاء بطاقة الولاء الخاصة بك 🎉");save();$("nn").value=$("np").value="";
+ $("cr").innerHTML=`<div class="cred">${id} · ${pin}</div><p class="mu">احفظ الرمز الآن، لن يظهر مرة ثانية.</p><button class="b w" id="sl">📲 إرسال رابط البطاقة للعميل</button>`;$("sl").onclick=()=>send(c);R()};
+function stamp(id){const c=db.customers[id],g=+db.settings.goal||5;if(!c)return T("البطاقة غير موجودة");if(c.stamps>=g)return T("البطاقة مكتملة، سلّم المكافأة");
+ c.stamps++;c.log.push({t:Date.now(),x:"ختم جديد"});note(id,c.stamps>=g?"🎉 اكتملت بطاقتك! مكافأتك: "+db.settings.reward:"✨ تمت إضافة ختم، بقي "+(g-c.stamps));save();R();T(c.name+": "+c.stamps+"/"+g)}
 
-$("lo").onclick = () => {
-  localStorage.removeItem("salon_admin_logged");
-  location.reload();
-};
+document.addEventListener("click",async e=>{const b=e.target.closest("[data-a],[data-r],[data-pr],[data-ch]");if(!b)return;const a=b.dataset.a,id=b.dataset.id,c=db.customers[id];
+ if(b.dataset.pr){const p=PR[b.dataset.pr],s=db.settings;s.accent=p[0];s.c1=p[1];s.c2=p[2];s.bg=p[3];s.mode=p[4];save();fill();R();return}
+ if(b.dataset.ch){$("nx").value=b.dataset.ch;return}
+ if(a=="+")stamp(id);
+ if(a=="-"&&c.stamps>0){c.stamps--;c.log.push({t:Date.now(),x:"تعديل: −1"});save();R()}
+ if(a=="0"&&ok("تصفير أختام "+c.name)){c.stamps=0;c.log.push({t:Date.now(),x:"تصفير"});save();R()}
+ if(a=="rd"){c.stamps=0;c.rewards=(c.rewards||0)+1;c.log.push({t:Date.now(),x:"استلام مكافأة 🎁"});note(id,"بالهنا! تم تسليم مكافأتك 🎁 بطاقتك جاهزة من جديد");save();R();T("تم التسليم")}
+ if(a=="ln")send(c);
+ if(a=="pn"&&ok("إنشاء رمز سري جديد لـ "+c.name)){const p=pin4();c.ph=await H(id+p);save();prompt("الرمز السري الجديد (احفظه):",p)}
+ if(a=="ed"){const n=prompt("اسم العميل",c.name);if(n){c.name=n;const p=prompt("الهاتف",c.phone||"");if(p!==null)c.phone=p;save();R()}}
+ if(a=="x"&&ok("حذف حساب "+c.name)){delete db.customers[id];save();R()}
+ if(a=="da"){db.alerts=db.alerts.filter(x=>x.id!=id);save();R()}
+ if(a=="ca"&&ok("مسح كل التنبيهات")){db.alerts=[];save();R()}
+ if(a=="dn"){db.notifs=db.notifs.filter(x=>x.id!=id);save();R()}
+ if(a=="ri"&&ok("حذف الشعار والغلاف")){db.settings.logo=db.settings.hero="";save();R()}
+ if(a=="ex"){const l=document.createElement("a");l.href=URL.createObjectURL(new Blob([JSON.stringify(db)],{type:"application/json"}));l.download="salon-backup.json";l.click()}
+ if(a=="im")$("imf").click();
+ const r=b.dataset.r;if(r&&ok("سيتم: "+b.textContent)){
+  if(r=="st")Object.values(db.customers).forEach(c=>c.stamps=0);if(r=="no")db.notifs=[];if(r=="al")db.alerts=[];
+  if(r=="th")db.settings=Object.assign({},DS);if(r=="cu")db.customers={};
+  if(r=="all"){db={customers:{},notifs:[],alerts:[],admin:db.admin,settings:Object.assign({},DS)}}
+  save();fill();R();T("تم")}});
+$("imf").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const x=JSON.parse(rd.result);if(!x.customers||!x.settings)throw 0;db=x;save();fill();R();T("تم الاستيراد")}catch(er){T("ملف غير صالح")}};rd.readAsText(f)};
 
-$("tabs").onclick = e => {
-  const t = e.target.dataset.t;
-  if(!t) return;
-  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b == e.target));
-  document.querySelectorAll("[data-p]").forEach(p => p.classList.toggle("hide", p.dataset.p != t));
-  if(t != "s") stopCam();
-};
+/* مسح */
+function stopCam(){cancelAnimationFrame(raf);if(cam)cam.getTracks().forEach(t=>t.stop());cam=null;$("cam").classList.add("hide");$("sc").textContent="تشغيل الكاميرا"}
+$("sc").onclick=async()=>{if(cam)return stopCam();try{cam=await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}})}catch(e){return T("تعذّر تشغيل الكاميرا (تحتاج HTTPS)")}
+ const v=$("cam");v.srcObject=cam;v.classList.remove("hide");v.play();$("sc").textContent="إيقاف الكاميرا";const cv=document.createElement("canvas"),cx=cv.getContext("2d",{willReadFrequently:true});
+ (function loop(){if(v.readyState==4){cv.width=v.videoWidth;cv.height=v.videoHeight;cx.drawImage(v,0,0);const d=cx.getImageData(0,0,cv.width,cv.height),r=jsQR(d.data,d.width,d.height);
+  if(r&&(r.data!=lc||Date.now()-lt>4000)){lc=r.data;lt=Date.now();load();stamp(r.data.trim().toUpperCase())}}raf=requestAnimationFrame(loop)})()};
+$("ma").onclick=()=>{load();stamp($("mc").value.trim().toUpperCase());$("mc").value=""};
 
-function init(){
-  S = JSON.parse(localStorage.getItem("salon_settings")) || {goal:5,reward:"خدمة مجانية",name:"ALAA SALON"};
-  C = JSON.parse(localStorage.getItem("salon_customers") || "{}");
-  const r = document.documentElement.style;
-  r.setProperty("--a", S.aAccent || "#d9a38f");
-  r.setProperty("--b", S.aBg || "#14101a");
-  $("ttl").textContent = "لوحة " + S.name;
-  $("mt").textContent = "الصيانة: " + (S.maintenance ? "مفعّلة" : "متوقفة");
-  
-  document.querySelectorAll("[data-k]").forEach(i => {
-    if(document.activeElement === i) return;
-    const v = S[i.dataset.k];
-    if(i.type == "checkbox") i.checked = !!v;
-    else if(v !== undefined) i.value = v;
-  });
-  renderC();
-  renderAlerts();
-}
+/* إشعارات */
+$("ns").onclick=()=>{const t=$("nx").value.trim();if(!t)return;note($("nt").value,t);save();$("nx").value="";R();T("تم الإرسال")};
 
-$("mt").onclick = () => {
-  S.maintenance = !S.maintenance;
-  localStorage.setItem("salon_settings", JSON.stringify(S));
-  init();
-};
+/* تخصيص (حفظ فوري وتزامن مع الموقع) */
+document.querySelectorAll("[data-k]").forEach(i=>i.oninput=()=>{const k=i.dataset.k;db.settings[k]=i.type=="checkbox"?i.checked:(i.type=="number"||i.type=="range")?+i.value:i.value;save();theme()});
+$("mt").onclick=()=>{db.settings.maintenance=!db.settings.maintenance;save();fill();theme()};
+document.querySelectorAll("[data-img]").forEach(i=>i.onchange=()=>{const f=i.files[0];if(!f)return;const k=i.dataset.img,rd=new FileReader();
+ rd.onload=()=>{const im=new Image();im.onload=()=>{const m=k=="logo"?240:800,s=Math.min(1,m/im.width),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);
+  db.settings[k]=c.toDataURL(k=="logo"?"image/png":"image/jpeg",.75);save();R();T("تم رفع الصورة")};im.src=rd.result};rd.readAsDataURL(f)});
+$("sa").onclick=async()=>{const e=$("ae").value.trim();if(!e)return T("اكتب البريد");db.admin.email=e;if($("ap").value){db.admin.pass=await H($("ap").value);$("ap").value=""}save();T("تم حفظ بيانات الدخول")};
 
-$("mk").onclick = () => {
-  const name = $("nn").value.trim(), phone = $("np").value.trim();
-  if(!name) return T("اكتب الاسم");
-  const A = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; let id = "";
-  for(let i=0; i<6; i++) id += A[Math.floor(Math.random()*A.length)];
-  const pin = String(Math.floor(1000 + Math.random() * 9000));
-  
-  C[id] = { name, phone, pin, stamps: 0, rewards: 0, log: [], created: Date.now() };
-  localStorage.setItem("salon_customers", JSON.stringify(C));
-  
-  notify(id, `أهلاً ${name}! تم إنشاء بطاقة الولاء الخاصة بك 🎉`);
-  const msg = `أهلاً ${name}، بطاقة ولاء ${S.name}\nرقم البطاقة: ${id}\nالرمز السري: ${pin}`;
-  $("cr").innerHTML = `<div class="cred">${id} · ${pin}</div><p class="mut">احفظ الرمز الآن، لن يظهر مرة ثانية.</p>${phone?`<a href="https://wa.me/${phone.replace(/\D/g,"")}?text=${encodeURIComponent(msg)}" target="_blank"><button class="w g">إرسال عبر واتساب</button></a>`:""}`;
-  $("nn").value = $("np").value = "";
-  renderC();
-};
-
-function notify(to, text){
-  const notifs = JSON.parse(localStorage.getItem("salon_notifications") || "[]");
-  notifs.push({to, text, ts: Date.now()});
-  localStorage.setItem("salon_notifications", JSON.stringify(notifs));
-}
-
-function renderC(){
-  C = JSON.parse(localStorage.getItem("salon_customers") || "{}");
-  const q = $("q").value.trim().toLowerCase(), g = +S.goal || 5;
-  const L = Object.values(C).filter(c => !q || (c.name+c.id).toLowerCase().includes(q)).sort((a,b)=>b.created-a.created);
-  $("cn").textContent = Object.keys(C).length;
-  $("cl").innerHTML = L.map(c=>`<div class="row"><div><b>${esc(c.name)}</b> <span class="mut" style="direction:ltr;display:inline-block">${c.id}</span><br><span class="pill${c.stamps>=g?" ok":""}">${c.stamps}/${g}</span> <span class="mut">مكافآت: ${c.rewards||0}</span></div>
-  <div class="ac">${c.stamps>=g?`<button data-a="rd" data-id="${c.id}">تسليم المكافأة</button>`:`<button data-a="+" data-id="${c.id}">+1</button>`}<button class="g" data-a="-" data-id="${c.id}">−1</button><button class="g" data-a="0" data-id="${c.id}">تصفير</button><button class="d" data-a="x" data-id="${c.id}">حذف</button></div></div>`).join("") || '<p class="mut">لا توجد حسابات</p>';
-  
-  $("nt").innerHTML = '<option value="all">كل العملاء</option>' + Object.values(C).map(c=>`<option value="${c.id}">${esc(c.name)} (${c.id})</option>`).join("");
-}
-$("q").oninput = renderC;
-
-function stamp(id){
-  C = JSON.parse(localStorage.getItem("salon_customers") || "{}");
-  const c = C[id]; if(!c) return T("البطاقة غير موجودة");
-  const g = +S.goal || 5; if(c.stamps >= g) return T("البطاقة مكتملة، سلّم المكافأة");
-  c.stamps += 1;
-  c.log.push({t: Date.now(), x: "ختم جديد"});
-  localStorage.setItem("salon_customers", JSON.stringify(C));
-  notify(id, c.stamps >= g ? `🎉 اكتملت بطاقتك! مكافأتك: ${S.reward}` : `✨ تمت إضافة ختم. بقي ${g-c.stamps} للمكافأة`);
-  T(`${c.name}: ${c.stamps}/${g}`);
-  renderC();
-}
-
-document.addEventListener("click", e => {
-  const b = e.target, id = b.dataset.id, a = b.dataset.a;
-  C = JSON.parse(localStorage.getItem("salon_customers") || "{}");
-  
-  if(b.dataset.da){
-    let alerts = JSON.parse(localStorage.getItem("salon_alerts") || "[]");
-    alerts = alerts.filter(x => x.id != b.dataset.da);
-    localStorage.setItem("salon_alerts", JSON.stringify(alerts));
-    renderAlerts();
-    return;
-  }
-  if(a == "+") stamp(id);
-  if(a == "-" && C[id] && C[id].stamps > 0){
-    C[id].stamps -= 1; C[id].log.push({t: Date.now(), x: "تعديل: -1"});
-    localStorage.setItem("salon_customers", JSON.stringify(C)); renderC();
-  }
-  if(a == "0" && C[id] && ok("تصفير أختام "+C[id].name)){
-    C[id].stamps = 0; C[id].log.push({t: Date.now(), x: "تصفير"});
-    localStorage.setItem("salon_customers", JSON.stringify(C)); renderC();
-  }
-  if(a == "rd" && C[id]){
-    C[id].stamps = 0; (C[id].rewards = (C[id].rewards||0)+1);
-    C[id].log.push({t: Date.now(), x: "استلام مكافأة 🎁"});
-    localStorage.setItem("salon_customers", JSON.stringify(C));
-    notify(id, "بالهنا! تم تسليم مكافأتك 🎁 بطاقتك جاهزة من جديد");
-    renderC();
-  }
-  if(a == "x" && C[id] && ok("حذف حساب "+C[id].name)){
-    delete C[id]; localStorage.setItem("salon_customers", JSON.stringify(C)); renderC();
-  }
-  
-  const rs = b.dataset.r;
-  if(rs && ok("سيتم تنفيذ: "+b.textContent)){
-    if(rs == "stamps"){ Object.keys(C).forEach(k => C[k].stamps = 0); localStorage.setItem("salon_customers", JSON.stringify(C)); renderC(); }
-    if(rs == "cust"){ localStorage.removeItem("salon_customers"); renderC(); }
-    if(rs == "nots"){ localStorage.removeItem("salon_notifications"); }
-    if(rs == "set"){ localStorage.removeItem("salon_settings"); }
-    T("تم");
-  }
-});
-
-function renderAlerts(){
-  const alerts = JSON.parse(localStorage.getItem("salon_alerts") || "[]").sort((a,b)=>b.ts-a.ts);
-  $("al").textContent = alerts.length + " تنبيه";
-  $("alist").innerHTML = alerts.map(a=>`<div class="row"><span>${esc(a.text)}<br><span class="mut">${new Date(a.ts).toLocaleString("ar")}</span></span><button class="g" data-da="${a.id}">تم</button></div>`).join("") || '<p class="mut">لا توجد تنبيهات</p>';
-}
-
-const stopCam = () => { cancelAnimationFrame(raf); if(stream) stream.getTracks().forEach(t=>t.stop()); stream=null; $("cam").classList.add("hide"); $("sc").textContent="تشغيل الكاميرا"; };
-$("sc").onclick = async () => {
-  if(stream) return stopCam();
-  try{ stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:"environment"}}); }catch(e){ return T("تعذّر تشغيل الكاميرا"); }
-  const v = $("cam"); v.srcObject = stream; v.classList.remove("hide"); v.play(); $("sc").textContent = "إيقاف الكاميرا";
-  const cv = document.createElement("canvas"), cx = cv.getContext("2d",{willReadFrequently:true});
-  (function loop(){
-    if(v.readyState == 4){
-      cv.width = v.videoWidth; cv.height = v.videoHeight; cx.drawImage(v,0,0);
-      const d = cx.getImageData(0,0,cv.width,cv.height), r = jsQR(d.data, d.width, d.height);
-      if(r && (r.data != lastC || Date.now()-lastT > 4000)){
-        lastC = r.data; lastT = Date.now(); stamp(r.data.trim().toUpperCase());
-      }
-    }
-    raf = requestAnimationFrame(loop);
-  })();
-};
-$("ma").onclick = () => { stamp($("mc").value.trim().toUpperCase()); $("mc").value = ""; };
-
-$("ns").onclick = () => {
-  const t = $("nx").value.trim(); if(!t) return;
-  notify($("nt").value, t); $("nx").value = ""; T("تم الإرسال");
-};
-$("ac").onclick = () => {
-  if(!ok("مسح كل التنبيهات")) return;
-  localStorage.removeItem("salon_alerts"); renderAlerts();
-};
-
-document.querySelectorAll("[data-img]").forEach(i => i.onchange = () => {
-  const f = i.files[0]; if(!f) return;
-  const k = i.dataset.img, rd = new FileReader();
-  rd.onload = () => {
-    const im = new Image();
-    im.onload = () => {
-      const m = k=="logo"?240:800, s = Math.min(1, m/im.width), c = document.createElement("canvas");
-      c.width = im.width*s; c.height = im.height*s; c.getContext("2d").drawImage(im, 0,0, c.width, c.height);
-      S[k] = c.toDataURL(k=="logo"?"image/png":"image/jpeg", .75);
-      localStorage.setItem("salon_settings", JSON.stringify(S));
-      T("تم رفع الصورة");
-    };
-    im.src = rd.result;
-  };
-  rd.readAsDataURL(f);
-});
-
-$("sv").onclick = () => {
-  document.querySelectorAll("[data-k]").forEach(i => {
-    S[i.dataset.k] = i.type == "checkbox" ? i.checked : i.type == "number" ? +i.value : i.value;
-  });
-  localStorage.setItem("salon_settings", JSON.stringify(S));
-  T("تم الحفظ");
-};
-
-// تحديث التنبيهات والأختام تلقائياً كل ثانيتين في لوحة التحكم
-setInterval(() => {
-  if(localStorage.getItem("salon_admin_logged") === "true"){
-    renderAlerts();
-  }
-}, 2000);
+addEventListener("storage",ev=>{if(ev.key==K&&sessionStorage.getItem("alaa_adm")){load();R()}});
+load();theme();if(sessionStorage.getItem("alaa_adm"))enter();
+})();
 </script>
 </body>
 </html>
