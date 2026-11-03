@@ -3,188 +3,144 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>ALAA SALON</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Playfair+Display:wght@600;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&family=Playfair+Display:wght@700;800&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <style>
-:root{--a:#d9a38f;--bg:#1b1218;--tx:#f7e9e4;--r:22px}
-*{box-sizing:border-box}.hide{display:none!important}
-body{margin:0;min-height:100vh;color:var(--tx);font-family:Cairo,Tahoma,sans-serif;background:var(--bg);
-background-image:radial-gradient(circle at 15% 0,color-mix(in srgb,var(--a) 25%,transparent),transparent 50%),radial-gradient(circle at 90% 100%,color-mix(in srgb,var(--a) 15%,transparent),transparent 45%);
-padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
-main{max-width:440px;margin:0 auto;padding:18px}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.brand{display:flex;align-items:center;gap:10px;font-family:"Playfair Display",serif;font-weight:800;font-size:22px;letter-spacing:.18em;direction:ltr}
-.brand img{height:38px;border-radius:50%}.brand small{display:block;font-size:10px;letter-spacing:.5em;color:var(--a);font-weight:600}
-.card{border-radius:var(--r);background:color-mix(in srgb,var(--tx) 7%,transparent);border:1px solid color-mix(in srgb,var(--a) 40%,transparent);backdrop-filter:blur(14px);padding:20px;transition:transform .15s;margin-bottom:14px}
-.hero{height:140px;border-radius:var(--r);background:center/cover;margin-bottom:14px;box-shadow:inset 0 -60px 60px -20px var(--bg)}
-h2{margin:0 0 4px;font-size:22px;font-weight:800}.mut{opacity:.7;font-size:14px;margin:0}
-input{width:100%;font:inherit;padding:13px 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--a) 40%,transparent);background:#0003;color:var(--tx);margin:10px 0 0;font-size:16px}
-.btn{width:100%;margin-top:12px;border:0;border-radius:14px;padding:13px;font:800 16px Cairo;color:var(--bg);background:linear-gradient(135deg,#fff8,var(--a) 60%);cursor:pointer}
-.btn.g{background:none;color:var(--tx);border:1px solid color-mix(in srgb,var(--a) 50%,transparent)}
-.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:16px 0}
-.s{aspect-ratio:1;border-radius:50%;border:1.5px dashed color-mix(in srgb,var(--a) 55%,transparent);display:grid;place-items:center}
-.s b{font:800 20px "Playfair Display",serif;color:var(--bg);transform:scale(0)}
-.s.on{border-style:solid;background:radial-gradient(circle at 30% 25%,#fffa,var(--a))}.s.on b{transform:scale(1)}
-.s.new{animation:st .8s cubic-bezier(.2,1.5,.4,1)}
-@keyframes st{0%{transform:scale(2.4) rotate(-30deg);opacity:0}100%{transform:none;opacity:1}}
-.bar{height:6px;border-radius:9px;background:#fff2;overflow:hidden}.bar i{display:block;height:100%;background:var(--a);transition:width .8s}
-.qr{background:#fff;border-radius:16px;padding:12px;width:190px;margin:12px auto 6px}.qr svg{width:100%;height:auto;display:block}
-.id{text-align:center;letter-spacing:.3em;font-weight:800;direction:ltr;color:var(--a)}
-.bell{position:relative;background:none;border:1px solid color-mix(in srgb,var(--a) 50%,transparent);color:var(--tx);border-radius:50%;width:42px;height:42px;font-size:18px;cursor:pointer}
-.bell em{position:absolute;top:-4px;left:-4px;background:#e5484d;color:#fff;font:700 11px Cairo;border-radius:9px;padding:1px 6px;font-style:normal}
-.n{padding:10px 0;border-top:1px solid #fff2;font-size:14px}.n small{display:block;opacity:.55}
-.log div{display:flex;justify-content:space-between;padding:7px 0;border-top:1px solid #fff2;font-size:14px}
-#toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0));left:50%;transform:translate(-50%,-120px);background:var(--a);color:var(--bg);font-weight:800;padding:12px 18px;border-radius:99px;transition:transform .5s;z-index:9;max-width:90%}
-#toast.on{transform:translate(-50%,0)}
-#mt{position:fixed;inset:0;z-index:10;background:var(--bg);display:grid;place-items:center;text-align:center;padding:30px}
-#mt .gear{font-size:60px;display:inline-block;animation:sp 6s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
-.cf{position:fixed;top:-20px;width:9px;height:14px;z-index:9;animation:fall 2.6s ease-in forwards}
-@keyframes fall{to{transform:translateY(105vh) rotate(720deg);opacity:.8}}
-.err{color:#ff8a8a;font-size:14px;margin-top:8px}
+:root{--a:#ff7ab8;--c1:#7a5cff;--c2:#ff7ab8;--bg:#0b0714;--tx:#fff;--mu:rgba(255,255,255,.62);--gc:rgba(255,255,255,.16);--ln:rgba(255,255,255,.24);--sh:rgba(0,0,0,.45);--bl:28px;--r:26px;--sp:cubic-bezier(.34,1.56,.64,1)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}.hide{display:none!important}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--tx);font-family:-apple-system,"SF Pro Display","SF Arabic",Cairo,system-ui,sans-serif;padding:env(safe-area-inset-top,0) 0 calc(100px + env(safe-area-inset-bottom,0));transition:background .6s,color .4s}
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden}
+.bg i{position:absolute;width:62vmax;height:62vmax;border-radius:50%;filter:blur(80px);opacity:.5;animation:dr 24s ease-in-out infinite alternate}
+.bg i:nth-child(1){background:var(--c1);top:-20vmax;right:-15vmax}.bg i:nth-child(2){background:var(--c2);bottom:-22vmax;left:-18vmax;animation-delay:-8s}
+.bg i:nth-child(3){background:var(--a);width:30vmax;height:30vmax;top:40%;left:30%;opacity:.28;animation-delay:-14s}
+@keyframes dr{to{transform:translate(8vmax,-6vmax) scale(1.15)}}
+.g{position:relative;background:var(--gc);backdrop-filter:blur(var(--bl)) saturate(190%);-webkit-backdrop-filter:blur(var(--bl)) saturate(190%);border:1px solid var(--ln);border-radius:var(--r);box-shadow:0 12px 40px var(--sh),inset 0 1px 0 rgba(255,255,255,.4),inset 0 -1px 0 rgba(255,255,255,.07)}
+.g::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.3),transparent 38%);opacity:.45;pointer-events:none}
+main{max-width:440px;margin:0 auto;padding:16px}
+.pad{padding:20px;margin-bottom:14px}
+.top{display:flex;align-items:center;justify-content:center;margin:6px 0 16px}
+.brand{display:flex;align-items:center;gap:10px;font-family:"Playfair Display",serif;font-weight:800;font-size:24px;letter-spacing:.2em;direction:ltr;text-align:center}
+.brand img{height:40px;width:40px;object-fit:cover;border-radius:50%;box-shadow:0 4px 14px var(--sh)}
+.brand small{display:block;font:600 10px Cairo;letter-spacing:.6em;color:var(--a)}
+.hero{height:150px;margin-bottom:14px;background:center/cover;overflow:hidden}
+h2{margin:0 0 4px;font-size:22px;font-weight:800}.mu{color:var(--mu);font-size:14px;margin:0}
+input{width:100%;font:inherit;font-size:16px;color:var(--tx);padding:14px;margin-top:10px;border-radius:16px;border:1px solid var(--ln);background:rgba(127,127,127,.14);outline:0;transition:box-shadow .3s}
+input:focus{box-shadow:0 0 0 3px color-mix(in srgb,var(--a) 50%,transparent)}
+.b{width:100%;margin-top:12px;border:0;border-radius:99px;padding:14px;font:800 16px Cairo,system-ui;color:#fff;background:linear-gradient(180deg,color-mix(in srgb,var(--a) 70%,#fff),var(--a));box-shadow:0 8px 24px color-mix(in srgb,var(--a) 55%,transparent),inset 0 1px 0 rgba(255,255,255,.5);cursor:pointer;transition:transform .35s var(--sp)}
+.b:active{transform:scale(.95)}.b.s{background:var(--gc);color:var(--tx);box-shadow:inset 0 1px 0 var(--ln);border:1px solid var(--ln)}
+.err{color:#ff6b6b;font-size:14px;margin-top:8px;min-height:18px}
+.grid{display:grid;gap:10px;margin:18px 0 14px;grid-template-columns:repeat(5,1fr)}
+.st{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;border:1.5px dashed var(--ln);background:rgba(127,127,127,.08)}
+.st b{font:800 20px "Playfair Display",serif;color:#fff;transform:scale(0);transition:transform .5s var(--sp)}
+.st.on{border:1px solid var(--ln);background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.7),var(--a) 60%);box-shadow:0 6px 18px color-mix(in srgb,var(--a) 60%,transparent),inset 0 1px 0 #fff8}
+.st.on b{transform:scale(1)}.st.new{animation:pop .9s var(--sp)}
+@keyframes pop{0%{transform:scale(2.6) rotate(-30deg);opacity:0}100%{transform:none;opacity:1}}
+.bar{height:7px;border-radius:9px;background:rgba(127,127,127,.2);overflow:hidden}.bar i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,var(--c1),var(--a));transition:width 1s var(--sp)}
+.qr{background:#fff;border-radius:20px;padding:12px;width:180px;margin:16px auto 8px;box-shadow:0 8px 24px var(--sh)}.qr svg{width:100%;height:auto;display:block}
+.id{text-align:center;font-weight:800;letter-spacing:.35em;direction:ltr;color:var(--a)}
+.n,.l{padding:11px 0;border-top:1px solid var(--ln);font-size:14px}.n small{display:block;color:var(--mu);margin-top:2px}.l{display:flex;justify-content:space-between}
+.v{animation:in .5s var(--sp)}@keyframes in{from{opacity:0;transform:translateY(18px) scale(.97)}}
+.nav{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0));left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:6px;border-radius:99px;z-index:5}
+.nav button{position:relative;border:0;background:none;color:var(--mu);font:700 11px Cairo;padding:8px 18px;border-radius:99px;cursor:pointer;display:grid;gap:1px;justify-items:center;transition:all .35s var(--sp)}
+.nav button span{font-size:19px}.nav button.on{background:rgba(255,255,255,.22);color:var(--tx);box-shadow:inset 0 1px 0 var(--ln)}
+.nav em{position:absolute;top:2px;right:10px;background:#ff453a;color:#fff;font:700 10px Cairo;border-radius:9px;padding:0 5px;font-style:normal}
+#toast{position:fixed;top:calc(12px + env(safe-area-inset-top,0));left:50%;transform:translate(-50%,-140px);padding:13px 20px;border-radius:99px;font-weight:700;z-index:20;max-width:92%;transition:transform .6s var(--sp)}#toast.on{transform:translate(-50%,0)}
+#mt{position:fixed;inset:0;z-index:30;display:grid;place-items:center;text-align:center;padding:30px;background:var(--bg)}
+#mt .gear{font-size:64px;display:inline-block;animation:sp 7s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+.cf{position:fixed;top:-20px;width:9px;height:14px;border-radius:2px;z-index:25;animation:fall 2.8s ease-in forwards}@keyframes fall{to{transform:translateY(108vh) rotate(720deg)}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div id="mt" class="hide"><div><div class="gear">⚙</div><h2 style="margin-top:14px" id="mtt"></h2><p class="mut">ALAA SALON</p></div></div>
-<div id="toast"></div>
+<div class="bg"><i></i><i></i><i></i></div>
+<div id="toast" class="g"></div>
+<div id="mt" class="hide"><div><div class="gear">⚙️</div><h2 id="mtt" style="margin-top:16px"></h2><p class="mu">ALAA SALON</p></div></div>
 <main>
- <div class="top"><div class="brand" id="brand"></div><button class="bell hide" id="bell">🔔<em id="bc" class="hide">0</em></button></div>
- <div class="hero hide" id="hero"></div>
-
- <section id="login" class="card">
-  <h2 id="wel">أهلاً بك في عالم الجمال</h2><p class="mut">سجّل دخولك برقم بطاقتك والرمز السري اللي أعطاك إياه الصالون.</p>
-  <input id="id" placeholder="رقم البطاقة" autocomplete="off" style="text-transform:uppercase;direction:ltr;text-align:center;letter-spacing:.2em">
+ <div class="top"><div class="brand" id="brand"></div></div>
+ <div class="hero g hide" id="hero"></div>
+ <section id="login" class="g pad v">
+  <h2 id="wel"></h2><p class="mu">سجّل دخولك برقم بطاقتك والرمز السري من الصالون.</p>
+  <input id="id" placeholder="رقم البطاقة" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;direction:ltr;text-align:center;letter-spacing:.25em">
   <input id="pin" placeholder="الرمز السري" inputmode="numeric" type="password" style="direction:ltr;text-align:center;letter-spacing:.4em">
-  <div class="err" id="err"></div>
-  <button class="btn" id="go">دخول</button>
+  <div class="err" id="err"></div><button class="b" id="go">دخول</button>
  </section>
-
  <section id="app" class="hide">
-  <div class="card hide" id="nl"><h2 style="font-size:18px">الإشعارات</h2><div id="nlist"></div></div>
-  <div class="card" id="loy">
-   <h2 id="who"></h2><p class="mut" id="sub"></p>
-   <div class="grid" id="st"></div>
-   <div class="bar"><i id="pr"></i></div>
-   <button class="btn hide" id="req">🎁 اطلب مكافأتي</button>
-   <div class="qr" id="qr"></div><div class="id" id="cid"></div>
-   <p class="mut" style="text-align:center;margin-top:8px">اعرض الرمز للموظفة لإضافة ختم</p>
+  <div data-v="c" class="v">
+   <div class="g pad"><h2 id="who"></h2><p class="mu" id="sub"></p>
+    <div class="grid" id="sg"></div><div class="bar"><i id="pr"></i></div>
+    <button class="b hide" id="req">🎁 اطلب مكافأتي</button>
+    <div class="qr" id="qr"></div><div class="id" id="cid"></div>
+    <p class="mu" style="text-align:center;margin-top:8px">اعرض الرمز للموظفة لإضافة ختم</p></div>
   </div>
-  <div class="card log"><h2 style="font-size:18px">آخر العمليات</h2><div id="log"></div></div>
-  <button class="btn g" id="out">تسجيل خروج</button>
+  <div data-v="n" class="hide"><div class="g pad"><h2 style="font-size:18px;margin-bottom:6px">الإشعارات</h2><div id="nl"></div></div></div>
+  <div data-v="h" class="hide"><div class="g pad"><h2 style="font-size:18px;margin-bottom:6px">آخر العمليات</h2><div id="hl"></div></div>
+   <button class="b s" id="out">تسجيل خروج</button></div>
  </section>
 </main>
+<nav class="nav g hide" id="nav"><button data-v="c" class="on"><span>💳</span>بطاقتي</button><button data-v="n"><span>🔔</span>الإشعارات<em id="bc" class="hide">0</em></button><button data-v="h"><span>🕘</span>السجل</button></nav>
 
 <script>
-const $ = i => document.getElementById(i);
-let S = JSON.parse(localStorage.getItem("salon_settings")) || {name:"ALAA SALON",accent:"#d9a38f",bg:"#1b1218",text:"#f7e9e4",radius:22,goal:5,reward:"خدمة مجانية",welcome:"أهلاً بك في عالم الجمال",maintenance:false,maintMsg:"الموقع قيد الصيانة، نعود قريبًا.",logo:"",hero:""};
-let me = null;
+(function(){
+var K="alaa_db_v2",$=function(i){return document.getElementById(i)};
+var DS={name:"ALAA SALON",welcome:"أهلاً بك في عالم الجمال",phone:"",accent:"#ff7ab8",c1:"#7a5cff",c2:"#ff7ab8",bg:"#0b0714",mode:"dark",blur:28,glass:50,radius:26,goal:5,reward:"خدمة مجانية",maintenance:false,maintMsg:"الموقع قيد الصيانة، نعود قريبًا.",logo:"",hero:""};
+var db,sess=null,pv=null,shown=0,view="c",seen=+localStorage.getItem("alaa_seen")||0;
+try{sess=JSON.parse(localStorage.getItem("alaa_sess"))}catch(e){}
+function esc(s){return String(s).replace(/[&<>"']/g,function(m){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]})}
+function load(){var x={};try{x=JSON.parse(localStorage.getItem(K))||{}}catch(e){}db=Object.assign({customers:{},notifs:[],alerts:[],admin:{email:"karam@gmail.com",pass:""}},x);db.settings=Object.assign({},DS,x.settings)}
+function save(){try{localStorage.setItem(K,JSON.stringify(db))}catch(e){}}
+function H(s){return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")})}
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove("on")},3600)}
+function theme(s){var r=document.documentElement.style,dk=s.mode=="auto"?matchMedia("(prefers-color-scheme:dark)").matches:s.mode!="light";
+ r.setProperty("--a",s.accent);r.setProperty("--c1",s.c1);r.setProperty("--c2",s.c2);r.setProperty("--bg",dk?s.bg:"#eef0f8");
+ r.setProperty("--tx",dk?"#fff":"#17131f");r.setProperty("--mu",dk?"rgba(255,255,255,.62)":"rgba(23,19,31,.62)");
+ r.setProperty("--gc",dk?"rgba(255,255,255,"+(.05+s.glass*.0021)+")":"rgba(255,255,255,"+(.3+s.glass*.0045)+")");
+ r.setProperty("--ln",dk?"rgba(255,255,255,.24)":"rgba(255,255,255,.85)");r.setProperty("--sh",dk?"rgba(0,0,0,.45)":"rgba(70,60,120,.2)");
+ r.setProperty("--bl",s.blur+"px");r.setProperty("--r",s.radius+"px")}
+function confetti(){var c=["#fff",db.settings.accent,"#ffd60a",db.settings.c1];for(var i=0;i<46;i++){var s=document.createElement("span");s.className="cf";s.style.cssText="left:"+Math.random()*100+"%;background:"+c[i%4]+";animation-delay:"+Math.random()*.7+"s";document.body.appendChild(s);setTimeout(function(e){e.remove()},3800,s)}}
 
-function applySettings(){
-  const r = document.documentElement.style;
-  r.setProperty("--a", S.accent);
-  r.setProperty("--bg", S.bg);
-  r.setProperty("--tx", S.text);
-  r.setProperty("--r", S.radius + "px");
-  $("brand").innerHTML = (S.logo?`<img src="${S.logo}">`:"") + `<div>${esc(S.name.split(" ")[0])}<small>${esc(S.name.split(" ").slice(1).join(" "))}</small></div>`;
-  $("hero").style.backgroundImage = S.hero ? `url(${S.hero})` : "";
-  $("hero").classList.toggle("hide", !S.hero);
-  $("wel").textContent = S.welcome;
-  $("mtt").textContent = S.maintMsg;
-  $("mt").classList.toggle("hide", !S.maintenance);
-  document.title = S.name;
-}
-applySettings();
-
-const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-function toast(t){const e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),3500)}
-function confetti(){for(let i=0;i<40;i++){const s=document.createElement("span");s.className="cf";s.style.cssText=`left:${Math.random()*100}%;background:${["#fff",S.accent,"#ffd27a"][i%3]};animation-delay:${Math.random()*.6}s`;document.body.appendChild(s);setTimeout(()=>s.remove(),3500)}}
-
-$("go").onclick = () => {
-  const cid = $("id").value.trim().toUpperCase();
-  const pin = $("pin").value.trim();
-  $("err").textContent = "";
-  const customers = JSON.parse(localStorage.getItem("salon_customers") || "{}");
-  const c = customers[cid];
-  if(!c || c.pin !== pin){
-    $("err").textContent = "رقم البطاقة أو الرمز غير صحيح";
-    return;
-  }
-  localStorage.setItem("salon_current_customer", cid);
-  start(cid);
-};
-
-$("out").onclick = () => {
-  localStorage.removeItem("salon_current_customer");
-  location.reload();
-};
-
-const savedCur = localStorage.getItem("salon_current_customer");
-if(savedCur) start(savedCur);
-
-function start(id){
-  const customers = JSON.parse(localStorage.getItem("salon_customers") || "{}");
-  me = customers[id];
-  if(!me){ localStorage.removeItem("salon_current_customer"); return location.reload(); }
-  $("login").classList.add("hide");
-  $("app").classList.remove("hide");
-  $("bell").classList.remove("hide");
-  render();
-  loadNotifications(id);
-}
-
-function loadNotifications(id){
-  const notifs = JSON.parse(localStorage.getItem("salon_notifications") || "[]").filter(n => n.to === "all" || n.to === id);
-  const seen = +localStorage.getItem("seen_"+id) || 0;
-  $("nlist").innerHTML = notifs.map(n=>`<div class="n">${esc(n.text)}<small>${new Date(n.ts).toLocaleString("ar")}</small></div>`).join("") || '<p class="mut">لا توجد إشعارات</p>';
-  const unread = notifs.filter(x=>x.ts>seen).length;
-  $("bc").textContent = unread;
-  $("bc").classList.toggle("hide", !unread);
-  
-  $("bell").onclick = () => {
-    $("nl").classList.toggle("hide");
-    if(!$("nl").classList.contains("hide")){
-      localStorage.setItem("seen_"+id, Date.now());
-      $("bc").classList.add("hide");
-    }
-  };
-}
+/* استيراد رابط البطاقة القادم من الصالون */
+if(location.hash.indexOf("#d=")==0){load();try{var p=JSON.parse(decodeURIComponent(escape(atob(location.hash.slice(3)))));
+ db.customers[p.c.id]=p.c;Object.assign(db.settings,p.s);(p.n||[]).forEach(function(n){if(!db.notifs.some(function(x){return x.id==n.id}))db.notifs.push(n)});
+ save();sess={id:p.c.id,ph:p.c.ph};localStorage.setItem("alaa_sess",JSON.stringify(sess));history.replaceState(null,"",location.pathname);setTimeout(function(){toast("تم تحديث بطاقتك ✨")},600)}catch(e){}}
 
 function render(){
-  // جلب أحدث بيانات الزبون من التخزين لتحديث الأختام فوراً عند تعديل المشرفة
-  const customers = JSON.parse(localStorage.getItem("salon_customers") || "{}");
-  if(customers[me.id]) me = customers[me.id];
-
-  const g = +S.goal || 5, n = Math.min(me.stamps || 0, g);
-  $("who").textContent = "أهلاً " + me.name;
-  $("sub").textContent = n >= g ? "بطاقتك مكتملة! 🎉 مكافأتك: "+S.reward : `باقي ${g-n} ختم للحصول على: ${S.reward}`;
-  $("st").style.gridTemplateColumns = `repeat(${g>5?5:g},1fr)`;
-  $("st").innerHTML = Array.from({length:g},(_,i)=>`<div class="s${i<n?" on":""}"><b>✓</b></div>`).join("");
-  $("pr").style.width = (n/g*100) + "%";
-  $("req").classList.toggle("hide", n < g);
-  
-  const q = qrcode(0,"M"); q.addData(me.id); q.make();
-  $("qr").innerHTML = q.createSvgTag(4,0);
-  $("cid").textContent = me.id;
-  
-  $("log").innerHTML = (me.log || []).slice(-6).reverse().map(l=>`<div><span>${esc(l.x)}</span><span class="mut">${new Date(l.t).toLocaleDateString("ar")}</span></div>`).join("") || '<p class="mut">لا توجد عمليات بعد</p>';
+ var s=db.settings;theme(s);document.title=s.name;
+ var w=s.name.split(" ");$("brand").innerHTML=(s.logo?'<img src="'+s.logo+'" alt="">':"")+"<div>"+esc(w[0])+"<small>"+esc(w.slice(1).join(" "))+"</small></div>";
+ $("hero").style.backgroundImage=s.hero?"url("+s.hero+")":"";$("hero").classList.toggle("hide",!s.hero);
+ $("wel").textContent=s.welcome;$("mtt").textContent=s.maintMsg;$("mt").classList.toggle("hide",!s.maintenance);
+ var c=sess&&db.customers[sess.id];if(c&&c.ph!==sess.ph)c=null;if(!c&&sess){sess=null;localStorage.removeItem("alaa_sess")}
+ $("login").classList.toggle("hide",!!c);$("app").classList.toggle("hide",!c);$("nav").classList.toggle("hide",!c);if(!c)return;
+ var g=+s.goal||5,n=Math.min(c.stamps||0,g);$("who").textContent="أهلاً "+c.name;
+ $("sub").textContent=n>=g?"بطاقتك مكتملة 🎉 مكافأتك: "+s.reward:"باقي "+(g-n)+" للحصول على: "+s.reward;
+ $("sg").style.gridTemplateColumns="repeat("+(g>5?5:g)+",1fr)";var h="";
+ for(var i=0;i<g;i++)h+='<div class="st'+(i<n?" on":"")+(pv!==null&&i==n-1&&n>pv?" new":"")+'"><b>A</b></div>';$("sg").innerHTML=h;
+ $("pr").style.width=n/g*100+"%";$("req").classList.toggle("hide",n<g);
+ if(pv!==null&&n>pv&&n>=g)setTimeout(confetti,500);pv=n;
+ var q=qrcode(0,"M");q.addData(c.id);q.make();$("qr").innerHTML=q.createSvgTag(4,0);$("cid").textContent=c.id;
+ $("hl").innerHTML=(c.log||[]).slice(-12).reverse().map(function(l){return'<div class="l"><span>'+esc(l.x)+'</span><span class="mu">'+new Date(l.t).toLocaleDateString("ar")+"</span></div>"}).join("")||'<p class="mu">لا توجد عمليات بعد</p>';
+ var L=db.notifs.filter(function(x){return x.to=="all"||x.to==c.id}).sort(function(a,b){return b.ts-a.ts});
+ $("nl").innerHTML=L.map(function(x){return'<div class="n">'+esc(x.text)+"<small>"+new Date(x.ts).toLocaleString("ar")+"</small></div>"}).join("")||'<p class="mu">لا توجد إشعارات</p>';
+ var u=L.filter(function(x){return x.ts>seen}).length;$("bc").textContent=u;$("bc").classList.toggle("hide",!u||view=="n");
+ var mx=L.length?L[0].ts:0;if(shown&&mx>shown){L.filter(function(x){return x.ts>shown}).forEach(function(x){toast(x.text);try{new Notification(s.name,{body:x.text})}catch(e){}})}shown=mx||shown||1;
 }
-
-$("req").onclick = () => {
-  const alerts = JSON.parse(localStorage.getItem("salon_alerts") || "[]");
-  alerts.push({id: Date.now(), text: `${me.name} (${me.id}) جاهز لاستلام: ${S.reward}`, ts: Date.now()});
-  localStorage.setItem("salon_alerts", JSON.stringify(alerts));
-  toast("وصل طلبك للصالون ✨");
-  $("req").classList.add("hide");
-};
-
-// تحديث تلقائي للصفحة كل ثانيتين لمزامنة الأختام مع المشرفة
-setInterval(() => {
-  if(savedCur) {
-    const customers = JSON.parse(localStorage.getItem("salon_customers") || "{}");
-    if(customers[savedCur]) { render(); loadNotifications(savedCur); }
-  }
-}, 2000);
+function go(v){view=v;document.querySelectorAll("[data-v]").forEach(function(e){if(e.tagName=="BUTTON")e.classList.toggle("on",e.dataset.v==v);else{e.classList.toggle("hide",e.dataset.v!=v);if(e.dataset.v==v){e.classList.remove("v");void e.offsetWidth;e.classList.add("v")}}});
+ if(v=="n"){seen=Date.now();localStorage.setItem("alaa_seen",seen);try{Notification.requestPermission()}catch(e){}render()}}
+$("nav").onclick=function(e){var b=e.target.closest("button");if(b)go(b.dataset.v)};
+$("go").onclick=function(){var id=$("id").value.trim().toUpperCase(),pin=$("pin").value.trim();$("err").textContent="";load();var c=db.customers[id];
+ if(!c)return $("err").textContent="رقم البطاقة غير موجود على هذا الجهاز";
+ H(id+pin).then(function(h){if(h!==c.ph)return $("err").textContent="الرمز السري غير صحيح";sess={id:id,ph:h};localStorage.setItem("alaa_sess",JSON.stringify(sess));pv=null;render()})};
+$("out").onclick=function(){localStorage.removeItem("alaa_sess");sess=null;pv=null;go("c");render()};
+$("req").onclick=function(){var c=db.customers[sess.id],t=c.name+" ("+c.id+") جاهز لاستلام: "+db.settings.reward;
+ db.alerts.push({id:Date.now()+"",text:t,ts:Date.now()});save();toast("تم إرسال طلبك ✨");
+ if(db.settings.phone)window.open("https://wa.me/"+db.settings.phone.replace(/\D/g,"")+"?text="+encodeURIComponent(t))};
+var tl=null;document.addEventListener("pointermove",function(e){var c=e.target.closest&&e.target.closest("[data-v=c] .g");if(!c)return;var b=c.getBoundingClientRect();c.style.transform="perspective(800px) rotateY("+((e.clientX-b.left)/b.width-.5)*7+"deg) rotateX("+(-((e.clientY-b.top)/b.height-.5))*7+"deg)";tl=c});
+document.addEventListener("pointerleave",function(){if(tl)tl.style.transform=""},true);
+addEventListener("storage",function(e){if(e.key==K){load();render()}});
+matchMedia("(prefers-color-scheme:dark)").addEventListener&&matchMedia("(prefers-color-scheme:dark)").addEventListener("change",function(){render()});
+load();render();
+})();
 </script>
 </body>
 </html>
