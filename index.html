@@ -16,20 +16,22 @@
     padding:14px 26px;font-family:'Tajawal',sans-serif;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.4)}
   #status{position:fixed;bottom:80px;left:20px;z-index:99;color:#fff;font-family:'Tajawal',sans-serif;font-size:16px}
 
-  /* الخلفية */
   .bubble{position:absolute;border:2px solid rgba(255,255,255,.12);border-radius:50%;animation:float 9s ease-in-out infinite}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-40px)}}
   .ground{position:absolute;top:80vh;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent)}
 
-  /* خطوط الهواء */
   .winds{position:absolute;inset:0}
   .play .winds{animation:off .3s 4s forwards}
   .w{position:absolute;height:2px;width:12vh;border-radius:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55));animation:wind 1.1s linear infinite}
   @keyframes wind{from{transform:translateX(70vh)}to{transform:translateX(-80vh)}}
   @keyframes off{to{opacity:0}}
 
-  /* الكوب الطائر */
-  .cupwrap{position:absolute;left:50%;top:35vh;width:30%;opacity:0;z-index:2}
+  /* كوب siplab الطائر */
+  .cupwrap{position:absolute;left:50%;top:33vh;width:32%;opacity:0;z-index:2;filter:drop-shadow(0 1.5vh 2vh rgba(0,0,0,.35))}
+  .cupwrap svg{display:block;width:100%}
+  .cuplogo{position:absolute;top:36%;left:50%;width:58%;transform:translateX(-50%) rotate(-4deg);
+    filter:brightness(0) saturate(100%) invert(8%) sepia(89%) saturate(6000%) hue-rotate(358deg) brightness(88%) contrast(115%)}
+  .cuplogo.txt2{filter:none;color:#8a0606;font-weight:800;font-size:3vh;text-align:center;width:auto}
   .play .cupwrap{opacity:1;animation:fly 4s ease-in-out both, drop .45s cubic-bezier(.55,0,1,.45) 4s forwards, hide .05s 4.45s forwards}
   @keyframes fly{
     0%{transform:translate(-50%,-60vh) rotate(-25deg)}
@@ -46,7 +48,6 @@
   @keyframes shFly{0%{transform:scale(.2);opacity:0}20%,100%{transform:scale(.45);opacity:.35}60%{transform:scale(.55);opacity:.4}}
   @keyframes shDrop{to{transform:scale(1.3);opacity:.7}}
 
-  /* الارتطام */
   .play .stage{animation:shake .5s 4.45s}
   @keyframes shake{0%,100%{transform:translate(0,0)}15%{transform:translate(-14px,9px)}30%{transform:translate(12px,-11px)}
     45%{transform:translate(-9px,7px)}60%{transform:translate(7px,-5px)}80%{transform:translate(-3px,2px)}}
@@ -75,7 +76,6 @@
     50%{transform:translate(var(--x),var(--y)) scale(1);opacity:1}
     100%{transform:translate(calc(var(--x)*1.3),calc(var(--y) + 18vh)) scale(.4);opacity:0}}
 
-  /* اللوغو */
   .logo{filter:brightness(0) invert(1)}
   .txt{filter:none;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center}
   .hero{position:absolute;top:20vh;left:50%;width:55%;margin-left:-27.5%;opacity:0;z-index:3}
@@ -87,7 +87,6 @@
   .play .halo{animation:ripple 2s ease-out infinite;animation-delay:var(--d)}
   @keyframes ripple{0%{transform:scale(.3);opacity:.8}100%{transform:scale(2.2);opacity:0}}
 
-  /* COMING SOON */
   .cs{position:absolute;top:56vh;left:0;right:0;text-align:center;color:#fff;z-index:3}
   .letters{font-weight:800;font-size:8vh;line-height:1.1;letter-spacing:.6vh;perspective:400px}
   .letters span{display:inline-block;opacity:0;transform:translateY(40px) rotateX(90deg)}
@@ -111,14 +110,29 @@
     <div class="winds" id="winds"></div>
 
     <div class="shadow"></div>
+
+    <!-- كوب بتصميم الهوية -->
     <div class="cupwrap">
-      <svg viewBox="0 0 200 240" width="100%">
-        <rect x="55" y="0" width="90" height="22" rx="8" fill="#5c0000"/>
-        <rect x="40" y="18" width="120" height="20" rx="8" fill="#fff"/>
-        <path d="M48 38 h104 l-14 190 h-76 z" fill="#f5efe6"/>
-        <rect x="52" y="100" width="96" height="60" fill="#8a0606"/>
-        <circle cx="100" cy="130" r="18" fill="none" stroke="#fff" stroke-width="5"/>
+      <svg viewBox="0 0 200 270">
+        <defs>
+          <linearGradient id="body" x1="0" x2="1">
+            <stop offset="0" stop-color="#e6ddd0"/>
+            <stop offset=".25" stop-color="#fbf7f1"/>
+            <stop offset=".6" stop-color="#f3ece2"/>
+            <stop offset="1" stop-color="#d9cebf"/>
+          </linearGradient>
+          <linearGradient id="rim" x1="0" x2="1">
+            <stop offset="0" stop-color="#6e0404"/>
+            <stop offset=".3" stop-color="#b01414"/>
+            <stop offset="1" stop-color="#6e0404"/>
+          </linearGradient>
+        </defs>
+        <path d="M36 30 L164 30 L148 255 Q100 263 52 255 Z" fill="url(#body)"/>
+        <ellipse cx="100" cy="255" rx="48" ry="6" fill="#cfc3b2"/>
+        <rect x="26" y="12" width="148" height="22" rx="11" fill="url(#rim)"/>
+        <ellipse cx="100" cy="14" rx="70" ry="5" fill="#5c0000" opacity=".6"/>
       </svg>
+      <img class="cuplogo" src="logo.png" alt="">
     </div>
 
     <div class="impact" id="impact">
@@ -147,7 +161,6 @@
 </div>
 
 <script>
-  // خطوط الهواء
   const winds=document.getElementById('winds');
   for(let k=0;k<10;k++){
     const w=document.createElement('div'); w.className='w';
@@ -156,7 +169,6 @@
     winds.appendChild(w);
   }
 
-  // قطرات القهوة المتطايرة
   const impact=document.getElementById('impact');
   for(let k=0;k<18;k++){
     const d=document.createElement('div'); d.className='drop';
@@ -170,7 +182,6 @@
     impact.appendChild(d);
   }
 
-  // تقسيم COMING SOON إلى حروف
   let idx=0;
   document.querySelectorAll('.letters').forEach(el=>{
     [...el.dataset.text].forEach(ch=>{
@@ -182,14 +193,20 @@
 
   // بديل نصي إذا لم توجد صورة اللوغو
   const test=new Image();
-  test.onerror=()=>document.querySelectorAll('img.logo').forEach(im=>{
-    const d=document.createElement('div');
-    d.className=im.className+' txt'; d.textContent='siplab';
-    im.replaceWith(d);
-  });
+  test.onerror=()=>{
+    document.querySelectorAll('img.logo').forEach(im=>{
+      const d=document.createElement('div');
+      d.className=im.className+' txt'; d.textContent='siplab';
+      im.replaceWith(d);
+    });
+    document.querySelectorAll('img.cuplogo').forEach(im=>{
+      const d=document.createElement('div');
+      d.className='cuplogo txt2'; d.textContent='siplab';
+      im.replaceWith(d);
+    });
+  };
   test.src='logo.png';
 
-  // تشغيل الإعلان وتكراره
   const frame=document.getElementById('frame');
   const TOTAL=11000;
   let timer;
