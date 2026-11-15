@@ -4,17 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>siplab - Coming Soon</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&family=Tajawal:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet">
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:#111;height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden;font-family:'Poppins',sans-serif}
   .frame{position:relative;height:100vh;aspect-ratio:9/16;overflow:hidden;
     background:radial-gradient(circle at 50% 40%,#a50f0f 0%,#8a0606 45%,#5c0000 100%)}
   .stage{position:absolute;inset:0}
-
-  #rec{position:fixed;bottom:20px;left:20px;z-index:99;background:#fff;color:#8a0606;border:none;border-radius:40px;
-    padding:14px 26px;font-family:'Tajawal',sans-serif;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.4)}
-  #status{position:fixed;bottom:80px;left:20px;z-index:99;color:#fff;font-family:'Tajawal',sans-serif;font-size:16px}
 
   .bubble{position:absolute;border:2px solid rgba(255,255,255,.12);border-radius:50%;animation:float 9s ease-in-out infinite}
   @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-40px)}}
@@ -98,9 +94,6 @@
 </style>
 </head>
 <body>
-<button id="rec">⏺ حفظ الفيديو</button>
-<div id="status"></div>
-
 <div class="frame" id="frame">
   <div class="stage">
     <div class="bubble" style="width:18vh;height:18vh;top:6%;left:-6%"></div>
@@ -111,7 +104,6 @@
 
     <div class="shadow"></div>
 
-    <!-- كوب بتصميم الهوية -->
     <div class="cupwrap">
       <svg viewBox="0 0 200 270">
         <defs>
@@ -191,7 +183,6 @@
     });
   });
 
-  // بديل نصي إذا لم توجد صورة اللوغو
   const test=new Image();
   test.onerror=()=>{
     document.querySelectorAll('img.logo').forEach(im=>{
@@ -209,54 +200,12 @@
 
   const frame=document.getElementById('frame');
   const TOTAL=11000;
-  let timer;
   function play(){
     frame.classList.remove('play'); void frame.offsetWidth;
     frame.classList.add('play');
-    clearTimeout(timer);
-    timer=setTimeout(play,TOTAL);
+    setTimeout(play,TOTAL);
   }
   play();
-
-  // ===== تسجيل الفيديو وحفظه =====
-  const btn=document.getElementById('rec');
-  const status=document.getElementById('status');
-  btn.onclick=async()=>{
-    try{
-      const stream=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30},audio:false,preferCurrentTab:true});
-      const track=stream.getVideoTracks()[0];
-      if(window.CropTarget && track.cropTo){
-        await track.cropTo(await CropTarget.fromElement(frame));
-      }
-      btn.style.display='none';
-      status.textContent='⏳ جاري التسجيل...';
-
-      const types=['video/mp4;codecs=avc1','video/mp4','video/webm;codecs=vp9','video/webm'];
-      const type=types.find(t=>MediaRecorder.isTypeSupported(t))||'';
-      const rec=new MediaRecorder(stream,{mimeType:type,videoBitsPerSecond:8000000});
-      const chunks=[];
-      rec.ondataavailable=e=>{ if(e.data.size) chunks.push(e.data); };
-      rec.onstop=()=>{
-        stream.getTracks().forEach(t=>t.stop());
-        const ext=type.includes('mp4')?'mp4':'webm';
-        const a=document.createElement('a');
-        a.href=URL.createObjectURL(new Blob(chunks,{type:type||'video/webm'}));
-        a.download='siplab-coming-soon.'+ext;
-        a.click();
-        status.textContent='✅ تم حفظ الفيديو ('+ext.toUpperCase()+')';
-        btn.style.display='';
-      };
-
-      await new Promise(r=>setTimeout(r,600));
-      play();
-      rec.start();
-      setTimeout(()=>rec.stop(),TOTAL-200);
-    }catch(e){
-      status.textContent='';
-      btn.style.display='';
-      alert('لم يتم التسجيل، تأكد من اختيار "علامة التبويب هذه" والضغط على مشاركة.');
-    }
-  };
 </script>
 </body>
 </html>
