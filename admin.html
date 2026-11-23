@@ -3,84 +3,93 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>48 COSMETICS | لوحة التحكم الإدارية</title>
+  <title>48 COSMETICS | لوحة التحكم الشاملة</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Cormorant+Garamond:wght@700&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./config.js"></script>
   <style>
     :root {
-      --bg: #08080a;
-      --panel: #111116;
-      --panel-2: #181820;
+      --bg: #07070a;
+      --panel: #111117;
+      --panel-2: #181821;
       --ink: #f8f5ef;
       --muted: #a19a8c;
       --gold: #d4af37;
-      --gold-light: #f2d579;
-      --line: rgba(212, 175, 55, 0.2);
+      --gold-light: #f5dc84;
+      --line: rgba(212, 175, 55, 0.22);
+      --danger: #ef4444;
+      --ok: #10b981;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
-    .shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
+    .shell { display: grid; grid-template-columns: 270px 1fr; min-height: 100vh; }
     aside {
       background: var(--panel); border-inline-end: 1px solid var(--line);
-      padding: 20px 14px; display: flex; flex-direction: column; gap: 6px;
+      padding: 18px 12px; display: flex; flex-direction: column; gap: 5px;
     }
     .brand-box {
-      display: flex; align-items: center; gap: 10px; padding: 6px 10px 16px;
-      border-bottom: 1px solid var(--line); margin-bottom: 10px;
+      display: flex; align-items: center; gap: 10px; padding: 6px 8px 14px;
+      border-bottom: 1px solid var(--line); margin-bottom: 8px;
     }
     .brand-badge {
-      width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--gold);
+      width: 40px; height: 40px; border-radius: 11px; border: 1.5px solid var(--gold);
       display: grid; place-items: center; font-family: 'Cormorant Garamond', serif;
-      font-weight: 700; font-size: 22px; color: var(--gold-light); background: rgba(212,175,55,0.14);
+      font-weight: 700; font-size: 22px; color: var(--gold-light);
+      box-shadow: 0 0 18px rgba(212,175,55,0.28);
     }
     .nav-item {
       width: 100%; background: transparent; color: var(--muted); border: 1px solid transparent;
-      border-radius: 10px; padding: 10px 12px; font-size: 14px; font-weight: 600;
-      display: flex; align-items: center; gap: 10px; cursor: pointer; text-align: start; font-family: inherit;
+      border-radius: 10px; padding: 9px 11px; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; gap: 9px; cursor: pointer; text-align: start; font-family: inherit;
     }
     .nav-item:hover, .nav-item.active {
-      background: rgba(212,175,55,0.14); color: var(--gold-light); border-color: var(--line);
+      background: rgba(212,175,55,0.15); color: var(--gold-light); border-color: var(--line);
     }
     .topbar {
-      background: rgba(17,17,22,0.92); border-bottom: 1px solid var(--line);
-      padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+      background: rgba(17,17,23,0.92); border-bottom: 1px solid var(--line);
+      padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;
     }
-    .content { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
-    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
-    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
-    .kpi-val { font-size: 26px; font-weight: 800; color: var(--gold-light); margin-top: 4px; }
-    .kpi-lbl { font-size: 13px; color: var(--muted); }
+    .content { padding: 20px; display: flex; flex-direction: column; gap: 18px; }
+    .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 12px; }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 16px; }
+    .kpi-val { font-size: 24px; font-weight: 800; color: var(--gold-light); margin-top: 4px; }
+    .kpi-lbl { font-size: 12px; color: var(--muted); }
 
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { padding: 11px 10px; border-bottom: 1px solid rgba(255,255,255,0.07); text-align: start; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.07); text-align: start; }
     th { color: var(--muted); font-size: 12px; }
 
     .input, select, textarea {
       width: 100%; background: var(--bg); color: var(--ink);
       border: 1px solid rgba(255,255,255,0.16); border-radius: 9px;
-      padding: 9px 12px; font-size: 13px; font-family: inherit;
+      padding: 9px 11px; font-size: 13px; font-family: inherit;
     }
     .btn-gold {
       background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      color: #09090b; border: none; border-radius: 9px; padding: 10px 16px;
+      color: #09090b; border: none; border-radius: 9px; padding: 9px 15px;
       font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
     }
     .btn-sm {
       background: var(--panel-2); color: var(--ink); border: 1px solid var(--line);
       border-radius: 7px; padding: 5px 10px; font-size: 12px; cursor: pointer; font-family: inherit;
     }
+    .btn-danger {
+      background: rgba(239,68,68,0.16); color: #fca5a5; border: 1px solid rgba(239,68,68,0.45);
+      border-radius: 9px; padding: 9px 14px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
+    }
     .pill { padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(212,175,55,0.15); color: var(--gold-light); }
-    .tab-panel { display: none; flex-direction: column; gap: 18px; }
+    .tab-panel { display: none; flex-direction: column; gap: 16px; }
     .tab-panel.active { display: flex; }
 
+    .actions-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
     #toast {
       position: fixed; bottom: 20px; inset-inline-end: 20px; z-index: 999;
       background: var(--panel-2); color: var(--gold-light); border: 1px solid var(--gold);
-      border-radius: 10px; padding: 11px 16px; font-size: 13px; opacity: 0; transition: opacity 0.25s; pointer-events: none;
+      border-radius: 10px; padding: 11px 16px; font-size: 13px; font-weight: 700; opacity: 0; transition: opacity 0.25s; pointer-events: none;
     }
     #toast.show { opacity: 1; }
 
@@ -94,155 +103,171 @@
         <div class="brand-badge">48</div>
         <div>
           <div style="font-family:'Cormorant Garamond',serif; font-weight:700; color:var(--gold-light); font-size:18px;">48 COSMETICS</div>
-          <div style="font-size:11px; color:var(--muted);">لوحة تحكم المتجر</div>
+          <div style="font-size:11px; color:var(--muted);">مركز التحكم والعمليات</div>
         </div>
       </div>
-      <button class="nav-item active" data-tab="overview"><i data-lucide="layout-dashboard"></i> الإحصائيات العامة</button>
-      <button class="nav-item" data-tab="products"><i data-lucide="package-plus"></i> إدارة المنتجات</button>
-      <button class="nav-item" data-tab="orders"><i data-lucide="shopping-bag"></i> الطلبات الواردة</button>
+      <button class="nav-item active" data-tab="analytics"><i data-lucide="bar-chart-3"></i> التحليلات والتقارير الكاملة</button>
+      <button class="nav-item" data-tab="products"><i data-lucide="package-plus"></i> المنتجات والمخزون</button>
+      <button class="nav-item" data-tab="orders"><i data-lucide="truck"></i> الطلبات وتوصيل الضفة</button>
+      <button class="nav-item" data-tab="tickets"><i data-lucide="headset"></i> تذاكر الدعم المباشر</button>
       <button class="nav-item" data-tab="customers"><i data-lucide="users"></i> الحسابات والعملاء</button>
-      <button class="nav-item" data-tab="coupons"><i data-lucide="ticket-percent"></i> الكوبونات والخصومات</button>
-      <button class="nav-item" data-tab="languages"><i data-lucide="languages"></i> التحكم باللغات والنصوص</button>
-      <a href="./index.html" target="_blank" class="nav-item" style="margin-top:auto; text-decoration:none;"><i data-lucide="external-link"></i> معاينة المتجر المباشر</a>
+      <button class="nav-item" data-tab="appearance"><i data-lucide="palette"></i> ألوان المتجر والعملات واللغات</button>
+      <button class="nav-item" data-tab="status"><i data-lucide="shield-alert"></i> الصيانة والأعطال والتحديث</button>
+      <button class="nav-item" data-tab="bulk"><i data-lucide="zap"></i> أدوات التحكم السريع والتصفير</button>
+      <a href="./index.html" target="_blank" class="nav-item" style="margin-top:auto; text-decoration:none;"><i data-lucide="external-link"></i> فتح المتجر المباشر</a>
     </aside>
 
     <main>
       <div class="topbar">
         <div style="display:flex; align-items:center; gap:10px;">
-          <span class="pill" id="connectionBadge">مزامنة مباشرة مع المتجر</span>
-          <strong id="panelTitle">الإحصائيات العامة</strong>
+          <span class="pill" id="storeStatusPill">حالة المتجر: يعمل</span>
+          <strong id="panelTitle">التحليلات والتقارير الكاملة</strong>
         </div>
-        <div style="font-size:13px; color:var(--gold-light);" id="adminAccountLabel">مدير النظام — 48 COSMETICS</div>
+        <div style="font-size:12px; color:var(--gold-light);">🇵🇸 نظام إدارة 48 COSMETICS</div>
       </div>
 
       <div class="content">
-        <!-- 1. الإحصائيات -->
-        <section class="tab-panel active" id="tab-overview">
+        <section class="tab-panel active" id="tab-analytics">
           <div class="kpis" id="kpiGrid"></div>
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:14px;">
+            <div class="card">
+              <h3 style="font-size:15px; margin-bottom:10px;">توزيع الطلبات حسب محافظات الضفة الغربية</h3>
+              <canvas id="cityChart" height="170"></canvas>
+            </div>
+            <div class="card">
+              <h3 style="font-size:15px; margin-bottom:10px;">توزيع حالات الطلبات</h3>
+              <canvas id="statusChart" height="170"></canvas>
+            </div>
+          </div>
           <div class="card" style="overflow-x:auto;">
-            <h3 style="font-size:16px; margin-bottom:12px;">أحدث الطلبات الحقيقية</h3>
+            <h3 style="font-size:15px; margin-bottom:10px;">أحدث الطلبات الواردة</h3>
             <table>
-              <thead><tr><th>رقم الطلب</th><th>العميل</th><th>الجوال</th><th>المدينة</th><th>الحالة</th><th>الإجمالي</th></tr></thead>
+              <thead><tr><th>رقم الطلب</th><th>العميل</th><th>المحافظة والقرية</th><th>الإجمالي</th><th>الحالة</th></tr></thead>
               <tbody id="recentOrdersBody"></tbody>
             </table>
           </div>
         </section>
 
-        <!-- 2. إدارة المنتجات -->
         <section class="tab-panel" id="tab-products">
-          <form id="productForm" class="card" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
-            <input class="input" name="sku" placeholder="رمز المنتج SKU (مثال: 48-001)" required />
-            <input class="input" name="category_name" placeholder="القسم (عناية بالبشرة / عطور...)" required />
-            <input class="input" name="name_ar" placeholder="اسم المنتج بالعربية" required />
-            <input class="input" name="name_en" placeholder="Product Name (English)" required />
-            <input class="input" name="price" type="number" step="0.01" placeholder="السعر الأساسي ($)" required />
+          <form id="productForm" class="card" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap:10px;">
+            <input class="input" name="sku" placeholder="رمز المنتج SKU" required />
+            <input class="input" name="category_name" placeholder="القسم" required />
+            <input class="input" name="name_ar" placeholder="اسم المنتج (عربي)" required />
+            <input class="input" name="name_en" placeholder="Product Name (EN)" required />
+            <input class="input" name="price" type="number" step="0.01" placeholder="السعر بالشيكل (₪)" required />
             <input class="input" name="sale_price" type="number" step="0.01" placeholder="سعر التخفيض (اختياري)" />
             <input class="input" name="stock_qty" type="number" placeholder="الكمية في المخزون" required />
-            <input class="input" name="badge" placeholder="شارة المنتج (جديد / الأكثر مبيعاً)" />
-            <input class="input" name="image_url" placeholder="رابط صورة المنتج أو ارفع صورة بالأسفل" />
+            <input class="input" name="badge" placeholder="شارة (جديد / الأكثر طلباً)" />
+            <input class="input" name="image_url" placeholder="رابط صورة أو ارفع صورة" />
             <input class="input" id="imageFileInput" type="file" accept="image/*" />
-            <textarea class="input" name="desc_ar" rows="2" placeholder="وصف المنتج بالعربية" style="grid-column:1/-1;"></textarea>
-            <textarea class="input" name="desc_en" rows="2" placeholder="Product Description (English)" style="grid-column:1/-1;"></textarea>
-            <button class="btn-gold" type="submit" style="grid-column:1/-1;">+ نشر المنتج في المتجر فوراً</button>
+            <button class="btn-gold" type="submit" style="grid-column:1/-1;">+ إضافة ونشر المنتج في المتجر</button>
           </form>
 
           <div class="card" style="overflow-x:auto;">
-            <h3 style="font-size:16px; margin-bottom:12px;">المنتجات المنشورة حالياً في متجرك</h3>
             <table>
-              <thead><tr><th>الصورة</th><th>الرمز</th><th>الاسم</th><th>القسم</th><th>السعر</th><th>المخزون</th><th>إجراءات</th></tr></thead>
+              <thead><tr><th>الصورة</th><th>الرمز</th><th>المنتج</th><th>القسم</th><th>السعر</th><th>المخزون</th><th>إجراء</th></tr></thead>
               <tbody id="productsTableBody"></tbody>
             </table>
           </div>
         </section>
 
-        <!-- 3. الطلبات -->
         <section class="tab-panel" id="tab-orders">
           <div class="card" style="overflow-x:auto;">
             <table>
-              <thead><tr><th>رقم الطلب</th><th>العميل</th><th>العنوان والمدينة</th><th>المنتجات</th><th>الإجمالي</th><th>حالة الطلب</th></tr></thead>
+              <thead><tr><th>رقم الطلب</th><th>العميل والجوال</th><th>المدينة والقرية/المخيم</th><th>العنوان</th><th>الإجمالي</th><th>حالة التسليم</th></tr></thead>
               <tbody id="ordersTableBody"></tbody>
             </table>
           </div>
         </section>
 
-        <!-- 4. الحسابات والعملاء -->
+        <section class="tab-panel" id="tab-tickets">
+          <div id="ticketsAdminList" style="display:flex; flex-direction:column; gap:12px;"></div>
+        </section>
+
         <section class="tab-panel" id="tab-customers">
           <div class="card" style="overflow-x:auto;">
-            <h3 style="font-size:16px; margin-bottom:12px;">الحسابات المسجلة في المتجر</h3>
             <table>
-              <thead><tr><th>الاسم</th><th>البريد الإلكتروني</th><th>الهاتف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+              <thead><tr><th>الاسم</th><th>البريد الإلكتروني</th><th>الجوال</th><th>الحالة</th><th>تحكم</th></tr></thead>
               <tbody id="customersTableBody"></tbody>
             </table>
           </div>
         </section>
 
-        <!-- 5. الكوبونات -->
-        <section class="tab-panel" id="tab-coupons">
-          <form id="couponForm" class="card" style="display:flex; gap:10px; flex-wrap:wrap;">
-            <input class="input" name="code" placeholder="كود الخصم (مثال: WELCOME15)" style="max-width:220px;" required />
-            <select class="input" name="discount_type" style="max-width:190px;">
-              <option value="percent">نسبة مئوية (%)</option>
-              <option value="fixed">مبلغ ثابت ($)</option>
-              <option value="free_shipping">شحن مجاني</option>
-            </select>
-            <input class="input" name="discount_value" type="number" step="0.01" placeholder="قيمة الخصم" style="max-width:160px;" required />
-            <button class="btn-gold" type="submit">إنشاء الكوبون</button>
-          </form>
-          <div class="card">
-            <ul id="couponsList" style="list-style:none; display:flex; flex-direction:column; gap:10px;"></ul>
-          </div>
-        </section>
+        <section class="tab-panel" id="tab-appearance">
+          <form id="appearanceForm" class="card" style="display:flex; flex-direction:column; gap:14px; max-width:780px;">
+            <h3 style="font-size:17px; color:var(--gold-light);">التحكم بألوان المتجر</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:12px;">
+              <div><label style="font-size:12px;">اللون الذهبي الرئيسي</label><input class="input" type="color" id="colGold" style="height:44px;" /></div>
+              <div><label style="font-size:12px;">خلفية الموقع</label><input class="input" type="color" id="colBg" style="height:44px;" /></div>
+              <div><label style="font-size:12px;">خلفية البطاقات</label><input class="input" type="color" id="colCard" style="height:44px;" /></div>
+              <div><label style="font-size:12px;">لون النصوص</label><input class="input" type="color" id="colText" style="height:44px;" /></div>
+            </div>
 
-        <!-- 6. التحكم باللغات والنصوص -->
-        <section class="tab-panel" id="tab-languages">
-          <form id="languageControlForm" class="card" style="display:flex; flex-direction:column; gap:14px; max-width:760px;">
-            <h3 style="font-size:18px; color:var(--gold-light);">إعدادات اللغات والترجمة للمتجر</h3>
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+            <hr style="border-color:var(--line);" />
+            <h3 style="font-size:17px; color:var(--gold-light);">العملة الافتراضية وتوصيل الضفة الغربية</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
               <div>
-                <label style="font-size:12px; color:var(--muted);">اللغة الافتراضية عند فتح المتجر</label>
-                <select class="input" name="default_lang" id="setDefaultLang">
-                  <option value="ar">العربية (RTL)</option>
-                  <option value="en">الإنجليزية (LTR)</option>
+                <label style="font-size:12px;">العملة الافتراضية للمتجر</label>
+                <select class="input" id="setCurrency">
+                  <option value="ILS">شيكل إسرائيلي جديد (₪)</option>
+                  <option value="USD">دولار أمريكي ($)</option>
+                  <option value="JOD">دينار أردني (د.أ)</option>
                 </select>
               </div>
-              <div style="display:flex; flex-direction:column; justify-content:center; gap:8px;">
-                <label style="font-size:13px;"><input type="checkbox" id="setEnableAr" checked /> تفعيل اللغة العربية في المتجر</label>
-                <label style="font-size:13px;"><input type="checkbox" id="setEnableEn" checked /> تفعيل اللغة الإنجليزية في المتجر</label>
+              <div>
+                <label style="font-size:12px;">تكلفة توصيل الضفة الغربية (₪)</label>
+                <input class="input" type="number" id="setShipFee" />
+              </div>
+              <div>
+                <label style="font-size:12px;">حد التوصيل المجاني (₪)</label>
+                <input class="input" type="number" id="setFreeMin" />
               </div>
             </div>
 
             <hr style="border-color:var(--line);" />
-            <h4 style="font-size:15px;">تعديل نصوص الواجهة الرئيسية باللغتين</h4>
-
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-              <div>
-                <label style="font-size:12px; color:var(--muted);">الشريط العلوي (عربي)</label>
-                <input class="input" id="setAnnAr" />
-              </div>
-              <div>
-                <label style="font-size:12px; color:var(--muted);">Top Announcement (English)</label>
-                <input class="input" id="setAnnEn" />
-              </div>
-              <div>
-                <label style="font-size:12px; color:var(--muted);">العنوان الرئيسي (عربي)</label>
-                <input class="input" id="setHeroTitleAr" />
-              </div>
-              <div>
-                <label style="font-size:12px; color:var(--muted);">Hero Title (English)</label>
-                <input class="input" id="setHeroTitleEn" />
-              </div>
-              <div>
-                <label style="font-size:12px; color:var(--muted);">الوصف الرئيسي (عربي)</label>
-                <textarea class="input" id="setHeroDescAr" rows="2"></textarea>
-              </div>
-              <div>
-                <label style="font-size:12px; color:var(--muted);">Hero Description (English)</label>
-                <textarea class="input" id="setHeroDescEn" rows="2"></textarea>
-              </div>
+            <h3 style="font-size:17px; color:var(--gold-light);">التحكم باللغات والنصوص</h3>
+            <div style="display:flex; gap:16px; flex-wrap:wrap;">
+              <label><input type="checkbox" id="setEnableAr" /> تفعيل العربية</label>
+              <label><input type="checkbox" id="setEnableEn" /> تفعيل الإنجليزية</label>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+              <input class="input" id="setAnnAr" placeholder="الشريط العلوي (عربي)" />
+              <input class="input" id="setAnnEn" placeholder="Top Bar (English)" />
+              <input class="input" id="setHeroAr" placeholder="العنوان الرئيسي (عربي)" />
+              <input class="input" id="setHeroEn" placeholder="Hero Title (English)" />
             </div>
 
-            <button class="btn-gold" type="submit">حفظ إعدادات اللغات والنصوص وتطبيقها على المتجر</button>
+            <button class="btn-gold" type="submit">حفظ وتطبيق جميع التغييرات على المتجر فوراً</button>
           </form>
+        </section>
+
+        <section class="tab-panel" id="tab-status">
+          <div class="card" style="max-width:720px; display:flex; flex-direction:column; gap:14px;">
+            <h3 style="font-size:18px; color:var(--gold-light);">التحكم بحالة تشغيل المتجر</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:10px;">
+              <button class="btn-gold" type="button" onclick="setStoreStatus('live')">✅ تشغيل المتجر (مباشر)</button>
+              <button class="btn-sm" type="button" onclick="setStoreStatus('maintenance')">🛠️ وضع الصيانة</button>
+              <button class="btn-sm" type="button" onclick="setStoreStatus('updating')">🔄 وضع التحديث</button>
+              <button class="btn-danger" type="button" onclick="setStoreStatus('outage')">⚠️ إعلان عطل طارئ</button>
+            </div>
+            <textarea class="input" id="statusMsgAr" rows="2" placeholder="الرسالة التي تظهر للزبائن عند الصيانة أو العطل أو التحديث..."></textarea>
+            <button class="btn-sm" type="button" onclick="saveStatusMessage()">حفظ نص الرسالة</button>
+          </div>
+        </section>
+
+        <section class="tab-panel" id="tab-bulk">
+          <div class="card">
+            <h3 style="font-size:18px; color:var(--gold-light); margin-bottom:14px;">أدوات الإدارة السريعة والعمليات الجماعية</h3>
+            <div class="actions-grid">
+              <button class="btn-gold" type="button" onclick="bulkDeliverOrders()">📦 تسليم جميع الطلبات المعلقة دفعة واحدة</button>
+              <button class="btn-sm" type="button" onclick="restockAllProducts()">➕ تعبئة مخزون جميع المنتجات (+20)</button>
+              <button class="btn-sm" type="button" onclick="exportBackupJSON()">💾 تصدير نسخة احتياطية كاملة (JSON)</button>
+              <button class="btn-danger" type="button" onclick="zeroAllStock()">0️⃣ تصفير كميات مخزون المنتجات</button>
+              <button class="btn-danger" type="button" onclick="wipeAllProducts()">🗑️ حذف وتصفير قائمة المنتجات بالكامل</button>
+              <button class="btn-danger" type="button" onclick="wipeAllOrders()">🧹 مسح سجل الطلبات بالكامل</button>
+              <button class="btn-danger" type="button" onclick="factoryResetAll()">☢️ مسح جميع بيانات النظام بالكامل</button>
+            </div>
+          </div>
         </section>
       </div>
     </main>
@@ -255,32 +280,41 @@
     const hasSupabase = Boolean(cfg.supabase?.url && cfg.supabase?.anonKey);
     const sb = hasSupabase ? window.supabase.createClient(cfg.supabase.url, cfg.supabase.anonKey) : null;
 
-    const SHARED_KEYS = {
-      products: "c48_real_products",
-      orders: "c48_real_orders",
-      coupons: "c48_real_coupons",
-      settings: "c48_real_settings",
-      users: "c48_real_users"
+    const KEYS = {
+      products: "c48_v3_products",
+      orders: "c48_v3_orders",
+      coupons: "c48_v3_coupons",
+      settings: "c48_v3_settings",
+      users: "c48_v3_users",
+      tickets: "c48_v3_tickets"
     };
 
     const state = {
-      products: JSON.parse(localStorage.getItem(SHARED_KEYS.products) || "[]"),
-      orders: JSON.parse(localStorage.getItem(SHARED_KEYS.orders) || "[]"),
-      coupons: JSON.parse(localStorage.getItem(SHARED_KEYS.coupons) || "[]"),
-      users: JSON.parse(localStorage.getItem(SHARED_KEYS.users) || "[]"),
+      products: JSON.parse(localStorage.getItem(KEYS.products) || "[]"),
+      orders: JSON.parse(localStorage.getItem(KEYS.orders) || "[]"),
+      users: JSON.parse(localStorage.getItem(KEYS.users) || "[]"),
+      tickets: JSON.parse(localStorage.getItem(KEYS.tickets) || "[]"),
       settings: {
-        default_lang: "ar",
+        store_status: "live",
+        status_message_ar: "نعمل حالياً على تحديث المتجر لخدمتكم بشكل أفضل، سنعود خلال دقائق.",
+        currency_code: "ILS",
+        primary_gold: "#d4af37",
+        bg_primary: "#070709",
+        bg_card: "#13131a",
+        text_primary: "#f8f5ef",
         enable_ar: true,
         enable_en: true,
-        announcement_ar: "توصيل سريع مجاني للطلبات فوق $150",
-        announcement_en: "COMPLIMENTARY EXPRESS DELIVERY ON ORDERS OVER $150",
-        hero_title_ar: "إشراقة مصقولة في كل قطرة.",
-        hero_title_en: "Sculpted Radiance in Every Drop.",
-        hero_desc_ar: "تركيبات نباتية فاخرة وإكسير غني بالذهب عيار 24 لبشرة متألقة.",
-        hero_desc_en: "Botanical actives and 24k gold-infused elixirs crafted for enduring luminescence.",
-        ...(JSON.parse(localStorage.getItem(SHARED_KEYS.settings) || "null") || {})
+        announcement_ar: "توصيل سريع لجميع مدن وقرى ومخيمات الضفة الغربية 🇵🇸",
+        announcement_en: "Express Delivery Across All West Bank Cities, Towns & Camps",
+        hero_title_ar: "جمال فلسطيني أصيل بلمسة ملكية.",
+        hero_title_en: "Authentic Beauty with a Royal Touch.",
+        shipping_west_bank_fee: 20,
+        free_shipping_min: 250,
+        ...(JSON.parse(localStorage.getItem(KEYS.settings) || "null") || {})
       }
     };
+
+    let cityChartObj, statusChartObj;
 
     function showToast(msg) {
       const el = document.getElementById("toast");
@@ -290,126 +324,175 @@
       window.__at = setTimeout(() => el.classList.remove("show"), 2600);
     }
 
-    async function loadAdminData() {
-      document.getElementById("connectionBadge").textContent = hasSupabase ? "متصل بـ Supabase" : "وضع التخزين المحلي المشترك";
+    function saveSettings() {
+      localStorage.setItem(KEYS.settings, JSON.stringify(state.settings));
+      if (hasSupabase && sb) sb.from("store_settings").upsert({ id: 1, ...state.settings });
+      renderAll();
+    }
+
+    async function loadAdmin() {
       if (hasSupabase && sb) {
-        const [{ data: prods }, { data: ords }, { data: coups }, { data: profs }, { data: sets }] = await Promise.all([
+        const [{ data: p }, { data: o }, { data: u }, { data: t }, { data: s }] = await Promise.all([
           sb.from("products").select("*").order("created_at", { ascending: false }),
           sb.from("orders").select("*").order("created_at", { ascending: false }),
-          sb.from("coupons").select("*").order("created_at", { ascending: false }),
           sb.from("profiles").select("*").order("created_at", { ascending: false }),
+          sb.from("support_tickets").select("*").order("updated_at", { ascending: false }),
           sb.from("store_settings").select("*").eq("id", 1).maybeSingle()
         ]);
-        if (prods) state.products = prods;
-        if (ords) state.orders = ords;
-        if (coups) state.coupons = coups;
-        if (profs) state.users = profs;
-        if (sets) state.settings = { ...state.settings, ...sets };
+        if (p) state.products = p;
+        if (o) state.orders = o;
+        if (u) state.users = u;
+        if (t) state.tickets = t;
+        if (s) state.settings = { ...state.settings, ...s };
       } else {
-        state.products = JSON.parse(localStorage.getItem(SHARED_KEYS.products) || "[]");
-        state.orders = JSON.parse(localStorage.getItem(SHARED_KEYS.orders) || "[]");
-        state.coupons = JSON.parse(localStorage.getItem(SHARED_KEYS.coupons) || "[]");
-        state.users = JSON.parse(localStorage.getItem(SHARED_KEYS.users) || "[]");
+        state.products = JSON.parse(localStorage.getItem(KEYS.products) || "[]");
+        state.orders = JSON.parse(localStorage.getItem(KEYS.orders) || "[]");
+        state.users = JSON.parse(localStorage.getItem(KEYS.users) || "[]");
+        state.tickets = JSON.parse(localStorage.getItem(KEYS.tickets) || "[]");
       }
       renderAll();
     }
 
     window.addEventListener("storage", (e) => {
-      if (Object.values(SHARED_KEYS).includes(e.key)) loadAdminData();
+      if (Object.values(KEYS).includes(e.key)) loadAdmin();
     });
 
     function renderAll() {
-      const totalRev = state.orders.reduce((s, o) => s + Number(o.total_amount || 0), 0);
+      const statusLabels = { live: "يعمل (مباشر)", maintenance: "وضع الصيانة", updating: "قيد التحديث", outage: "عطل طارئ" };
+      document.getElementById("storeStatusPill").textContent = "حالة المتجر: " + (statusLabels[state.settings.store_status] || "يعمل");
+
+      const rev = state.orders.reduce((s, o) => s + Number(o.total_amount || 0), 0);
+      const delivered = state.orders.filter((o) => o.order_status === "delivered").length;
+      const openTickets = state.tickets.filter((t) => t.status !== "closed").length;
+
       document.getElementById("kpiGrid").innerHTML = `
-        <div class="card"><div class="kpi-lbl">إجمالي المبيعات</div><div class="kpi-val">$${totalRev.toFixed(2)}</div></div>
-        <div class="card"><div class="kpi-lbl">عدد الطلبات</div><div class="kpi-val">${state.orders.length}</div></div>
-        <div class="card"><div class="kpi-lbl">المنتجات المنشورة</div><div class="kpi-val">${state.products.length}</div></div>
+        <div class="card"><div class="kpi-lbl">إجمالي المبيعات (₪)</div><div class="kpi-val">${rev.toFixed(2)} ₪</div></div>
+        <div class="card"><div class="kpi-lbl">إجمالي الطلبات</div><div class="kpi-val">${state.orders.length}</div></div>
+        <div class="card"><div class="kpi-lbl">الطلبات المُسلّمة</div><div class="kpi-val">${delivered}</div></div>
+        <div class="card"><div class="kpi-lbl">المنتجات النشطة</div><div class="kpi-val">${state.products.length}</div></div>
         <div class="card"><div class="kpi-lbl">الحسابات المسجلة</div><div class="kpi-val">${state.users.length}</div></div>
+        <div class="card"><div class="kpi-lbl">تذاكر الدعم المفتوحة</div><div class="kpi-val">${openTickets}</div></div>
       `;
 
-      document.getElementById("recentOrdersBody").innerHTML = state.orders.length ? state.orders.slice(0, 10).map((o) => `
+      document.getElementById("recentOrdersBody").innerHTML = state.orders.length ? state.orders.slice(0, 8).map((o) => `
         <tr>
           <td><strong>#${o.order_number}</strong></td>
           <td>${o.customer_name}</td>
-          <td>${o.customer_phone}</td>
-          <td>${o.shipping_city}</td>
+          <td>${o.shipping_city} — ${o.shipping_village || ""}</td>
+          <td>${Number(o.total_amount).toFixed(2)} ₪</td>
           <td><span class="pill">${o.order_status}</span></td>
-          <td>$${Number(o.total_amount).toFixed(2)}</td>
         </tr>
-      `).join("") : `<tr><td colspan="6" style="color:var(--muted);">لا توجد طلبات واردة بعد.</td></tr>`;
+      `).join("") : `<tr><td colspan="5" style="color:var(--muted);">لا توجد طلبات حتى الآن.</td></tr>`;
 
       document.getElementById("productsTableBody").innerHTML = state.products.length ? state.products.map((p, idx) => `
         <tr>
-          <td><img src="${p.image_url}" alt="${p.name_ar}" style="width:44px;height:44px;object-fit:cover;border-radius:8px;" /></td>
+          <td><img src="${p.image_url}" style="width:42px;height:42px;object-fit:cover;border-radius:8px;" /></td>
           <td>${p.sku}</td>
-          <td><strong>${p.name_ar}</strong><br><span style="font-size:11px;color:var(--muted);">${p.name_en}</span></td>
+          <td><strong>${p.name_ar}</strong></td>
           <td>${p.category_name}</td>
-          <td>$${Number(p.sale_price ?? p.price).toFixed(2)}</td>
+          <td>${Number(p.sale_price ?? p.price).toFixed(2)} ₪</td>
           <td>${p.stock_qty}</td>
-          <td>
-            <button class="btn-sm" type="button" onclick="adjustStock(${idx}, 5)">+5 مخزون</button>
-            <button class="btn-sm" type="button" onclick="deleteProduct(${idx})">حذف</button>
-          </td>
+          <td><button class="btn-sm" type="button" onclick="deleteProduct(${idx})">حذف</button></td>
         </tr>
-      `).join("") : `<tr><td colspan="7" style="color:var(--muted);">لم تقم بإضافة أي منتج بعد. استخدم النموذج أعلاه لإضافة أول منتج حقيقي.</td></tr>`;
+      `).join("") : `<tr><td colspan="7" style="color:var(--muted);">لا توجد منتجات بعد.</td></tr>`;
 
       document.getElementById("ordersTableBody").innerHTML = state.orders.length ? state.orders.map((o, idx) => `
         <tr>
           <td><strong>#${o.order_number}</strong></td>
           <td>${o.customer_name}<br><span style="font-size:11px;color:var(--muted);">${o.customer_phone}</span></td>
-          <td>${o.shipping_city} — ${o.shipping_address}</td>
-          <td>${(o.items || []).map((i) => `${i.name} (×${i.qty})`).join("، ")}</td>
-          <td>$${Number(o.total_amount).toFixed(2)}</td>
+          <td><strong>${o.shipping_city}</strong> — ${o.shipping_village || ""}</td>
+          <td>${o.shipping_address}</td>
+          <td>${Number(o.total_amount).toFixed(2)} ₪</td>
           <td>
-            <select class="input" style="padding:4px 8px; width:auto;" onchange="updateOrderStatus(${idx}, this.value)">
+            <select class="input" style="padding:4px 8px; width:auto;" onchange="changeOrderStatus(${idx}, this.value)">
               <option value="pending" ${o.order_status === "pending" ? "selected" : ""}>قيد الانتظار</option>
-              <option value="confirmed" ${o.order_status === "confirmed" ? "selected" : ""}>مؤكد</option>
               <option value="processing" ${o.order_status === "processing" ? "selected" : ""}>قيد التجهيز</option>
-              <option value="shipped" ${o.order_status === "shipped" ? "selected" : ""}>تم الشحن</option>
+              <option value="shipped" ${o.order_status === "shipped" ? "selected" : ""}>مع المندوب</option>
               <option value="delivered" ${o.order_status === "delivered" ? "selected" : ""}>تم التسليم</option>
               <option value="cancelled" ${o.order_status === "cancelled" ? "selected" : ""}>ملغي</option>
             </select>
           </td>
         </tr>
-      `).join("") : `<tr><td colspan="6" style="color:var(--muted);">لا توجد طلبات حتى الآن.</td></tr>`;
+      `).join("") : `<tr><td colspan="6" style="color:var(--muted);">لا توجد طلبات.</td></tr>`;
+
+      document.getElementById("ticketsAdminList").innerHTML = state.tickets.length ? state.tickets.map((tk) => `
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <div><strong style="color:var(--gold-light);">#${tk.ticket_number} — ${tk.subject}</strong> <span style="font-size:12px;color:var(--muted);">(${tk.customer_name} • ${tk.customer_email})</span></div>
+            <div style="display:flex; gap:6px;">
+              <span class="pill">${tk.status === "closed" ? "مغلقة" : "مفتوحة"}</span>
+              ${tk.status !== "closed" ? `<button class="btn-sm" type="button" onclick="closeTicket('${tk.id}')">إغلاق التذكرة</button>` : ""}
+            </div>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:10px;">
+            ${(tk.messages || []).map((m) => `
+              <div style="padding:8px 10px; border-radius:8px; font-size:13px; background:${m.sender === "admin" ? "rgba(212,175,55,0.16)" : "rgba(255,255,255,0.05)"};">
+                <strong>${m.sender === "admin" ? "رد الإدارة:" : "الزبون:"}</strong> ${m.text}
+              </div>
+            `).join("")}
+          </div>
+          ${tk.status !== "closed" ? `
+            <div style="display:flex; gap:8px;">
+              <input class="input" id="adminReply-${tk.id}" placeholder="اكتب ردك المباشر للزبون..." />
+              <button class="btn-gold" type="button" onclick="replyToTicket('${tk.id}')">إرسال الرد</button>
+            </div>
+          ` : ""}
+        </div>
+      `).join("") : `<div class="card" style="color:var(--muted);">لا توجد تذاكر دعم من الزبائن حالياً.</div>`;
 
       document.getElementById("customersTableBody").innerHTML = state.users.length ? state.users.map((u, idx) => `
         <tr>
-          <td><strong>${u.full_name || "عميل"}</strong></td>
+          <td><strong>${u.full_name}</strong></td>
           <td>${u.email}</td>
           <td>${u.phone || "—"}</td>
-          <td><span class="pill">${u.is_blocked ? "موقوف" : "نشط"}</span></td>
-          <td>
-            <button class="btn-sm" type="button" onclick="toggleBlockUser(${idx})">${u.is_blocked ? "إلغاء الحظر" : "حظر الحساب"}</button>
-          </td>
+          <td><span class="pill">${u.is_blocked ? "محظور" : "نشط"}</span></td>
+          <td><button class="btn-sm" type="button" onclick="toggleBlockUser(${idx})">${u.is_blocked ? "فك الحظر" : "حظر"}</button></td>
         </tr>
-      `).join("") : `<tr><td colspan="5" style="color:var(--muted);">لا توجد حسابات مسجلة بعد.</td></tr>`;
+      `).join("") : `<tr><td colspan="5" style="color:var(--muted);">لا توجد حسابات مسجلة.</td></tr>`;
 
-      document.getElementById("couponsList").innerHTML = state.coupons.length ? state.coupons.map((c, idx) => `
-        <li style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.06);">
-          <span><span class="pill">${c.code}</span> — النوع: ${c.discount_type} — القيمة: ${c.discount_value}</span>
-          <button class="btn-sm" type="button" onclick="deleteCoupon(${idx})">حذف</button>
-        </li>
-      `).join("") : `<li style="color:var(--muted); font-size:13px;">لا توجد كوبونات خصم منشأة حالياً.</li>`;
-
-      // تعبئة فورم اللغات
-      document.getElementById("setDefaultLang").value = state.settings.default_lang || "ar";
+      document.getElementById("colGold").value = state.settings.primary_gold || "#d4af37";
+      document.getElementById("colBg").value = state.settings.bg_primary || "#070709";
+      document.getElementById("colCard").value = state.settings.bg_card || "#13131a";
+      document.getElementById("colText").value = state.settings.text_primary || "#f8f5ef";
+      document.getElementById("setCurrency").value = state.settings.currency_code || "ILS";
+      document.getElementById("setShipFee").value = state.settings.shipping_west_bank_fee ?? 20;
+      document.getElementById("setFreeMin").value = state.settings.free_shipping_min ?? 250;
       document.getElementById("setEnableAr").checked = state.settings.enable_ar !== false;
       document.getElementById("setEnableEn").checked = state.settings.enable_en !== false;
       document.getElementById("setAnnAr").value = state.settings.announcement_ar || "";
       document.getElementById("setAnnEn").value = state.settings.announcement_en || "";
-      document.getElementById("setHeroTitleAr").value = state.settings.hero_title_ar || "";
-      document.getElementById("setHeroTitleEn").value = state.settings.hero_title_en || "";
-      document.getElementById("setHeroDescAr").value = state.settings.hero_desc_ar || "";
-      document.getElementById("setHeroDescEn").value = state.settings.hero_desc_en || "";
+      document.getElementById("setHeroAr").value = state.settings.hero_title_ar || "";
+      document.getElementById("setHeroEn").value = state.settings.hero_title_en || "";
+      document.getElementById("statusMsgAr").value = state.settings.status_message_ar || "";
+
+      renderCharts();
     }
 
-    function readFileAsDataURL(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
+    function renderCharts() {
+      const cityCounts = {};
+      state.orders.forEach((o) => { cityCounts[o.shipping_city] = (cityCounts[o.shipping_city] || 0) + 1; });
+      const cityLabels = Object.keys(cityCounts).length ? Object.keys(cityCounts) : ["لا توجد بيانات بعد"];
+      const cityVals = Object.keys(cityCounts).length ? Object.values(cityCounts) : [0];
+
+      if (cityChartObj) cityChartObj.destroy();
+      cityChartObj = new Chart(document.getElementById("cityChart"), {
+        type: "bar",
+        data: { labels: cityLabels, datasets: [{ label: "عدد الطلبات", data: cityVals, backgroundColor: "#d4af37" }] },
+        options: { plugins: { legend: { labels: { color: "#f8f5ef" } } }, scales: { x: { ticks: { color: "#a19a8c" } }, y: { ticks: { color: "#a19a8c" } } } }
+      });
+
+      const pending = state.orders.filter((o) => o.order_status === "pending").length;
+      const delivered = state.orders.filter((o) => o.order_status === "delivered").length;
+      const other = Math.max(0, state.orders.length - pending - delivered);
+
+      if (statusChartObj) statusChartObj.destroy();
+      statusChartObj = new Chart(document.getElementById("statusChart"), {
+        type: "doughnut",
+        data: {
+          labels: ["قيد الانتظار", "تم التسليم", "حالات أخرى"],
+          datasets: [{ data: [pending, delivered, other], backgroundColor: ["#f59e0b", "#10b981", "#d4af37"] }]
+        },
+        options: { plugins: { legend: { labels: { color: "#f8f5ef" } } } }
       });
     }
 
@@ -418,16 +501,13 @@
       const fd = new FormData(e.target);
       const file = document.getElementById("imageFileInput").files[0];
       let imageUrl = fd.get("image_url").trim();
-
       if (file) {
-        imageUrl = await readFileAsDataURL(file);
+        imageUrl = await new Promise((res) => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(file); });
       }
-      if (!imageUrl) {
-        return showToast("يرجى رفع صورة للمنتج أو إدخال رابط صورة");
-      }
+      if (!imageUrl) return showToast("يرجى رفع صورة أو وضع رابط");
 
-      const newProduct = {
-        id: crypto.randomUUID ? crypto.randomUUID() : "prod-" + Date.now(),
+      const prod = {
+        id: crypto.randomUUID ? crypto.randomUUID() : "p-" + Date.now(),
         sku: fd.get("sku").trim(),
         category_name: fd.get("category_name").trim(),
         name_ar: fd.get("name_ar").trim(),
@@ -436,142 +516,149 @@
         sale_price: fd.get("sale_price") ? Number(fd.get("sale_price")) : null,
         stock_qty: Number(fd.get("stock_qty")),
         badge: fd.get("badge").trim() || null,
-        desc_ar: fd.get("desc_ar").trim(),
-        desc_en: fd.get("desc_en").trim(),
         image_url: imageUrl,
         status: "active",
         created_at: new Date().toISOString()
       };
 
-      if (hasSupabase && sb) {
-        const { error } = await sb.from("products").insert(newProduct);
-        if (error) return showToast("خطأ في حفظ المنتج: " + error.message);
-      } else {
-        state.products.unshift(newProduct);
-        localStorage.setItem(SHARED_KEYS.products, JSON.stringify(state.products));
+      if (hasSupabase && sb) await sb.from("products").insert(prod);
+      else {
+        state.products.unshift(prod);
+        localStorage.setItem(KEYS.products, JSON.stringify(state.products));
       }
-
       e.target.reset();
-      showToast("تم نشر المنتج في المتجر بنجاح");
-      loadAdminData();
+      showToast("تم نشر المنتج");
+      loadAdmin();
     });
 
-    async function adjustStock(idx, delta) {
-      const p = state.products[idx];
-      if (!p) return;
-      p.stock_qty = Math.max(0, Number(p.stock_qty) + delta);
-      if (hasSupabase && sb) {
-        await sb.from("products").update({ stock_qty: p.stock_qty }).eq("id", p.id);
-      } else {
-        localStorage.setItem(SHARED_KEYS.products, JSON.stringify(state.products));
-      }
-      renderAll();
-      showToast("تم تحديث المخزون");
-    }
-
-    async function deleteProduct(idx) {
-      const p = state.products[idx];
-      if (!p || !confirm(`حذف المنتج "${p.name_ar}" نهائياً؟`)) return;
-      if (hasSupabase && sb) {
-        await sb.from("products").delete().eq("id", p.id);
-      } else {
-        state.products.splice(idx, 1);
-        localStorage.setItem(SHARED_KEYS.products, JSON.stringify(state.products));
-      }
+    function deleteProduct(idx) {
+      state.products.splice(idx, 1);
+      localStorage.setItem(KEYS.products, JSON.stringify(state.products));
       renderAll();
       showToast("تم حذف المنتج");
     }
 
-    async function updateOrderStatus(idx, status) {
-      const o = state.orders[idx];
-      if (!o) return;
-      o.order_status = status;
-      if (hasSupabase && sb) {
-        await sb.from("orders").update({ order_status: status }).eq("id", o.id);
-      } else {
-        localStorage.setItem(SHARED_KEYS.orders, JSON.stringify(state.orders));
-      }
+    function changeOrderStatus(idx, status) {
+      state.orders[idx].order_status = status;
+      localStorage.setItem(KEYS.orders, JSON.stringify(state.orders));
       renderAll();
       showToast("تم تحديث حالة الطلب");
     }
 
-    async function toggleBlockUser(idx) {
-      const u = state.users[idx];
-      if (!u) return;
-      u.is_blocked = !u.is_blocked;
-      if (hasSupabase && sb) {
-        await sb.from("profiles").update({ is_blocked: u.is_blocked }).eq("id", u.id);
-      } else {
-        localStorage.setItem(SHARED_KEYS.users, JSON.stringify(state.users));
-      }
+    async function replyToTicket(id) {
+      const inp = document.getElementById(`adminReply-${id}`);
+      const txt = inp?.value.trim();
+      if (!txt) return;
+      const tk = state.tickets.find((x) => x.id === id);
+      if (!tk) return;
+      tk.messages.push({ sender: "admin", text: txt, at: new Date().toISOString() });
+      tk.status = "replied";
+      tk.updated_at = new Date().toISOString();
+      if (hasSupabase && sb) await sb.from("support_tickets").update({ messages: tk.messages, status: "replied" }).eq("id", id);
+      else localStorage.setItem(KEYS.tickets, JSON.stringify(state.tickets));
       renderAll();
-      showToast(u.is_blocked ? "تم حظر الحساب" : "تم تفعيل الحساب");
+      showToast("تم إرسال الرد للزبون");
     }
 
-    document.getElementById("couponForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      const coupon = {
-        id: crypto.randomUUID ? crypto.randomUUID() : "cp-" + Date.now(),
-        code: fd.get("code").trim().toUpperCase(),
-        discount_type: fd.get("discount_type"),
-        discount_value: Number(fd.get("discount_value")),
-        is_active: true
-      };
-      if (hasSupabase && sb) {
-        const { error } = await sb.from("coupons").insert(coupon);
-        if (error) return showToast("خطأ: " + error.message);
-      } else {
-        state.coupons.unshift(coupon);
-        localStorage.setItem(SHARED_KEYS.coupons, JSON.stringify(state.coupons));
-      }
-      e.target.reset();
+    async function closeTicket(id) {
+      const tk = state.tickets.find((x) => x.id === id);
+      if (!tk) return;
+      tk.status = "closed";
+      if (hasSupabase && sb) await sb.from("support_tickets").update({ status: "closed" }).eq("id", id);
+      else localStorage.setItem(KEYS.tickets, JSON.stringify(state.tickets));
       renderAll();
-      showToast("تم إنشاء الكوبون وتفعيله");
-    });
-
-    async function deleteCoupon(idx) {
-      const c = state.coupons[idx];
-      if (!c) return;
-      if (hasSupabase && sb) {
-        await sb.from("coupons").delete().eq("id", c.id);
-      } else {
-        state.coupons.splice(idx, 1);
-        localStorage.setItem(SHARED_KEYS.coupons, JSON.stringify(state.coupons));
-      }
-      renderAll();
-      showToast("تم حذف الكوبون");
+      showToast("تم إغلاق التذكرة");
     }
 
-    document.getElementById("languageControlForm").addEventListener("submit", async (e) => {
+    function toggleBlockUser(idx) {
+      state.users[idx].is_blocked = !state.users[idx].is_blocked;
+      localStorage.setItem(KEYS.users, JSON.stringify(state.users));
+      renderAll();
+    }
+
+    document.getElementById("appearanceForm").addEventListener("submit", (e) => {
       e.preventDefault();
-      const enableAr = document.getElementById("setEnableAr").checked;
-      const enableEn = document.getElementById("setEnableEn").checked;
-      if (!enableAr && !enableEn) {
-        return showToast("يجب تفعيل لغة واحدة على الأقل للمتجر");
-      }
-
-      const updated = {
-        ...state.settings,
-        default_lang: document.getElementById("setDefaultLang").value,
-        enable_ar: enableAr,
-        enable_en: enableEn,
-        announcement_ar: document.getElementById("setAnnAr").value.trim(),
-        announcement_en: document.getElementById("setAnnEn").value.trim(),
-        hero_title_ar: document.getElementById("setHeroTitleAr").value.trim(),
-        hero_title_en: document.getElementById("setHeroTitleEn").value.trim(),
-        hero_desc_ar: document.getElementById("setHeroDescAr").value.trim(),
-        hero_desc_en: document.getElementById("setHeroDescEn").value.trim()
-      };
-
-      state.settings = updated;
-      if (hasSupabase && sb) {
-        await sb.from("store_settings").upsert({ id: 1, ...updated });
-      } else {
-        localStorage.setItem(SHARED_KEYS.settings, JSON.stringify(updated));
-      }
-      showToast("تم حفظ إعدادات اللغات والنصوص وتطبيقها على المتجر فوراً");
+      state.settings.primary_gold = document.getElementById("colGold").value;
+      state.settings.bg_primary = document.getElementById("colBg").value;
+      state.settings.bg_card = document.getElementById("colCard").value;
+      state.settings.text_primary = document.getElementById("colText").value;
+      state.settings.currency_code = document.getElementById("setCurrency").value;
+      state.settings.shipping_west_bank_fee = Number(document.getElementById("setShipFee").value || 20);
+      state.settings.free_shipping_min = Number(document.getElementById("setFreeMin").value || 250);
+      state.settings.enable_ar = document.getElementById("setEnableAr").checked;
+      state.settings.enable_en = document.getElementById("setEnableEn").checked;
+      state.settings.announcement_ar = document.getElementById("setAnnAr").value;
+      state.settings.announcement_en = document.getElementById("setAnnEn").value;
+      state.settings.hero_title_ar = document.getElementById("setHeroAr").value;
+      state.settings.hero_title_en = document.getElementById("setHeroEn").value;
+      localStorage.setItem("c48_v3_curr", state.settings.currency_code);
+      saveSettings();
+      showToast("تم تطبيق الألوان والعملات واللغات على المتجر");
     });
+
+    function setStoreStatus(st) {
+      state.settings.store_status = st;
+      saveSettings();
+      showToast("تم تغيير حالة المتجر فوراً");
+    }
+
+    function saveStatusMessage() {
+      state.settings.status_message_ar = document.getElementById("statusMsgAr").value;
+      saveSettings();
+      showToast("تم حفظ رسالة الصيانة/العطل");
+    }
+
+    function bulkDeliverOrders() {
+      state.orders.forEach((o) => { if (o.order_status !== "cancelled") o.order_status = "delivered"; });
+      localStorage.setItem(KEYS.orders, JSON.stringify(state.orders));
+      renderAll();
+      showToast("تم تحويل جميع الطلبات إلى (تم التسليم)");
+    }
+
+    function restockAllProducts() {
+      state.products.forEach((p) => { p.stock_qty = Number(p.stock_qty || 0) + 20; });
+      localStorage.setItem(KEYS.products, JSON.stringify(state.products));
+      renderAll();
+      showToast("تمت إضافة +20 قطعة لمخزون كل منتج");
+    }
+
+    function zeroAllStock() {
+      if (!confirm("تصفير كمية المخزون لجميع المنتجات؟")) return;
+      state.products.forEach((p) => { p.stock_qty = 0; });
+      localStorage.setItem(KEYS.products, JSON.stringify(state.products));
+      renderAll();
+      showToast("تم تصفير مخزون جميع المنتجات");
+    }
+
+    function wipeAllProducts() {
+      if (!confirm("هل أنت متأكد من حذف جميع المنتجات نهائياً؟")) return;
+      state.products = [];
+      localStorage.setItem(KEYS.products, "[]");
+      renderAll();
+      showToast("تم مسح جميع المنتجات");
+    }
+
+    function wipeAllOrders() {
+      if (!confirm("هل أنت متأكد من مسح سجل الطلبات بالكامل؟")) return;
+      state.orders = [];
+      localStorage.setItem(KEYS.orders, "[]");
+      renderAll();
+      showToast("تم مسح سجل الطلبات");
+    }
+
+    function factoryResetAll() {
+      if (!confirm("تحذير: سيتم مسح المنتجات والطلبات والتذاكر والحسابات وإعادة ضبط النظام بالكامل! متابعة؟")) return;
+      Object.values(KEYS).forEach((k) => localStorage.removeItem(k));
+      location.reload();
+    }
+
+    function exportBackupJSON() {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `48-cosmetics-backup-${Date.now()}.json`;
+      a.click();
+    }
 
     document.querySelectorAll(".nav-item[data-tab]").forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -584,7 +671,7 @@
     });
 
     lucide.createIcons();
-    loadAdminData();
+    loadAdmin();
   </script>
 </body>
 </html>
