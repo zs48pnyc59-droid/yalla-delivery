@@ -1,211 +1,1050 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>siplab - Coming Soon</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;800&display=swap" rel="stylesheet">
-<style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:#111;height:100vh;display:flex;justify-content:center;align-items:center;overflow:hidden;font-family:'Poppins',sans-serif}
-  .frame{position:relative;height:100vh;aspect-ratio:9/16;overflow:hidden;
-    background:radial-gradient(circle at 50% 40%,#a50f0f 0%,#8a0606 45%,#5c0000 100%)}
-  .stage{position:absolute;inset:0}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="48 COSMETICS — Ultra-luxury skincare, haute parfumerie, and radiant beauty essentials." />
+  <title>48 COSMETICS | Beauty. Elegance. Excellence.</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2309090b'/%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' fill='%23d4af37' font-family='Georgia,serif' font-size='30' font-weight='bold'%3E48%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./config.example.js"></script>
+  <style>
+    :root {
+      --bg-obsidian: #070709;
+      --bg-charcoal: #111115;
+      --bg-card: #16161c;
+      --bg-ivory: #f8f5ef;
+      --bg-beige: #efe8dc;
+      --ink-light: #f8f5ef;
+      --ink-muted: #a69f91;
+      --ink-dark: #121216;
+      --gold: #d4af37;
+      --gold-bright: #f0d378;
+      --gold-dim: rgba(212, 175, 55, 0.22);
+      --border-subtle: rgba(212, 175, 55, 0.18);
+      --radius: 14px;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+    }
 
-  .bubble{position:absolute;border:2px solid rgba(255,255,255,.12);border-radius:50%;animation:float 9s ease-in-out infinite}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-40px)}}
-  .ground{position:absolute;top:80vh;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.25),transparent)}
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
+      background: var(--bg-obsidian);
+      color: var(--ink-light);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    html[dir="rtl"] body { font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif; }
+    h1, h2, h3, .font-serif { font-family: 'Cormorant Garamond', 'Cairo', serif; letter-spacing: 0.02em; }
 
-  .winds{position:absolute;inset:0}
-  .play .winds{animation:off .3s 4s forwards}
-  .w{position:absolute;height:2px;width:12vh;border-radius:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55));animation:wind 1.1s linear infinite}
-  @keyframes wind{from{transform:translateX(70vh)}to{transform:translateX(-80vh)}}
-  @keyframes off{to{opacity:0}}
+    /* Loader */
+    #preloader {
+      position: fixed; inset: 0; z-index: 9999;
+      background: radial-gradient(circle at center, #18140c 0%, #070709 75%);
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+      transition: opacity 0.6s var(--ease), visibility 0.6s;
+    }
+    #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
 
-  /* كوب siplab الطائر */
-  .cupwrap{position:absolute;left:50%;top:33vh;width:32%;opacity:0;z-index:2;filter:drop-shadow(0 1.5vh 2vh rgba(0,0,0,.35))}
-  .cupwrap svg{display:block;width:100%}
-  .cuplogo{position:absolute;top:36%;left:50%;width:58%;transform:translateX(-50%) rotate(-4deg);
-    filter:brightness(0) saturate(100%) invert(8%) sepia(89%) saturate(6000%) hue-rotate(358deg) brightness(88%) contrast(115%)}
-  .cuplogo.txt2{filter:none;color:#8a0606;font-weight:800;font-size:3vh;text-align:center;width:auto}
-  .play .cupwrap{opacity:1;animation:fly 4s ease-in-out both, drop .45s cubic-bezier(.55,0,1,.45) 4s forwards, hide .05s 4.45s forwards}
-  @keyframes fly{
-    0%{transform:translate(-50%,-60vh) rotate(-25deg)}
-    20%{transform:translate(-50%,0) rotate(12deg)}
-    40%{transform:translate(-65%,-4vh) rotate(-10deg)}
-    60%{transform:translate(-35%,2vh) rotate(10deg)}
-    80%{transform:translate(-50%,-6vh) rotate(-6deg)}
-    100%{transform:translate(-50%,-10vh) rotate(0)}}
-  @keyframes drop{from{transform:translate(-50%,-10vh) rotate(0)}to{transform:translate(-50%,23vh) rotate(20deg)}}
-  @keyframes hide{to{opacity:0}}
+    .logo-48 {
+      display: inline-flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--ink-light);
+    }
+    .logo-mark {
+      width: 44px; height: 44px; border-radius: 10px;
+      border: 1px solid var(--gold);
+      background: linear-gradient(135deg, rgba(212,175,55,0.22), rgba(17,17,21,0.9));
+      display: grid; place-items: center;
+      font-family: 'Cormorant Garamond', serif; font-size: 23px; font-weight: 700;
+      color: var(--gold-bright);
+      box-shadow: 0 0 24px rgba(212, 175, 55, 0.22);
+    }
+    .logo-text { display: flex; flex-direction: column; line-height: 1.05; }
+    .logo-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; letter-spacing: 0.14em; color: var(--gold-bright); }
+    .logo-sub { font-size: 9px; letter-spacing: 0.24em; color: var(--ink-muted); text-transform: uppercase; }
 
-  .shadow{position:absolute;left:50%;top:79vh;width:14vh;height:2.5vh;margin-left:-7vh;border-radius:50%;background:rgba(0,0,0,.4);filter:blur(4px);opacity:0}
-  .play .shadow{animation:shFly 4s ease-in-out both, shDrop .45s ease-in 4s forwards, hide .05s 4.45s forwards}
-  @keyframes shFly{0%{transform:scale(.2);opacity:0}20%,100%{transform:scale(.45);opacity:.35}60%{transform:scale(.55);opacity:.4}}
-  @keyframes shDrop{to{transform:scale(1.3);opacity:.7}}
+    /* Mode Banner */
+    .mode-strip {
+      background: linear-gradient(90deg, #1b1508, #2c210b, #1b1508);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 8px 20px; text-align: center; font-size: 12px; color: var(--gold-bright);
+      display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
+    }
+    .pill-tag {
+      background: rgba(212,175,55,0.16); border: 1px solid var(--gold);
+      padding: 2px 9px; border-radius: 999px; font-size: 10px; font-weight: 600; text-transform: uppercase;
+    }
 
-  .play .stage{animation:shake .5s 4.45s}
-  @keyframes shake{0%,100%{transform:translate(0,0)}15%{transform:translate(-14px,9px)}30%{transform:translate(12px,-11px)}
-    45%{transform:translate(-9px,7px)}60%{transform:translate(7px,-5px)}80%{transform:translate(-3px,2px)}}
-  .flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:5}
-  .play .flash{animation:flash .4s 4.45s}
-  @keyframes flash{from{opacity:.85}to{opacity:0}}
+    /* Header */
+    header {
+      position: sticky; top: 0; z-index: 100;
+      backdrop-filter: blur(16px);
+      background: rgba(7, 7, 9, 0.84);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .nav-wrap {
+      max-width: 1360px; margin: 0 auto; padding: 14px 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    }
+    .nav-links { display: flex; align-items: center; gap: 24px; }
+    .nav-links a {
+      color: var(--ink-light); text-decoration: none; font-size: 13px; letter-spacing: 0.08em;
+      text-transform: uppercase; opacity: 0.86; transition: color 0.25s var(--ease), opacity 0.25s;
+    }
+    .nav-links a:hover { color: var(--gold-bright); opacity: 1; }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
 
-  .impact{position:absolute;left:50%;top:80vh;width:0;height:0}
-  .play .impact{animation:dim 1s 6s forwards}
-  @keyframes dim{to{opacity:.35}}
-  .wave{position:absolute;width:20vh;height:5vh;margin:-2.5vh 0 0 -10vh;border:3px solid #fff;border-radius:50%;opacity:0}
-  .play .wave{animation:wave .8s ease-out 4.45s}
-  .play .wave.w2{animation-delay:4.6s}
-  @keyframes wave{from{transform:scale(.2);opacity:1}to{transform:scale(3);opacity:0}}
-  .puddle{position:absolute;width:22vh;height:3.5vh;margin:-1.75vh 0 0 -11vh;border-radius:50%;background:#6b3e26;transform:scale(0)}
-  .play .puddle{animation:puddle .4s ease-out 4.45s forwards}
-  @keyframes puddle{to{transform:scale(1)}}
-  .cracks{position:absolute;width:40vh;height:10vh;margin:-2vh 0 0 -20vh}
-  .cracks path{fill:none;stroke:rgba(255,255,255,.6);stroke-width:2.5;stroke-dasharray:100;stroke-dashoffset:100}
-  .play .cracks path{animation:draw .5s ease-out 4.5s forwards}
-  @keyframes draw{to{stroke-dashoffset:0}}
-  .drop{position:absolute;border-radius:50%;opacity:0}
-  .play .drop{animation:splash 1s cubic-bezier(.2,.7,.4,1) 4.45s}
-  @keyframes splash{
-    0%{transform:translate(0,0) scale(1);opacity:1}
-    50%{transform:translate(var(--x),var(--y)) scale(1);opacity:1}
-    100%{transform:translate(calc(var(--x)*1.3),calc(var(--y) + 18vh)) scale(.4);opacity:0}}
+    .icon-btn {
+      position: relative; background: var(--bg-card); color: var(--ink-light);
+      border: 1px solid var(--border-subtle); border-radius: 10px;
+      width: 40px; height: 40px; display: grid; place-items: center; cursor: pointer;
+      transition: transform 0.25s var(--ease), border-color 0.25s, color 0.25s;
+    }
+    .icon-btn:hover { transform: translateY(-2px); border-color: var(--gold); color: var(--gold-bright); }
+    .badge-count {
+      position: absolute; top: -5px; inset-inline-end: -5px;
+      min-width: 18px; height: 18px; border-radius: 999px;
+      background: var(--gold); color: #09090b; font-size: 11px; font-weight: 700;
+      display: grid; place-items: center; padding: 0 4px;
+    }
+    .lang-btn {
+      background: transparent; color: var(--gold-bright);
+      border: 1px solid var(--border-subtle); border-radius: 10px;
+      padding: 0 12px; height: 40px; font-size: 12px; font-weight: 600; cursor: pointer;
+    }
 
-  .logo{filter:brightness(0) invert(1)}
-  .txt{filter:none;color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center}
-  .hero{position:absolute;top:20vh;left:50%;width:55%;margin-left:-27.5%;opacity:0;z-index:3}
-  .hero.txt{width:auto;left:0;right:0;margin:0;font-size:8vh}
-  .play .hero{animation:rise 1.1s cubic-bezier(.2,1.4,.4,1) 4.9s both, beat 1.4s ease-in-out 6.2s infinite}
-  @keyframes rise{from{opacity:0;transform:translateY(55vh) scale(0) rotate(-200deg)}to{opacity:1;transform:none}}
-  @keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
-  .halo{position:absolute;top:32vh;left:50%;width:30vh;height:30vh;margin:-15vh 0 0 -15vh;border:3px solid rgba(255,255,255,.45);border-radius:50%;opacity:0}
-  .play .halo{animation:ripple 2s ease-out infinite;animation-delay:var(--d)}
-  @keyframes ripple{0%{transform:scale(.3);opacity:.8}100%{transform:scale(2.2);opacity:0}}
+    /* Hero */
+    .hero {
+      position: relative; padding: 84px 24px 72px;
+      background:
+        radial-gradient(ellipse at 70% 20%, rgba(212, 175, 55, 0.16), transparent 55%),
+        linear-gradient(180deg, #09090c 0%, #121117 100%);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .hero-inner {
+      max-width: 1360px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center;
+    }
+    .hero-kicker { color: var(--gold); font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; margin-bottom: 12px; }
+    .hero h1 { font-size: clamp(2.5rem, 5vw, 4.4rem); line-height: 1.06; font-weight: 600; margin-bottom: 18px; }
+    .hero p { color: var(--ink-muted); max-width: 560px; font-size: 15px; margin-bottom: 28px; }
+    .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
 
-  .cs{position:absolute;top:56vh;left:0;right:0;text-align:center;color:#fff;z-index:3}
-  .letters{font-weight:800;font-size:8vh;line-height:1.1;letter-spacing:.6vh;perspective:400px}
-  .letters span{display:inline-block;opacity:0;transform:translateY(40px) rotateX(90deg)}
-  .play .letters span{animation:letter .6s ease forwards;animation-delay:calc(var(--i) * .1s + 6.2s)}
-  @keyframes letter{to{opacity:1;transform:none}}
-  .line{height:4px;width:0;background:#fff;border-radius:4px;margin:2vh auto 0}
-  .play .line{animation:grow 1s ease 7.4s forwards}
-  @keyframes grow{to{width:50%}}
-</style>
+    .btn-gold {
+      background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+      color: #09090b; border: none; border-radius: 12px;
+      padding: 13px 24px; font-size: 13px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 8px;
+      transition: transform 0.25s var(--ease), box-shadow 0.25s;
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(212, 175, 55, 0.28); }
+    .btn-ghost {
+      background: rgba(255,255,255,0.03); color: var(--ink-light);
+      border: 1px solid var(--border-subtle); border-radius: 12px;
+      padding: 13px 22px; font-size: 13px; font-weight: 600; cursor: pointer;
+      display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
+      transition: border-color 0.25s, color 0.25s;
+    }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold-bright); }
+
+    .hero-card {
+      background: linear-gradient(160deg, rgba(22,22,28,0.92), rgba(12,12,15,0.96));
+      border: 1px solid var(--border-subtle); border-radius: 22px; padding: 28px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.55);
+    }
+    .hero-card .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 18px; }
+    .mini-stat {
+      background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.14);
+      border-radius: 12px; padding: 14px;
+    }
+    .mini-stat strong { display: block; font-size: 20px; color: var(--gold-bright); font-family: 'Cormorant Garamond', serif; }
+    .mini-stat span { font-size: 11px; color: var(--ink-muted); }
+
+    /* Sections */
+    .section { max-width: 1360px; margin: 0 auto; padding: 64px 24px; }
+    .section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
+    .section-head h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 600; }
+    .section-head p { color: var(--ink-muted); font-size: 14px; }
+
+    /* Filters */
+    .filter-bar {
+      display: grid; grid-template-columns: 2fr repeat(4, 1fr); gap: 12px;
+      background: var(--bg-card); border: 1px solid var(--border-subtle);
+      padding: 16px; border-radius: var(--radius); margin-bottom: 28px;
+    }
+    .input, select, textarea {
+      width: 100%; background: var(--bg-obsidian); color: var(--ink-light);
+      border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
+      padding: 10px 13px; font-size: 13px; font-family: inherit;
+    }
+    .input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); }
+
+    /* Product Grid */
+    .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 22px; }
+    .product-card {
+      background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius);
+      overflow: hidden; display: flex; flex-direction: column;
+      transition: transform 0.35s var(--ease), border-color 0.35s, box-shadow 0.35s;
+    }
+    .product-card:hover {
+      transform: translateY(-5px); border-color: var(--gold);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+    }
+    .product-media {
+      position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #0d0d11;
+    }
+    .product-media img {
+      width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s var(--ease);
+    }
+    .product-card:hover .product-media img { transform: scale(1.06); }
+    .product-badge {
+      position: absolute; top: 12px; inset-inline-start: 12px;
+      background: rgba(9,9,11,0.85); color: var(--gold-bright);
+      border: 1px solid var(--gold); padding: 4px 10px; border-radius: 999px;
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .wish-btn {
+      position: absolute; top: 12px; inset-inline-end: 12px;
+      width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(9,9,11,0.8); border: 1px solid rgba(255,255,255,0.15);
+      color: var(--ink-light); display: grid; place-items: center; cursor: pointer;
+    }
+    .wish-btn.active { color: #f43f5e; border-color: #f43f5e; }
+    .product-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .product-meta { font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; }
+    .product-title { font-size: 19px; font-weight: 600; }
+    .product-desc { font-size: 12px; color: var(--ink-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .price-row { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 8px; }
+    .price-now { font-size: 16px; font-weight: 700; color: var(--gold-bright); }
+    .price-old { font-size: 13px; color: var(--ink-muted); text-decoration: line-through; }
+    .card-actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 10px; }
+
+    /* Ivory Editorial Band */
+    .ivory-band {
+      background: var(--bg-ivory); color: var(--ink-dark);
+      border-top: 1px solid rgba(0,0,0,0.08); border-bottom: 1px solid rgba(0,0,0,0.08);
+    }
+    .ivory-band p { color: #57534e; }
+    .editorial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+    .editorial-card {
+      background: var(--bg-beige); border: 1px solid rgba(18,18,22,0.1);
+      border-radius: var(--radius); padding: 22px;
+    }
+
+    /* Drawer & Modal */
+    .drawer-backdrop, .modal-backdrop {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.72); backdrop-filter: blur(6px);
+      display: none; align-items: center; justify-content: flex-end;
+    }
+    .modal-backdrop { justify-content: center; padding: 18px; }
+    .drawer-backdrop.open, .modal-backdrop.open { display: flex; }
+
+    .drawer {
+      width: min(440px, 100vw); height: 100vh; background: var(--bg-charcoal);
+      border-inline-start: 1px solid var(--border-subtle);
+      padding: 22px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto;
+    }
+    .modal {
+      width: min(680px, 100%); max-height: 90vh; overflow-y: auto;
+      background: var(--bg-charcoal); border: 1px solid var(--border-subtle);
+      border-radius: 18px; padding: 24px;
+    }
+    .progress-track { height: 6px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-bright)); transition: width 0.35s var(--ease); }
+
+    /* Toast */
+    #toast {
+      position: fixed; bottom: 22px; inset-inline-end: 22px; z-index: 999;
+      background: var(--bg-card); color: var(--gold-bright);
+      border: 1px solid var(--gold); border-radius: 12px;
+      padding: 12px 18px; font-size: 13px; box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+      opacity: 0; transform: translateY(10px); transition: all 0.25s var(--ease); pointer-events: none;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+
+    footer {
+      border-top: 1px solid var(--border-subtle); padding: 48px 24px 28px;
+      background: #060608;
+    }
+    .footer-grid {
+      max-width: 1360px; margin: 0 auto;
+      display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 28px;
+    }
+    footer a { color: var(--ink-muted); text-decoration: none; display: block; margin-bottom: 8px; font-size: 13px; }
+    footer a:hover { color: var(--gold-bright); }
+
+    @media (max-width: 900px) {
+      .hero-inner, .footer-grid { grid-template-columns: 1fr; }
+      .filter-bar { grid-template-columns: 1fr 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
 </head>
 <body>
-<div class="frame" id="frame">
-  <div class="stage">
-    <div class="bubble" style="width:18vh;height:18vh;top:6%;left:-6%"></div>
-    <div class="bubble" style="width:10vh;height:10vh;top:20%;right:8%;animation-delay:2s"></div>
-    <div class="bubble" style="width:24vh;height:24vh;bottom:-6%;right:-10%;animation-delay:4s"></div>
-    <div class="ground"></div>
-    <div class="winds" id="winds"></div>
+  <div id="preloader">
+    <div class="logo-mark">48</div>
+    <div class="logo-title">48 COSMETICS</div>
+    <div class="logo-sub" data-i18n="loading">CURATING LUXURY</div>
+  </div>
 
-    <div class="shadow"></div>
+  <div class="mode-strip">
+    <span class="pill-tag" id="modeBadge">Demo Mode</span>
+    <span id="announcementText">COMPLIMENTARY EXPRESS DELIVERY ON ORDERS OVER $150</span>
+    <a href="./admin.html" style="color: var(--gold-bright); text-decoration: underline; font-weight: 600;">Admin Dashboard →</a>
+  </div>
 
-    <div class="cupwrap">
-      <svg viewBox="0 0 200 270">
-        <defs>
-          <linearGradient id="body" x1="0" x2="1">
-            <stop offset="0" stop-color="#e6ddd0"/>
-            <stop offset=".25" stop-color="#fbf7f1"/>
-            <stop offset=".6" stop-color="#f3ece2"/>
-            <stop offset="1" stop-color="#d9cebf"/>
-          </linearGradient>
-          <linearGradient id="rim" x1="0" x2="1">
-            <stop offset="0" stop-color="#6e0404"/>
-            <stop offset=".3" stop-color="#b01414"/>
-            <stop offset="1" stop-color="#6e0404"/>
-          </linearGradient>
-        </defs>
-        <path d="M36 30 L164 30 L148 255 Q100 263 52 255 Z" fill="url(#body)"/>
-        <ellipse cx="100" cy="255" rx="48" ry="6" fill="#cfc3b2"/>
-        <rect x="26" y="12" width="148" height="22" rx="11" fill="url(#rim)"/>
-        <ellipse cx="100" cy="14" rx="70" ry="5" fill="#5c0000" opacity=".6"/>
-      </svg>
-      <img class="cuplogo" src="logo.png" alt="">
+  <header>
+    <div class="nav-wrap">
+      <a href="#" class="logo-48">
+        <span class="logo-mark">48</span>
+        <span class="logo-text">
+          <span class="logo-title">48 COSMETICS</span>
+          <span class="logo-sub">HAUTE BEAUTÉ</span>
+        </span>
+      </a>
+      <nav class="nav-links">
+        <a href="#catalog" data-i18n="navCatalog">Collection</a>
+        <a href="#rituals" data-i18n="navRituals">Rituals</a>
+        <a href="#contact" data-i18n="navContact">Concierge</a>
+        <a href="./admin.html" data-i18n="navAdmin">Admin</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="lang-btn" id="langToggle" type="button">العربية</button>
+        <button class="icon-btn" id="accountBtn" type="button" title="Account">
+          <i data-lucide="user"></i>
+        </button>
+        <button class="icon-btn" id="wishlistBtn" type="button" title="Wishlist">
+          <i data-lucide="heart"></i>
+          <span class="badge-count" id="wishCount">0</span>
+        </button>
+        <button class="icon-btn" id="cartBtn" type="button" title="Bag">
+          <i data-lucide="shopping-bag"></i>
+          <span class="badge-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-kicker" data-i18n="heroKicker">EDITION 48 • ATELIER FORMULATIONS</div>
+        <h1 data-i18n="heroTitle">Sculpted Radiance in Every Drop.</h1>
+        <p data-i18n="heroDesc">Botanical actives, 24k gold-infused elixirs, and velvet couture pigments crafted for enduring luminescence.</p>
+        <div class="cta-row">
+          <a href="#catalog" class="btn-gold" data-i18n="shopNow">Explore Collection <i data-lucide="arrow-up-right"></i></a>
+          <button class="btn-ghost" type="button" id="openCheckoutBtn" data-i18n="quickCheckout">Express Checkout</button>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="color:var(--gold); font-size:12px; letter-spacing:0.16em;">SIGNATURE HOUSE</span>
+          <span class="pill-tag">48 STANDARD</span>
+        </div>
+        <h3 style="font-size:26px; margin-top:8px;">Orchid &amp; Gold Cellular Nectar</h3>
+        <p style="color:var(--ink-muted); font-size:13px; margin-top:6px;">Dermatologically tested • Cruelty-free • Cold-pressed botanical lipids.</p>
+        <div class="stat-grid">
+          <div class="mini-stat"><strong>99.4%</strong><span>Radiance Satisfaction</span></div>
+          <div class="mini-stat"><strong>48h</strong><span>Deep Barrier Hydration</span></div>
+          <div class="mini-stat"><strong>0%</strong><span>Parabens &amp; Harsh Sulfates</span></div>
+          <div class="mini-stat"><strong>RTL / LTR</strong><span>Bilingual Experience</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="catalog">
+    <div class="section-head">
+      <div>
+        <h2 data-i18n="catalogTitle">The 48 Collection</h2>
+        <p id="productSummary">Showing curated luxury essentials</p>
+      </div>
     </div>
 
-    <div class="impact" id="impact">
-      <div class="puddle"></div>
-      <svg class="cracks" viewBox="0 0 400 100">
-        <path d="M200 20 L150 40 L110 35 L60 55"/>
-        <path d="M200 20 L250 45 L300 38 L350 60"/>
-        <path d="M200 20 L190 60 L170 90"/>
-        <path d="M200 20 L215 65 L240 95"/>
-      </svg>
-      <div class="wave"></div>
-      <div class="wave w2"></div>
+    <div class="filter-bar">
+      <input class="input" id="searchInput" type="search" placeholder="Search serums, fragrances, lip couture..." />
+      <select id="categoryFilter">
+        <option value="all">All Categories</option>
+      </select>
+      <select id="skinTypeFilter">
+        <option value="all">All Skin Types</option>
+        <option value="All Skin Types">All Skin Types</option>
+        <option value="Dry & Sensitive">Dry &amp; Sensitive</option>
+        <option value="Combination">Combination</option>
+      </select>
+      <select id="availabilityFilter">
+        <option value="all">All Availability</option>
+        <option value="in_stock">In Stock</option>
+        <option value="low_stock">Low Stock</option>
+      </select>
+      <select id="sortSelect">
+        <option value="featured">Sort: Featured</option>
+        <option value="price_asc">Price: Low to High</option>
+        <option value="price_desc">Price: High to Low</option>
+        <option value="rating_desc">Highest Rated</option>
+      </select>
     </div>
 
-    <div class="halo" style="--d:5.5s"></div>
-    <div class="halo" style="--d:6.2s"></div>
-    <img class="logo hero" src="logo.png" alt="">
+    <div class="grid-products" id="productsGrid"></div>
+  </section>
 
-    <div class="cs">
-      <div class="letters" data-text="COMING"></div>
-      <div class="letters" data-text="SOON"></div>
-      <div class="line"></div>
+  <section class="ivory-band" id="rituals">
+    <div class="section">
+      <div class="section-head">
+        <div>
+          <h2>Atelier Pillars &amp; Client Notes</h2>
+          <p>Precision formulation, transparent ingredient standards, and tailored service.</p>
+        </div>
+      </div>
+      <div class="editorial-grid">
+        <div class="editorial-card">
+          <h3 style="font-size:22px; margin-bottom:8px;">Clinical Purity</h3>
+          <p style="font-size:13px;">Every batch is stability-tested and paired with clear usage rituals and full ingredient disclosures.</p>
+        </div>
+        <div class="editorial-card">
+          <h3 style="font-size:22px; margin-bottom:8px;">“Unmatched Texture &amp; Finish”</h3>
+          <p style="font-size:13px;">“The Golden Veil Serum absorbs weightlessly and layers seamlessly under makeup all day.” — Nadia K.</p>
+        </div>
+        <div class="editorial-card">
+          <h3 style="font-size:22px; margin-bottom:8px;">Private Concierge</h3>
+          <p style="font-size:13px;">Need shade matching or order assistance? Reach our beauty specialists directly via WhatsApp or message below.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="contact">
+    <div class="section-head">
+      <div>
+        <h2>Client Concierge &amp; Newsletter</h2>
+        <p>Receive private launch invitations and personalized care guidance.</p>
+      </div>
+    </div>
+    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+      <form id="contactForm" class="editorial-card" style="background:var(--bg-card); border-color:var(--border-subtle); display:flex; flex-direction:column; gap:10px;">
+        <h3 style="font-size:22px;">Send a Message</h3>
+        <input class="input" name="name" placeholder="Full Name" required />
+        <input class="input" name="email" type="email" placeholder="Email Address" required />
+        <textarea class="input" name="message" rows="3" placeholder="How may our atelier assist you?" required></textarea>
+        <button class="btn-gold" type="submit">Send Inquiry</button>
+      </form>
+      <form id="newsletterForm" class="editorial-card" style="background:var(--bg-card); border-color:var(--border-subtle); display:flex; flex-direction:column; gap:10px;">
+        <h3 style="font-size:22px;">Inner Circle Dispatch</h3>
+        <p style="font-size:13px; color:var(--ink-muted);">Early access to limited-edition 48 COSMETICS releases.</p>
+        <input class="input" name="email" type="email" placeholder="Enter your email" required />
+        <button class="btn-ghost" type="submit">Join Newsletter</button>
+      </form>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <a href="#" class="logo-48" style="margin-bottom:10px;">
+          <span class="logo-mark">48</span>
+          <span class="logo-text">
+            <span class="logo-title">48 COSMETICS</span>
+            <span class="logo-sub">BEAUTY. ELEGANCE. EXCELLENCE.</span>
+          </span>
+        </a>
+        <p style="font-size:13px; color:var(--ink-muted);">Luxury skincare, fine fragrance, and beauty essentials built on shared real-time catalog and inventory data.</p>
+      </div>
+      <div>
+        <strong style="display:block; margin-bottom:10px; color:var(--gold-bright); font-size:13px;">Navigation</strong>
+        <a href="#catalog">Collection</a>
+        <a href="#rituals">Atelier Pillars</a>
+        <a href="./admin.html">Admin Dashboard</a>
+      </div>
+      <div>
+        <strong style="display:block; margin-bottom:10px; color:var(--gold-bright); font-size:13px;">Policies</strong>
+        <a href="javascript:void(0)" onclick="openPolicyModal('shipping')">Shipping &amp; Delivery Policy</a>
+        <a href="javascript:void(0)" onclick="openPolicyModal('returns')">Returns &amp; Exchanges</a>
+        <a href="javascript:void(0)" onclick="openPolicyModal('privacy')">Privacy &amp; Terms</a>
+      </div>
+      <div>
+        <strong style="display:block; margin-bottom:10px; color:var(--gold-bright); font-size:13px;">Direct Care</strong>
+        <a id="waLink" href="https://wa.me/970590000000" target="_blank" rel="noopener">WhatsApp Concierge</a>
+        <a href="#contact">Contact Form</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Cart Drawer -->
+  <div class="drawer-backdrop" id="cartDrawer">
+    <div class="drawer">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="font-size:24px;">Shopping Bag</h3>
+        <button class="icon-btn" type="button" onclick="toggleDrawer('cartDrawer', false)"><i data-lucide="x"></i></button>
+      </div>
+      <div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--ink-muted); margin-bottom:6px;">
+          <span id="freeShipLabel">Free shipping progress</span>
+          <span id="freeShipPct">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="freeShipBar" style="width:0%"></div></div>
+      </div>
+      <div id="cartItemsContainer" style="display:flex; flex-direction:column; gap:10px; flex:1;"></div>
+      <div style="display:flex; gap:8px;">
+        <input class="input" id="couponInput" placeholder="Promo code (try GOLD10)" />
+        <button class="btn-ghost" type="button" id="applyCouponBtn">Apply</button>
+      </div>
+      <div style="border-top:1px solid var(--border-subtle); padding-top:12px; font-size:13px; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between;"><span>Subtotal</span><strong id="cartSubtotal">$0.00</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Discount</span><strong id="cartDiscount">-$0.00</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Shipping</span><strong id="cartShipping">$0.00</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>Tax</span><strong id="cartTax">$0.00</strong></div>
+        <div style="display:flex; justify-content:space-between; font-size:16px; color:var(--gold-bright);"><span>Total</span><strong id="cartTotal">$0.00</strong></div>
+      </div>
+      <button class="btn-gold" type="button" id="proceedCheckoutBtn" style="width:100%; justify-content:center;">Proceed to Checkout</button>
     </div>
   </div>
-  <div class="flash"></div>
-</div>
 
-<script>
-  const winds=document.getElementById('winds');
-  for(let k=0;k<10;k++){
-    const w=document.createElement('div'); w.className='w';
-    w.style.top=(10+Math.random()*60)+'vh';
-    w.style.animationDelay=(Math.random()*1.1)+'s';
-    winds.appendChild(w);
-  }
+  <!-- Generic Modal -->
+  <div class="modal-backdrop" id="mainModal">
+    <div class="modal" id="modalContent"></div>
+  </div>
 
-  const impact=document.getElementById('impact');
-  for(let k=0;k<18;k++){
-    const d=document.createElement('div'); d.className='drop';
-    const s=(0.8+Math.random()*1.6)+'vh';
-    d.style.width=s; d.style.height=s;
-    d.style.background=k%3?'#6b3e26':'#fff';
-    const ang=Math.PI+Math.random()*Math.PI;
-    const dist=8+Math.random()*16;
-    d.style.setProperty('--x',(Math.cos(ang)*dist)+'vh');
-    d.style.setProperty('--y',(Math.sin(ang)*dist)+'vh');
-    impact.appendChild(d);
-  }
+  <div id="toast"></div>
 
-  let idx=0;
-  document.querySelectorAll('.letters').forEach(el=>{
-    [...el.dataset.text].forEach(ch=>{
-      const s=document.createElement('span');
-      s.textContent=ch; s.style.setProperty('--i',idx++);
-      el.appendChild(s);
+  <script>
+    const cfg = window.COSMETICS_48_CONFIG || {};
+    const hasSupabase = Boolean(cfg.supabase?.url && cfg.supabase?.anonKey);
+    const sb = hasSupabase ? window.supabase.createClient(cfg.supabase.url, cfg.supabase.anonKey) : null;
+
+    const SEED_PRODUCTS = [
+      {
+        id: "p-48-1", sku: "48-SRM-01", category: "Skincare", brand: "48 Atelier",
+        name_en: "24K Gold & Peptide Elixir", name_ar: "إكسير الذهب عيار 24 والببتيد",
+        short_desc_en: "Illuminating night serum for firm, glass-like skin.",
+        short_desc_ar: "سيروم ليلي مشرق لبشرة مشدودة ومضيئة.",
+        ingredients: "Aqua, Rosa Damascena Flower Water, Acetyl Hexapeptide-8, Niacinamide, Colloidal Gold, Hyaluronic Acid.",
+        usage_instructions: "Apply 3–4 drops onto cleansed face and neck each evening before moisturizer.",
+        skin_type: "All Skin Types", price: 118, sale_price: 98, badge: "Best Seller",
+        rating: 4.9, stock_qty: 24,
+        image_url: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
+        variants: ["30ml Flacon", "50ml Collector"]
+      },
+      {
+        id: "p-48-2", sku: "48-PRF-02", category: "Fragrance", brand: "48 Parfums",
+        name_en: "Oud & Amber Royale Extrait", name_ar: "خلاصة العود والعنبر الملكي",
+        short_desc_en: "Warm resinous oud, saffron threads, and velvet vanilla.",
+        short_desc_ar: "عود دافئ مع الزعفران والفانيليا المخملية.",
+        ingredients: "Alcohol Denat., Parfum, Agarwood Extract, Ambergris Accord, Vanilla Planifolia.",
+        usage_instructions: "Spray lightly onto pulse points—wrists, collarbone, and behind the ears.",
+        skin_type: "All Skin Types", price: 165, sale_price: null, badge: "Exclusive",
+        rating: 5.0, stock_qty: 6,
+        image_url: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80",
+        variants: ["100ml Eau de Parfum"]
+      },
+      {
+        id: "p-48-3", sku: "48-CRM-03", category: "Skincare", brand: "48 Atelier",
+        name_en: "Velvet Ceramide Barrier Cream", name_ar: "كريم السيراميد المخملي لحاجز البشرة",
+        short_desc_en: "Rich lipid balm restoring comfort to delicate skin.",
+        short_desc_ar: "بلسم غني يعيد الراحة والمرونة للبشرة الحساسة.",
+        ingredients: "Ceramide NP, Ceramide AP, Squalane, Shea Butter, Panthenol, Centella Asiatica.",
+        usage_instructions: "Warm a pearl-sized amount between fingertips and press gently into skin.",
+        skin_type: "Dry & Sensitive", price: 86, sale_price: null, badge: "New",
+        rating: 4.8, stock_qty: 19,
+        image_url: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=800&q=80",
+        variants: ["50ml Jar"]
+      },
+      {
+        id: "p-48-4", sku: "48-LIP-04", category: "Lip Couture", brand: "48 Maison",
+        name_en: "Satin Rose Nectar Lip Oil", name_ar: "زيت الشفاه برحيق الورد الساتاني",
+        short_desc_en: "High-shine botanical lip treatment with zero stickiness.",
+        short_desc_ar: "عناية نباتية لامعة للشفاه بدون أي لزوجة.",
+        ingredients: "Simmondsia Chinensis Seed Oil, Rosehip Oil, Tocopherol, Jojoba Esters.",
+        usage_instructions: "Glide across bare lips or layer over liner for cushioned shine.",
+        skin_type: "Combination", price: 44, sale_price: 36, badge: "Trending",
+        rating: 4.7, stock_qty: 3,
+        image_url: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=800&q=80",
+        variants: ["01 Champagne Rose", "02 Crimson Velvet"]
+      }
+    ];
+
+    const state = {
+      lang: localStorage.getItem("c48_lang") || "en",
+      products: [...SEED_PRODUCTS],
+      cart: JSON.parse(localStorage.getItem("c48_cart") || "[]"),
+      wishlist: JSON.parse(localStorage.getItem("c48_wish") || "[]"),
+      orders: JSON.parse(localStorage.getItem("c48_orders") || "[]"),
+      coupon: null,
+      user: null
+    };
+
+    const I18N = {
+      en: {
+        loading: "CURATING LUXURY", navCatalog: "Collection", navRituals: "Rituals",
+        navContact: "Concierge", navAdmin: "Admin", heroKicker: "EDITION 48 • ATELIER FORMULATIONS",
+        heroTitle: "Sculpted Radiance in Every Drop.",
+        heroDesc: "Botanical actives, 24k gold-infused elixirs, and velvet couture pigments crafted for enduring luminescence.",
+        shopNow: "Explore Collection", quickCheckout: "Express Checkout", catalogTitle: "The 48 Collection"
+      },
+      ar: {
+        loading: "تحضير تجربة الفخامة", navCatalog: "المجموعة", navRituals: "الطقوس",
+        navContact: "الكونسيرج", navAdmin: "الإدارة", heroKicker: "إصدار 48 • تركيبات الأتيليه",
+        heroTitle: "إشراقة مصقولة في كل قطرة.",
+        heroDesc: "مكونات نباتية فعالة، إكسير غني بالذهب، وأصباغ مخملية مصممة لجمال يدوم.",
+        shopNow: "استكشف المجموعة", quickCheckout: "إتمام الطلب السريع", catalogTitle: "مجموعة 48 الفاخرة"
+      }
+    };
+
+    function fmt(amount) {
+      const sym = cfg.currency?.symbol || "$";
+      return `${sym}${Number(amount || 0).toFixed(2)}`;
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+    }
+
+    function applyLanguage() {
+      const isAr = state.lang === "ar";
+      document.documentElement.lang = isAr ? "ar" : "en";
+      document.documentElement.dir = isAr ? "rtl" : "ltr";
+      document.getElementById("langToggle").textContent = isAr ? "English" : "العربية";
+      document.querySelectorAll("[data-i18n]").forEach((node) => {
+        const key = node.getAttribute("data-i18n");
+        if (I18N[state.lang]?.[key]) node.textContent = I18N[state.lang][key];
+      });
+      renderCategories();
+      renderProducts();
+      updateCartUI();
+    }
+
+    async function loadData() {
+      document.getElementById("modeBadge").textContent = hasSupabase ? "Live Supabase" : "Demo Mode";
+      if (hasSupabase && sb) {
+        try {
+          const { data: prods, error } = await sb
+            .from("products")
+            .select("*, categories(name_en,name_ar), brands(name), inventory(stock_qty), product_images(url,is_primary)")
+            .eq("status", "active");
+          if (!error && Array.isArray(prods) && prods.length) {
+            state.products = prods.map((p) => ({
+              id: p.id,
+              sku: p.sku,
+              category: p.categories?.name_en || "Luxury",
+              brand: p.brands?.name || "48 COSMETICS",
+              name_en: p.name_en,
+              name_ar: p.name_ar || p.name_en,
+              short_desc_en: p.short_desc_en || p.description_en || "",
+              short_desc_ar: p.short_desc_ar || p.description_ar || p.short_desc_en || "",
+              ingredients: p.ingredients || "Crafted botanical formula.",
+              usage_instructions: p.usage_instructions || "Apply as directed.",
+              skin_type: p.skin_type || "All Skin Types",
+              price: Number(p.price),
+              sale_price: p.sale_price != null ? Number(p.sale_price) : null,
+              badge: p.badge || (p.is_bestseller ? "Best Seller" : p.is_new ? "New" : ""),
+              rating: Number(p.rating || 4.9),
+              stock_qty: p.inventory?.stock_qty ?? 10,
+              image_url: p.product_images?.find((i) => i.is_primary)?.url || p.product_images?.[0]?.url || SEED_PRODUCTS[0].image_url,
+              variants: ["Standard Edition"]
+            }));
+          }
+          const { data: settings } = await sb.from("store_settings").select("*").eq("id", 1).maybeSingle();
+          if (settings) {
+            document.getElementById("announcementText").textContent =
+              state.lang === "ar" ? (settings.announcement_ar || settings.announcement_en) : settings.announcement_en;
+          }
+        } catch (err) {
+          console.warn("Falling back to demo catalog:", err.message);
+        }
+      }
+      renderCategories();
+      renderProducts();
+      updateCartUI();
+      updateWishUI();
+    }
+
+    function renderCategories() {
+      const sel = document.getElementById("categoryFilter");
+      const current = sel.value || "all";
+      const cats = [...new Set(state.products.map((p) => p.category))];
+      sel.innerHTML = `<option value="all">${state.lang === "ar" ? "كل الفئات" : "All Categories"}</option>` +
+        cats.map((c) => `<option value="${c}">${c}</option>`).join("");
+      sel.value = cats.includes(current) ? current : "all";
+    }
+
+    function getFilteredProducts() {
+      const q = document.getElementById("searchInput").value.trim().toLowerCase();
+      const cat = document.getElementById("categoryFilter").value;
+      const skin = document.getElementById("skinTypeFilter").value;
+      const avail = document.getElementById("availabilityFilter").value;
+      const sort = document.getElementById("sortSelect").value;
+
+      let list = state.products.filter((p) => {
+        const name = (state.lang === "ar" ? p.name_ar : p.name_en).toLowerCase();
+        const desc = (state.lang === "ar" ? p.short_desc_ar : p.short_desc_en).toLowerCase();
+        if (q && !name.includes(q) && !desc.includes(q) && !p.sku.toLowerCase().includes(q)) return false;
+        if (cat !== "all" && p.category !== cat) return false;
+        if (skin !== "all" && p.skin_type !== skin) return false;
+        if (avail === "in_stock" && p.stock_qty <= 0) return false;
+        if (avail === "low_stock" && (p.stock_qty <= 0 || p.stock_qty > 8)) return false;
+        return true;
+      });
+
+      const effPrice = (p) => p.sale_price ?? p.price;
+      if (sort === "price_asc") list.sort((a, b) => effPrice(a) - effPrice(b));
+      if (sort === "price_desc") list.sort((a, b) => effPrice(b) - effPrice(a));
+      if (sort === "rating_desc") list.sort((a, b) => b.rating - a.rating);
+      return list;
+    }
+
+    function renderProducts() {
+      const list = getFilteredProducts();
+      const grid = document.getElementById("productsGrid");
+      document.getElementById("productSummary").textContent =
+        state.lang === "ar" ? `عرض ${list.length} منتج` : `Showing ${list.length} luxury products`;
+
+      if (!list.length) {
+        grid.innerHTML = `<div style="grid-column:1/-1; padding:36px; text-align:center; color:var(--ink-muted); border:1px solid var(--border-subtle); border-radius:var(--radius);">No matching products found.</div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map((p) => {
+        const title = state.lang === "ar" ? p.name_ar : p.name_en;
+        const desc = state.lang === "ar" ? p.short_desc_ar : p.short_desc_en;
+        const wished = state.wishlist.includes(p.id);
+        return `
+          <article class="product-card">
+            <div class="product-media">
+              <img src="${p.image_url}" alt="${title}" loading="lazy" />
+              ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ""}
+              <button class="wish-btn ${wished ? "active" : ""}" type="button" onclick="toggleWishlist('${p.id}')" aria-label="Wishlist">
+                <i data-lucide="heart"></i>
+              </button>
+            </div>
+            <div class="product-body">
+              <div class="product-meta">${p.category} • ★ ${p.rating}</div>
+              <h3 class="product-title">${title}</h3>
+              <p class="product-desc">${desc}</p>
+              <div class="price-row">
+                <span class="price-now">${fmt(p.sale_price ?? p.price)}</span>
+                ${p.sale_price ? `<span class="price-old">${fmt(p.price)}</span>` : ""}
+                <span style="margin-inline-start:auto; font-size:11px; color:${p.stock_qty > 0 ? "var(--ink-muted)" : "#f87171"};">
+                  ${p.stock_qty > 0 ? `${p.stock_qty} left` : "Sold out"}
+                </span>
+              </div>
+              <div class="card-actions">
+                <button class="btn-gold" type="button" ${p.stock_qty <= 0 ? "disabled" : ""} onclick="addToCart('${p.id}')">
+                  ${p.stock_qty > 0 ? "Add to Bag" : "Out of Stock"}
+                </button>
+                <button class="btn-ghost" type="button" onclick="openProductDetail('${p.id}')">Details</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+      lucide.createIcons();
+    }
+
+    function addToCart(productId, variant = null) {
+      const prod = state.products.find((p) => p.id === productId);
+      if (!prod || prod.stock_qty <= 0) return showToast("Item unavailable");
+      const chosenVariant = variant || prod.variants?.[0] || "Standard";
+      const existing = state.cart.find((i) => i.productId === productId && i.variant === chosenVariant);
+      if (existing) {
+        if (existing.qty >= prod.stock_qty) return showToast("Max available stock reached");
+        existing.qty += 1;
+      } else {
+        state.cart.push({ productId, variant: chosenVariant, qty: 1 });
+      }
+      localStorage.setItem("c48_cart", JSON.stringify(state.cart));
+      updateCartUI();
+      showToast(`${prod.name_en} added to bag`);
+    }
+
+    function updateQty(index, delta) {
+      const item = state.cart[index];
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) state.cart.splice(index, 1);
+      localStorage.setItem("c48_cart", JSON.stringify(state.cart));
+      updateCartUI();
+    }
+
+    function getCartTotals() {
+      let subtotal = 0;
+      for (const item of state.cart) {
+        const p = state.products.find((x) => x.id === item.productId);
+        if (p) subtotal += (p.sale_price ?? p.price) * item.qty;
+      }
+      let discount = 0;
+      let freeShipCoupon = false;
+      if (state.coupon) {
+        if (state.coupon.type === "percent") discount = subtotal * (state.coupon.value / 100);
+        if (state.coupon.type === "fixed") discount = Math.min(subtotal, state.coupon.value);
+        if (state.coupon.type === "free_shipping") freeShipCoupon = true;
+      }
+      const threshold = cfg.freeShippingThreshold || 150;
+      const shipping = subtotal === 0 || subtotal >= threshold || freeShipCoupon ? 0 : 12;
+      const taxable = Math.max(0, subtotal - discount);
+      const tax = taxable * (cfg.defaultTaxRate || 0.05);
+      const total = taxable + shipping + tax;
+      return { subtotal, discount, shipping, tax, total, threshold };
+    }
+
+    function updateCartUI() {
+      const count = state.cart.reduce((s, i) => s + i.qty, 0);
+      document.getElementById("cartCount").textContent = count;
+      const t = getCartTotals();
+      const pct = Math.min(100, Math.round((t.subtotal / t.threshold) * 100));
+      document.getElementById("freeShipBar").style.width = `${pct}%`;
+      document.getElementById("freeShipPct").textContent = `${pct}%`;
+      document.getElementById("freeShipLabel").textContent =
+        t.subtotal >= t.threshold ? "Complimentary shipping unlocked" : `Add ${fmt(t.threshold - t.subtotal)} for free shipping`;
+
+      const container = document.getElementById("cartItemsContainer");
+      if (!state.cart.length) {
+        container.innerHTML = `<p style="color:var(--ink-muted); font-size:13px; text-align:center; padding:24px 0;">Your bag is currently empty.</p>`;
+      } else {
+        container.innerHTML = state.cart.map((item, idx) => {
+          const p = state.products.find((x) => x.id === item.productId);
+          if (!p) return "";
+          return `
+            <div style="display:flex; gap:12px; align-items:center; background:var(--bg-card); padding:10px; border-radius:12px; border:1px solid var(--border-subtle);">
+              <img src="${p.image_url}" alt="${p.name_en}" style="width:54px; height:54px; object-fit:cover; border-radius:8px;" />
+              <div style="flex:1; min-width:0;">
+                <div style="font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name_en}</div>
+                <div style="font-size:11px; color:var(--ink-muted);">${item.variant} • ${fmt(p.sale_price ?? p.price)}</div>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <button class="icon-btn" style="width:28px;height:28px;" type="button" onclick="updateQty(${idx}, -1)">-</button>
+                <span style="font-size:13px;">${item.qty}</span>
+                <button class="icon-btn" style="width:28px;height:28px;" type="button" onclick="updateQty(${idx}, 1)">+</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      document.getElementById("cartSubtotal").textContent = fmt(t.subtotal);
+      document.getElementById("cartDiscount").textContent = `-${fmt(t.discount)}`;
+      document.getElementById("cartShipping").textContent = fmt(t.shipping);
+      document.getElementById("cartTax").textContent = fmt(t.tax);
+      document.getElementById("cartTotal").textContent = fmt(t.total);
+    }
+
+    function toggleWishlist(id) {
+      const idx = state.wishlist.indexOf(id);
+      if (idx >= 0) state.wishlist.splice(idx, 1);
+      else state.wishlist.push(id);
+      localStorage.setItem("c48_wish", JSON.stringify(state.wishlist));
+      updateWishUI();
+      renderProducts();
+    }
+
+    function updateWishUI() {
+      document.getElementById("wishCount").textContent = state.wishlist.length;
+    }
+
+    function toggleDrawer(id, open) {
+      document.getElementById(id).classList.toggle("open", open);
+    }
+
+    function openModal(html) {
+      document.getElementById("modalContent").innerHTML = html;
+      document.getElementById("mainModal").classList.add("open");
+      lucide.createIcons();
+    }
+
+    function closeModal() {
+      document.getElementById("mainModal").classList.remove("open");
+    }
+
+    function openProductDetail(id) {
+      const p = state.products.find((x) => x.id === id);
+      if (!p) return;
+      openModal(`
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h3 style="font-size:26px;">${p.name_en}</h3>
+          <button class="icon-btn" type="button" onclick="closeModal()"><i data-lucide="x"></i></button>
+        </div>
+        <img src="${p.image_url}" alt="${p.name_en}" style="width:100%; max-height:260px; object-fit:cover; border-radius:12px; margin-bottom:14px;" />
+        <p style="color:var(--ink-muted); font-size:13px; margin-bottom:12px;">${p.short_desc_en}</p>
+        <p style="font-size:12px; margin-bottom:8px;"><strong style="color:var(--gold-bright);">Key Ingredients:</strong> ${p.ingredients}</p>
+        <p style="font-size:12px; margin-bottom:16px;"><strong style="color:var(--gold-bright);">Ritual &amp; Usage:</strong> ${p.usage_instructions}</p>
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="font-size:20px; color:var(--gold-bright);">${fmt(p.sale_price ?? p.price)}</strong>
+          <button class="btn-gold" type="button" onclick="addToCart('${p.id}'); closeModal();">Add to Bag</button>
+        </div>
+      `);
+    }
+
+    function openCheckoutModal() {
+      if (!state.cart.length) return showToast("Your bag is empty");
+      const t = getCartTotals();
+      openModal(`
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+          <h3 style="font-size:26px;">Checkout — Total ${fmt(t.total)}</h3>
+          <button class="icon-btn" type="button" onclick="closeModal()"><i data-lucide="x"></i></button>
+        </div>
+        <form id="checkoutForm" style="display:flex; flex-direction:column; gap:10px;">
+          <input class="input" name="name" placeholder="Recipient Full Name" required />
+          <input class="input" name="email" type="email" placeholder="Email for Order Confirmation" required />
+          <input class="input" name="phone" type="tel" placeholder="Phone Number" required />
+          <input class="input" name="city" placeholder="City" required />
+          <input class="input" name="address" placeholder="Street & Building Address" required />
+          <select name="payment" class="input">
+            <option value="cod">Cash on Delivery (Confirmed upon delivery)</option>
+            <option value="bank_transfer">Bank Transfer (Pending verification)</option>
+          </select>
+          <p style="font-size:11px; color:var(--ink-muted);">Note: Orders are recorded as pending verification/delivery until confirmed by operations or a verified payment webhook.</p>
+          <button class="btn-gold" type="submit">Place Order (${fmt(t.total)})</button>
+        </form>
+      `);
+
+      document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const fd = new FormData(e.target);
+        const orderNumber = `C48-${Date.now().toString().slice(-6)}`;
+        const orderRecord = {
+          order_number: orderNumber,
+          customer_name: fd.get("name"),
+          customer_email: fd.get("email"),
+          customer_phone: fd.get("phone"),
+          shipping_city: fd.get("city"),
+          shipping_address: fd.get("address"),
+          payment_method: fd.get("payment"),
+          payment_status: "pending_confirmation",
+          order_status: "pending",
+          subtotal: t.subtotal,
+          discount_amount: t.discount,
+          shipping_fee: t.shipping,
+          tax_amount: t.tax,
+          total_amount: t.total,
+          created_at: new Date().toISOString()
+        };
+
+        if (hasSupabase && sb) {
+          const { error } = await sb.from("orders").insert(orderRecord);
+          if (error) return showToast(`Order error: ${error.message}`);
+        }
+        state.orders.unshift(orderRecord);
+        localStorage.setItem("c48_orders", JSON.stringify(state.orders));
+        state.cart = [];
+        state.coupon = null;
+        localStorage.setItem("c48_cart", "[]");
+        updateCartUI();
+        toggleDrawer("cartDrawer", false);
+        openModal(`
+          <h3 style="font-size:26px; color:var(--gold-bright); margin-bottom:8px;">Order Recorded</h3>
+          <p style="font-size:14px; margin-bottom:10px;">Reference Number: <strong>${orderNumber}</strong></p>
+          <p style="font-size:13px; color:var(--ink-muted); margin-bottom:16px;">Status: Pending confirmation (${hasSupabase ? "saved to Supabase" : "Demo Mode local record"}). Payment is not marked paid until verified.</p>
+          <button class="btn-gold" type="button" onclick="closeModal()">Continue Shopping</button>
+        `);
+      });
+    }
+
+    function openPolicyModal(type) {
+      const titles = {
+        shipping: "Shipping & Delivery Policy",
+        returns: "Returns & Exchanges Policy",
+        privacy: "Privacy & Terms"
+      };
+      openModal(`
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:24px;">${titles[type]}</h3>
+          <button class="icon-btn" type="button" onclick="closeModal()"><i data-lucide="x"></i></button>
+        </div>
+        <p style="font-size:13px; color:var(--ink-muted);">48 COSMETICS processes orders promptly and provides transparent tracking updates. For hygiene reasons, opened skincare and fragrance items are eligible for return only if defective or damaged upon arrival.</p>
+      `);
+    }
+
+    document.getElementById("langToggle").addEventListener("click", () => {
+      state.lang = state.lang === "en" ? "ar" : "en";
+      localStorage.setItem("c48_lang", state.lang);
+      applyLanguage();
     });
-  });
 
-  const test=new Image();
-  test.onerror=()=>{
-    document.querySelectorAll('img.logo').forEach(im=>{
-      const d=document.createElement('div');
-      d.className=im.className+' txt'; d.textContent='siplab';
-      im.replaceWith(d);
+    ["searchInput", "categoryFilter", "skinTypeFilter", "availabilityFilter", "sortSelect"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", renderProducts);
+      document.getElementById(id).addEventListener("change", renderProducts);
     });
-    document.querySelectorAll('img.cuplogo').forEach(im=>{
-      const d=document.createElement('div');
-      d.className='cuplogo txt2'; d.textContent='siplab';
-      im.replaceWith(d);
-    });
-  };
-  test.src='logo.png';
 
-  const frame=document.getElementById('frame');
-  const TOTAL=11000;
-  function play(){
-    frame.classList.remove('play'); void frame.offsetWidth;
-    frame.classList.add('play');
-    setTimeout(play,TOTAL);
-  }
-  play();
-</script>
+    document.getElementById("cartBtn").addEventListener("click", () => toggleDrawer("cartDrawer", true));
+    document.getElementById("openCheckoutBtn").addEventListener("click", openCheckoutModal);
+    document.getElementById("proceedCheckoutBtn").addEventListener("click", openCheckoutModal);
+    document.getElementById("wishlistBtn").addEventListener("click", () => {
+      const wished = state.products.filter((p) => state.wishlist.includes(p.id));
+      openModal(`
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:24px;">Saved Wishlist (${wished.length})</h3>
+          <button class="icon-btn" type="button" onclick="closeModal()"><i data-lucide="x"></i></button>
+        </div>
+        ${wished.length ? wished.map((p) => `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.08);"><span>${p.name_en} — ${fmt(p.sale_price ?? p.price)}</span><button class="btn-gold" type="button" onclick="addToCart('${p.id}'); closeModal();">Add</button></div>`).join("") : `<p style="color:var(--ink-muted); font-size:13px;">No saved items yet.</p>`}
+      `);
+    });
+
+    document.getElementById("accountBtn").addEventListener("click", () => {
+      openModal(`
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:24px;">Client Orders &amp; Account</h3>
+          <button class="icon-btn" type="button" onclick="closeModal()"><i data-lucide="x"></i></button>
+        </div>
+        <p style="font-size:13px; color:var(--ink-muted); margin-bottom:12px;">Recent Orders (${state.orders.length}):</p>
+        ${state.orders.length ? state.orders.map((o) => `<div style="padding:10px; border:1px solid var(--border-subtle); border-radius:10px; margin-bottom:8px; font-size:12px;"><strong>${o.order_number}</strong> • ${o.order_status} • ${fmt(o.total_amount)}</div>`).join("") : `<p style="font-size:13px; color:var(--ink-muted);">No orders placed in this session yet.</p>`}
+      `);
+    });
+
+    document.getElementById("applyCouponBtn").addEventListener("click", () => {
+      const code = document.getElementById("couponInput").value.trim().toUpperCase();
+      if (code === "GOLD10") {
+        state.coupon = { code, type: "percent", value: 10 };
+        showToast("GOLD10 (10% off) applied");
+      } else if (code === "FREESHIP") {
+        state.coupon = { code, type: "free_shipping", value: 0 };
+        showToast("Free shipping code applied");
+      } else {
+        state.coupon = null;
+        showToast("Try GOLD10 or FREESHIP");
+      }
+      updateCartUI();
+    });
+
+    document.getElementById("contactForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      if (hasSupabase && sb) {
+        await sb.from("contact_messages").insert({ name: fd.get("name"), email: fd.get("email"), message: fd.get("message") });
+      }
+      e.target.reset();
+      showToast("Inquiry received by 48 COSMETICS");
+    });
+
+    document.getElementById("newsletterForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      if (hasSupabase && sb) {
+        await sb.from("newsletter_subscribers").insert({ email: fd.get("email") });
+      }
+      e.target.reset();
+      showToast("Subscribed to 48 COSMETICS dispatch");
+    });
+
+    document.getElementById("mainModal").addEventListener("click", (e) => {
+      if (e.target.id === "mainModal") closeModal();
+    });
+
+    window.addEventListener("load", () => {
+      setTimeout(() => document.getElementById("preloader").classList.add("hidden"), 250);
+    });
+
+    lucide.createIcons();
+    applyLanguage();
+    loadData();
+  </script>
 </body>
 </html>
