@@ -1,594 +1,590 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>48 COSMETICS | Admin Control Center</title>
+  <title>48 COSMETICS | لوحة التحكم الإدارية</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Cormorant+Garamond:wght@700&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./config.example.js"></script>
+  <script src="./config.js"></script>
   <style>
     :root {
       --bg: #08080a;
       --panel: #111116;
-      --panel-2: #17171e;
-      --ink: #f7f4ed;
-      --muted: #9e9789;
+      --panel-2: #181820;
+      --ink: #f8f5ef;
+      --muted: #a19a8c;
       --gold: #d4af37;
       --gold-light: #f2d579;
-      --line: rgba(212, 175, 55, 0.18);
-      --ok: #34d399;
-      --warn: #fbbf24;
-      --bad: #f87171;
+      --line: rgba(212, 175, 55, 0.2);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
-      background: var(--bg); color: var(--ink); min-height: 100vh;
-    }
+    body { font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
     .shell { display: grid; grid-template-columns: 260px 1fr; min-height: 100vh; }
     aside {
       background: var(--panel); border-inline-end: 1px solid var(--line);
       padding: 20px 14px; display: flex; flex-direction: column; gap: 6px;
     }
     .brand-box {
-      display: flex; align-items: center; gap: 10px; padding: 8px 10px 18px;
+      display: flex; align-items: center; gap: 10px; padding: 6px 10px 16px;
       border-bottom: 1px solid var(--line); margin-bottom: 10px;
     }
     .brand-badge {
-      width: 38px; height: 38px; border-radius: 9px; border: 1px solid var(--gold);
+      width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--gold);
       display: grid; place-items: center; font-family: 'Cormorant Garamond', serif;
-      font-weight: 700; font-size: 20px; color: var(--gold-light);
-      background: rgba(212,175,55,0.14);
+      font-weight: 700; font-size: 22px; color: var(--gold-light); background: rgba(212,175,55,0.14);
     }
     .nav-item {
       width: 100%; background: transparent; color: var(--muted); border: 1px solid transparent;
-      border-radius: 10px; padding: 10px 12px; font-size: 13px; font-weight: 500;
-      display: flex; align-items: center; gap: 10px; cursor: pointer; text-align: start;
-      transition: all 0.2s ease;
+      border-radius: 10px; padding: 10px 12px; font-size: 14px; font-weight: 600;
+      display: flex; align-items: center; gap: 10px; cursor: pointer; text-align: start; font-family: inherit;
     }
     .nav-item:hover, .nav-item.active {
-      background: rgba(212,175,55,0.12); color: var(--gold-light); border-color: var(--line);
+      background: rgba(212,175,55,0.14); color: var(--gold-light); border-color: var(--line);
     }
-
-    main { display: flex; flex-direction: column; min-width: 0; }
     .topbar {
-      background: rgba(17,17,22,0.9); backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--line); padding: 14px 24px;
-      display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+      background: rgba(17,17,22,0.92); border-bottom: 1px solid var(--line);
+      padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
     }
-    .admin-identity {
-      display: flex; align-items: center; gap: 10px; position: relative;
-    }
-    .avatar {
-      width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--gold);
-      object-fit: cover; background: var(--panel-2);
-    }
-    .dropdown {
-      position: absolute; top: 48px; inset-inline-end: 0; width: 280px; z-index: 60;
-      background: var(--panel-2); border: 1px solid var(--line); border-radius: 12px;
-      padding: 14px; display: none; flex-direction: column; gap: 8px; font-size: 12px;
-      box-shadow: 0 18px 40px rgba(0,0,0,0.6);
-    }
-    .dropdown.open { display: flex; }
-
-    .content { padding: 24px; display: flex; flex-direction: column; gap: 22px; }
+    .content { padding: 24px; display: flex; flex-direction: column; gap: 20px; }
     .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
-    .card {
-      background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px;
-    }
-    .kpi-val { font-size: 24px; font-weight: 700; color: var(--gold-light); margin-top: 6px; }
-    .kpi-lbl { font-size: 12px; color: var(--muted); }
+    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; }
+    .kpi-val { font-size: 26px; font-weight: 800; color: var(--gold-light); margin-top: 4px; }
+    .kpi-lbl { font-size: 13px; color: var(--muted); }
 
-    .charts-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 16px; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { padding: 11px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); text-align: start; }
-    th { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; }
+    th, td { padding: 11px 10px; border-bottom: 1px solid rgba(255,255,255,0.07); text-align: start; }
+    th { color: var(--muted); font-size: 12px; }
 
-    .input, select {
-      background: var(--bg); color: var(--ink); border: 1px solid rgba(255,255,255,0.14);
-      border-radius: 9px; padding: 9px 12px; font-size: 13px; font-family: inherit;
+    .input, select, textarea {
+      width: 100%; background: var(--bg); color: var(--ink);
+      border: 1px solid rgba(255,255,255,0.16); border-radius: 9px;
+      padding: 9px 12px; font-size: 13px; font-family: inherit;
     }
     .btn-gold {
       background: linear-gradient(135deg, var(--gold-light), var(--gold));
-      color: #09090b; border: none; border-radius: 9px; padding: 9px 15px;
-      font-size: 12px; font-weight: 700; cursor: pointer;
+      color: #09090b; border: none; border-radius: 9px; padding: 10px 16px;
+      font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
     }
     .btn-sm {
       background: var(--panel-2); color: var(--ink); border: 1px solid var(--line);
-      border-radius: 7px; padding: 5px 10px; font-size: 11px; cursor: pointer;
+      border-radius: 7px; padding: 5px 10px; font-size: 12px; cursor: pointer; font-family: inherit;
     }
-    .status-pill { padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 600; background: rgba(212,175,55,0.14); color: var(--gold-light); }
-
+    .pill { padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; background: rgba(212,175,55,0.15); color: var(--gold-light); }
     .tab-panel { display: none; flex-direction: column; gap: 18px; }
     .tab-panel.active { display: flex; }
 
-    #authGate {
-      position: fixed; inset: 0; z-index: 200; background: rgba(8,8,10,0.95);
-      display: none; align-items: center; justify-content: center; padding: 20px;
+    #toast {
+      position: fixed; bottom: 20px; inset-inline-end: 20px; z-index: 999;
+      background: var(--panel-2); color: var(--gold-light); border: 1px solid var(--gold);
+      border-radius: 10px; padding: 11px 16px; font-size: 13px; opacity: 0; transition: opacity 0.25s; pointer-events: none;
     }
-    #authGate.open { display: flex; }
+    #toast.show { opacity: 1; }
 
-    @media (max-width: 900px) {
-      .shell { grid-template-columns: 1fr; }
-      .charts-grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 880px) { .shell { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
-  <div id="authGate">
-    <form id="loginForm" class="card" style="width:min(380px,100%); display:flex; flex-direction:column; gap:12px;">
-      <h2 style="font-family:'Cormorant Garamond',serif; font-size:28px; color:var(--gold-light);">48 COSMETICS Admin</h2>
-      <p style="font-size:12px; color:var(--muted);">Sign in with your Supabase administrator account.</p>
-      <input class="input" id="loginEmail" type="email" placeholder="Admin Email" required />
-      <input class="input" id="loginPassword" type="password" placeholder="Password" required />
-      <button class="btn-gold" type="submit">Authenticate</button>
-    </form>
-  </div>
-
   <div class="shell">
     <aside>
       <div class="brand-box">
         <div class="brand-badge">48</div>
         <div>
-          <div style="font-family:'Cormorant Garamond',serif; font-weight:700; color:var(--gold-light); letter-spacing:0.1em;">48 COSMETICS</div>
-          <div style="font-size:10px; color:var(--muted);">ADMIN SUITE</div>
+          <div style="font-family:'Cormorant Garamond',serif; font-weight:700; color:var(--gold-light); font-size:18px;">48 COSMETICS</div>
+          <div style="font-size:11px; color:var(--muted);">لوحة تحكم المتجر</div>
         </div>
       </div>
-      <button class="nav-item active" data-tab="overview"><i data-lucide="layout-dashboard"></i> Analytics &amp; Overview</button>
-      <button class="nav-item" data-tab="products"><i data-lucide="sparkles"></i> Products &amp; Catalog</button>
-      <button class="nav-item" data-tab="orders"><i data-lucide="package"></i> Orders &amp; Fulfillment</button>
-      <button class="nav-item" data-tab="inventory"><i data-lucide="boxes"></i> Inventory &amp; Stock</button>
-      <button class="nav-item" data-tab="promotions"><i data-lucide="ticket-percent"></i> Promotions &amp; Coupons</button>
-      <button class="nav-item" data-tab="reviews"><i data-lucide="message-square-quote"></i> Reviews &amp; Support</button>
-      <button class="nav-item" data-tab="settings"><i data-lucide="sliders-horizontal"></i> Storefront &amp; Security</button>
-      <a href="./index.html" class="nav-item" style="margin-top:auto; text-decoration:none;"><i data-lucide="external-link"></i> View Customer Store</a>
+      <button class="nav-item active" data-tab="overview"><i data-lucide="layout-dashboard"></i> الإحصائيات العامة</button>
+      <button class="nav-item" data-tab="products"><i data-lucide="package-plus"></i> إدارة المنتجات</button>
+      <button class="nav-item" data-tab="orders"><i data-lucide="shopping-bag"></i> الطلبات الواردة</button>
+      <button class="nav-item" data-tab="customers"><i data-lucide="users"></i> الحسابات والعملاء</button>
+      <button class="nav-item" data-tab="coupons"><i data-lucide="ticket-percent"></i> الكوبونات والخصومات</button>
+      <button class="nav-item" data-tab="languages"><i data-lucide="languages"></i> التحكم باللغات والنصوص</button>
+      <a href="./index.html" target="_blank" class="nav-item" style="margin-top:auto; text-decoration:none;"><i data-lucide="external-link"></i> معاينة المتجر المباشر</a>
     </aside>
 
     <main>
       <div class="topbar">
         <div style="display:flex; align-items:center; gap:10px;">
-          <span class="status-pill" id="adminModeBadge">Demo Mode</span>
-          <span id="pageHeading" style="font-weight:600; font-size:15px;">Analytics &amp; Overview</span>
+          <span class="pill" id="connectionBadge">مزامنة مباشرة مع المتجر</span>
+          <strong id="panelTitle">الإحصائيات العامة</strong>
         </div>
-        <div class="admin-identity">
-          <img id="adminAvatar" class="avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Admin" />
-          <div style="line-height:1.2;">
-            <div id="adminDisplayName" style="font-size:13px; font-weight:600;">Authenticated Operator</div>
-            <div id="adminRoleLabel" style="font-size:11px; color:var(--gold-light);">Role: Demo Session</div>
-          </div>
-          <button class="btn-sm" type="button" id="profileMenuBtn">Profile</button>
-          <div class="dropdown" id="profileDropdown">
-            <div><strong>Email:</strong> <span id="idEmail">demo@48cosmetics.local</span></div>
-            <div><strong>Username:</strong> <span id="idUsername">@operator48</span></div>
-            <div><strong>Status:</strong> <span id="idStatus">Active</span></div>
-            <div><strong>Last Login:</strong> <span id="idLastLogin">Just now</span></div>
-            <hr style="border-color:rgba(255,255,255,0.08);" />
-            <input class="input" id="editDisplayNameInput" placeholder="Update Display Name" />
-            <button class="btn-gold" type="button" id="saveProfileBtn">Save Profile</button>
-            <button class="btn-sm" type="button" id="logoutBtn" style="display:none;">Sign Out</button>
-          </div>
-        </div>
+        <div style="font-size:13px; color:var(--gold-light);" id="adminAccountLabel">مدير النظام — 48 COSMETICS</div>
       </div>
 
       <div class="content">
-        <!-- TAB 1: OVERVIEW -->
+        <!-- 1. الإحصائيات -->
         <section class="tab-panel active" id="tab-overview">
           <div class="kpis" id="kpiGrid"></div>
-          <div class="charts-grid">
-            <div class="card">
-              <h3 style="font-size:15px; margin-bottom:12px;">Revenue &amp; Orders Trend</h3>
-              <canvas id="revenueChart" height="120"></canvas>
-            </div>
-            <div class="card">
-              <h3 style="font-size:15px; margin-bottom:12px;">Category Mix</h3>
-              <canvas id="categoryChart" height="120"></canvas>
-            </div>
-          </div>
-          <div class="card">
-            <h3 style="font-size:15px; margin-bottom:12px;">Recent Orders</h3>
-            <div style="overflow-x:auto;">
-              <table>
-                <thead><tr><th>Order #</th><th>Customer</th><th>City</th><th>Status</th><th>Total</th></tr></thead>
-                <tbody id="overviewOrdersBody"></tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- TAB 2: PRODUCTS -->
-        <section class="tab-panel" id="tab-products">
-          <form id="addProductForm" class="card" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap:10px;">
-            <input class="input" name="sku" placeholder="SKU (e.g. 48-GLW-09)" required />
-            <input class="input" name="name_en" placeholder="Product Name (EN)" required />
-            <input class="input" name="name_ar" placeholder="اسم المنتج (AR)" required />
-            <input class="input" name="category" placeholder="Category (Skincare)" value="Skincare" required />
-            <input class="input" name="price" type="number" step="0.01" placeholder="Price ($)" required />
-            <input class="input" name="stock_qty" type="number" placeholder="Initial Stock" value="15" required />
-            <button class="btn-gold" type="submit">+ Add Product</button>
-          </form>
           <div class="card" style="overflow-x:auto;">
+            <h3 style="font-size:16px; margin-bottom:12px;">أحدث الطلبات الحقيقية</h3>
             <table>
-              <thead><tr><th>SKU</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
-              <tbody id="productsAdminBody"></tbody>
+              <thead><tr><th>رقم الطلب</th><th>العميل</th><th>الجوال</th><th>المدينة</th><th>الحالة</th><th>الإجمالي</th></tr></thead>
+              <tbody id="recentOrdersBody"></tbody>
             </table>
           </div>
         </section>
 
-        <!-- TAB 3: ORDERS -->
+        <!-- 2. إدارة المنتجات -->
+        <section class="tab-panel" id="tab-products">
+          <form id="productForm" class="card" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+            <input class="input" name="sku" placeholder="رمز المنتج SKU (مثال: 48-001)" required />
+            <input class="input" name="category_name" placeholder="القسم (عناية بالبشرة / عطور...)" required />
+            <input class="input" name="name_ar" placeholder="اسم المنتج بالعربية" required />
+            <input class="input" name="name_en" placeholder="Product Name (English)" required />
+            <input class="input" name="price" type="number" step="0.01" placeholder="السعر الأساسي ($)" required />
+            <input class="input" name="sale_price" type="number" step="0.01" placeholder="سعر التخفيض (اختياري)" />
+            <input class="input" name="stock_qty" type="number" placeholder="الكمية في المخزون" required />
+            <input class="input" name="badge" placeholder="شارة المنتج (جديد / الأكثر مبيعاً)" />
+            <input class="input" name="image_url" placeholder="رابط صورة المنتج أو ارفع صورة بالأسفل" />
+            <input class="input" id="imageFileInput" type="file" accept="image/*" />
+            <textarea class="input" name="desc_ar" rows="2" placeholder="وصف المنتج بالعربية" style="grid-column:1/-1;"></textarea>
+            <textarea class="input" name="desc_en" rows="2" placeholder="Product Description (English)" style="grid-column:1/-1;"></textarea>
+            <button class="btn-gold" type="submit" style="grid-column:1/-1;">+ نشر المنتج في المتجر فوراً</button>
+          </form>
+
+          <div class="card" style="overflow-x:auto;">
+            <h3 style="font-size:16px; margin-bottom:12px;">المنتجات المنشورة حالياً في متجرك</h3>
+            <table>
+              <thead><tr><th>الصورة</th><th>الرمز</th><th>الاسم</th><th>القسم</th><th>السعر</th><th>المخزون</th><th>إجراءات</th></tr></thead>
+              <tbody id="productsTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. الطلبات -->
         <section class="tab-panel" id="tab-orders">
           <div class="card" style="overflow-x:auto;">
             <table>
-              <thead><tr><th>Order #</th><th>Customer</th><th>Payment</th><th>Order Status</th><th>Total</th><th>Update</th></tr></thead>
-              <tbody id="ordersAdminBody"></tbody>
+              <thead><tr><th>رقم الطلب</th><th>العميل</th><th>العنوان والمدينة</th><th>المنتجات</th><th>الإجمالي</th><th>حالة الطلب</th></tr></thead>
+              <tbody id="ordersTableBody"></tbody>
             </table>
           </div>
         </section>
 
-        <!-- TAB 4: INVENTORY -->
-        <section class="tab-panel" id="tab-inventory">
+        <!-- 4. الحسابات والعملاء -->
+        <section class="tab-panel" id="tab-customers">
           <div class="card" style="overflow-x:auto;">
+            <h3 style="font-size:16px; margin-bottom:12px;">الحسابات المسجلة في المتجر</h3>
             <table>
-              <thead><tr><th>Product</th><th>SKU</th><th>Stock Qty</th><th>Alert State</th><th>Adjust Stock</th></tr></thead>
-              <tbody id="inventoryAdminBody"></tbody>
+              <thead><tr><th>الاسم</th><th>البريد الإلكتروني</th><th>الهاتف</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+              <tbody id="customersTableBody"></tbody>
             </table>
           </div>
         </section>
 
-        <!-- TAB 5: PROMOTIONS -->
-        <section class="tab-panel" id="tab-promotions">
-          <div class="card" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-            <input class="input" id="newCouponCode" placeholder="Coupon Code (e.g. VIP20)" />
-            <select id="newCouponType" class="input">
-              <option value="percent">Percentage (%)</option>
-              <option value="fixed">Fixed ($)</option>
-              <option value="free_shipping">Free Shipping</option>
+        <!-- 5. الكوبونات -->
+        <section class="tab-panel" id="tab-coupons">
+          <form id="couponForm" class="card" style="display:flex; gap:10px; flex-wrap:wrap;">
+            <input class="input" name="code" placeholder="كود الخصم (مثال: WELCOME15)" style="max-width:220px;" required />
+            <select class="input" name="discount_type" style="max-width:190px;">
+              <option value="percent">نسبة مئوية (%)</option>
+              <option value="fixed">مبلغ ثابت ($)</option>
+              <option value="free_shipping">شحن مجاني</option>
             </select>
-            <input class="input" id="newCouponVal" type="number" placeholder="Value" value="20" />
-            <button class="btn-gold" type="button" id="addCouponBtn">Create Coupon</button>
-          </div>
+            <input class="input" name="discount_value" type="number" step="0.01" placeholder="قيمة الخصم" style="max-width:160px;" required />
+            <button class="btn-gold" type="submit">إنشاء الكوبون</button>
+          </form>
           <div class="card">
-            <ul id="couponList" style="list-style:none; display:flex; flex-direction:column; gap:8px; font-size:13px;"></ul>
+            <ul id="couponsList" style="list-style:none; display:flex; flex-direction:column; gap:10px;"></ul>
           </div>
         </section>
 
-        <!-- TAB 6: REVIEWS & SUPPORT -->
-        <section class="tab-panel" id="tab-reviews">
-          <div class="card">
-            <h3 style="font-size:15px; margin-bottom:10px;">Activity &amp; Audit Feed</h3>
-            <ul id="activityFeed" style="list-style:none; display:flex; flex-direction:column; gap:8px; font-size:12px; color:var(--muted);"></ul>
-          </div>
-        </section>
+        <!-- 6. التحكم باللغات والنصوص -->
+        <section class="tab-panel" id="tab-languages">
+          <form id="languageControlForm" class="card" style="display:flex; flex-direction:column; gap:14px; max-width:760px;">
+            <h3 style="font-size:18px; color:var(--gold-light);">إعدادات اللغات والترجمة للمتجر</h3>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
+              <div>
+                <label style="font-size:12px; color:var(--muted);">اللغة الافتراضية عند فتح المتجر</label>
+                <select class="input" name="default_lang" id="setDefaultLang">
+                  <option value="ar">العربية (RTL)</option>
+                  <option value="en">الإنجليزية (LTR)</option>
+                </select>
+              </div>
+              <div style="display:flex; flex-direction:column; justify-content:center; gap:8px;">
+                <label style="font-size:13px;"><input type="checkbox" id="setEnableAr" checked /> تفعيل اللغة العربية في المتجر</label>
+                <label style="font-size:13px;"><input type="checkbox" id="setEnableEn" checked /> تفعيل اللغة الإنجليزية في المتجر</label>
+              </div>
+            </div>
 
-        <!-- TAB 7: SETTINGS -->
-        <section class="tab-panel" id="tab-settings">
-          <div class="card" style="display:flex; flex-direction:column; gap:12px; max-width:540px;">
-            <h3 style="font-size:16px;">Storefront Announcement &amp; Controls</h3>
-            <input class="input" id="announcementInput" placeholder="Announcement bar text" />
-            <button class="btn-gold" type="button" id="saveAnnouncementBtn">Publish Announcement</button>
-          </div>
+            <hr style="border-color:var(--line);" />
+            <h4 style="font-size:15px;">تعديل نصوص الواجهة الرئيسية باللغتين</h4>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
+              <div>
+                <label style="font-size:12px; color:var(--muted);">الشريط العلوي (عربي)</label>
+                <input class="input" id="setAnnAr" />
+              </div>
+              <div>
+                <label style="font-size:12px; color:var(--muted);">Top Announcement (English)</label>
+                <input class="input" id="setAnnEn" />
+              </div>
+              <div>
+                <label style="font-size:12px; color:var(--muted);">العنوان الرئيسي (عربي)</label>
+                <input class="input" id="setHeroTitleAr" />
+              </div>
+              <div>
+                <label style="font-size:12px; color:var(--muted);">Hero Title (English)</label>
+                <input class="input" id="setHeroTitleEn" />
+              </div>
+              <div>
+                <label style="font-size:12px; color:var(--muted);">الوصف الرئيسي (عربي)</label>
+                <textarea class="input" id="setHeroDescAr" rows="2"></textarea>
+              </div>
+              <div>
+                <label style="font-size:12px; color:var(--muted);">Hero Description (English)</label>
+                <textarea class="input" id="setHeroDescEn" rows="2"></textarea>
+              </div>
+            </div>
+
+            <button class="btn-gold" type="submit">حفظ إعدادات اللغات والنصوص وتطبيقها على المتجر</button>
+          </form>
         </section>
       </div>
     </main>
   </div>
+
+  <div id="toast"></div>
 
   <script>
     const cfg = window.COSMETICS_48_CONFIG || {};
     const hasSupabase = Boolean(cfg.supabase?.url && cfg.supabase?.anonKey);
     const sb = hasSupabase ? window.supabase.createClient(cfg.supabase.url, cfg.supabase.anonKey) : null;
 
-    const adminState = {
-      user: null,
-      profile: {
-        display_name: "Atelier Director",
-        username: "director48",
-        email: "director@48cosmetics.luxury",
-        role_slug: "super_admin",
-        status: "Active"
-      },
-      products: [
-        { id: "1", sku: "48-SRM-01", name_en: "24K Gold & Peptide Elixir", category: "Skincare", price: 98, stock_qty: 24 },
-        { id: "2", sku: "48-PRF-02", name_en: "Oud & Amber Royale Extrait", category: "Fragrance", price: 165, stock_qty: 6 },
-        { id: "3", sku: "48-CRM-03", name_en: "Velvet Ceramide Barrier Cream", category: "Skincare", price: 86, stock_qty: 19 }
-      ],
-      orders: [
-        { order_number: "C48-841201", customer_name: "Layla Mansour", shipping_city: "Amman", payment_method: "cod", payment_status: "pending_confirmation", order_status: "processing", total_amount: 196 },
-        { order_number: "C48-841202", customer_name: "Tariq Haddad", shipping_city: "Ramallah", payment_method: "cod", payment_status: "pending_confirmation", order_status: "pending", total_amount: 165 }
-      ],
-      coupons: [
-        { code: "GOLD10", type: "percent", value: 10 },
-        { code: "FREESHIP", type: "free_shipping", value: 0 }
-      ],
-      logs: [
-        "System initialized in " + (hasSupabase ? "Live Supabase" : "Demo Mode"),
-        "Catalog & inventory modules synchronized"
-      ]
+    const SHARED_KEYS = {
+      products: "c48_real_products",
+      orders: "c48_real_orders",
+      coupons: "c48_real_coupons",
+      settings: "c48_real_settings",
+      users: "c48_real_users"
     };
 
-    let revChart, catChart;
-
-    function logAction(msg) {
-      adminState.logs.unshift(`${new Date().toLocaleTimeString()} — ${msg}`);
-      renderLogs();
-    }
-
-    function renderIdentity() {
-      const p = adminState.profile;
-      document.getElementById("adminModeBadge").textContent = hasSupabase ? "Live Supabase" : "Demo Mode";
-      document.getElementById("adminDisplayName").textContent = p.display_name;
-      document.getElementById("adminRoleLabel").textContent = `Role: ${p.role_slug}`;
-      document.getElementById("idEmail").textContent = p.email;
-      document.getElementById("idUsername").textContent = `@${p.username}`;
-      document.getElementById("idStatus").textContent = p.status;
-      document.getElementById("editDisplayNameInput").value = p.display_name;
-    }
-
-    async function initAuthAndData() {
-      if (hasSupabase && sb) {
-        const { data: { session } } = await sb.auth.getSession();
-        if (!session) {
-          document.getElementById("authGate").classList.add("open");
-          return;
-        }
-        adminState.user = session.user;
-        document.getElementById("logoutBtn").style.display = "inline-block";
-        const { data: prof } = await sb.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
-        if (prof) {
-          adminState.profile = {
-            display_name: prof.display_name || session.user.email,
-            username: prof.username || session.user.email.split("@")[0],
-            email: prof.email || session.user.email,
-            role_slug: prof.role_slug || "admin",
-            status: prof.is_blocked ? "Blocked" : "Active"
-          };
-        }
-        const { data: dbProds } = await sb.from("products").select("id,sku,name_en,price,sale_price,categories(name_en),inventory(stock_qty)");
-        if (dbProds?.length) {
-          adminState.products = dbProds.map((x) => ({
-            id: x.id, sku: x.sku, name_en: x.name_en,
-            category: x.categories?.name_en || "Luxury",
-            price: Number(x.sale_price ?? x.price),
-            stock_qty: x.inventory?.stock_qty ?? 0
-          }));
-        }
-        const { data: dbOrders } = await sb.from("orders").select("*").order("created_at", { ascending: false }).limit(25);
-        if (dbOrders?.length) adminState.orders = dbOrders;
+    const state = {
+      products: JSON.parse(localStorage.getItem(SHARED_KEYS.products) || "[]"),
+      orders: JSON.parse(localStorage.getItem(SHARED_KEYS.orders) || "[]"),
+      coupons: JSON.parse(localStorage.getItem(SHARED_KEYS.coupons) || "[]"),
+      users: JSON.parse(localStorage.getItem(SHARED_KEYS.users) || "[]"),
+      settings: {
+        default_lang: "ar",
+        enable_ar: true,
+        enable_en: true,
+        announcement_ar: "توصيل سريع مجاني للطلبات فوق $150",
+        announcement_en: "COMPLIMENTARY EXPRESS DELIVERY ON ORDERS OVER $150",
+        hero_title_ar: "إشراقة مصقولة في كل قطرة.",
+        hero_title_en: "Sculpted Radiance in Every Drop.",
+        hero_desc_ar: "تركيبات نباتية فاخرة وإكسير غني بالذهب عيار 24 لبشرة متألقة.",
+        hero_desc_en: "Botanical actives and 24k gold-infused elixirs crafted for enduring luminescence.",
+        ...(JSON.parse(localStorage.getItem(SHARED_KEYS.settings) || "null") || {})
       }
+    };
 
-      renderIdentity();
-      renderAll();
-      renderCharts();
+    function showToast(msg) {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      clearTimeout(window.__at);
+      window.__at = setTimeout(() => el.classList.remove("show"), 2600);
     }
+
+    async function loadAdminData() {
+      document.getElementById("connectionBadge").textContent = hasSupabase ? "متصل بـ Supabase" : "وضع التخزين المحلي المشترك";
+      if (hasSupabase && sb) {
+        const [{ data: prods }, { data: ords }, { data: coups }, { data: profs }, { data: sets }] = await Promise.all([
+          sb.from("products").select("*").order("created_at", { ascending: false }),
+          sb.from("orders").select("*").order("created_at", { ascending: false }),
+          sb.from("coupons").select("*").order("created_at", { ascending: false }),
+          sb.from("profiles").select("*").order("created_at", { ascending: false }),
+          sb.from("store_settings").select("*").eq("id", 1).maybeSingle()
+        ]);
+        if (prods) state.products = prods;
+        if (ords) state.orders = ords;
+        if (coups) state.coupons = coups;
+        if (profs) state.users = profs;
+        if (sets) state.settings = { ...state.settings, ...sets };
+      } else {
+        state.products = JSON.parse(localStorage.getItem(SHARED_KEYS.products) || "[]");
+        state.orders = JSON.parse(localStorage.getItem(SHARED_KEYS.orders) || "[]");
+        state.coupons = JSON.parse(localStorage.getItem(SHARED_KEYS.coupons) || "[]");
+        state.users = JSON.parse(localStorage.getItem(SHARED_KEYS.users) || "[]");
+      }
+      renderAll();
+    }
+
+    window.addEventListener("storage", (e) => {
+      if (Object.values(SHARED_KEYS).includes(e.key)) loadAdminData();
+    });
 
     function renderAll() {
-      const revenue = adminState.orders.reduce((s, o) => s + Number(o.total_amount || 0), 0);
-      const lowStock = adminState.products.filter((p) => p.stock_qty <= 8).length;
-
+      const totalRev = state.orders.reduce((s, o) => s + Number(o.total_amount || 0), 0);
       document.getElementById("kpiGrid").innerHTML = `
-        <div class="card"><div class="kpi-lbl">Gross Order Volume</div><div class="kpi-val">$${revenue.toFixed(2)}</div></div>
-        <div class="card"><div class="kpi-lbl">Total Orders</div><div class="kpi-val">${adminState.orders.length}</div></div>
-        <div class="card"><div class="kpi-lbl">Active Products</div><div class="kpi-val">${adminState.products.length}</div></div>
-        <div class="card"><div class="kpi-lbl">Low-Stock Alerts</div><div class="kpi-val">${lowStock}</div></div>
+        <div class="card"><div class="kpi-lbl">إجمالي المبيعات</div><div class="kpi-val">$${totalRev.toFixed(2)}</div></div>
+        <div class="card"><div class="kpi-lbl">عدد الطلبات</div><div class="kpi-val">${state.orders.length}</div></div>
+        <div class="card"><div class="kpi-lbl">المنتجات المنشورة</div><div class="kpi-val">${state.products.length}</div></div>
+        <div class="card"><div class="kpi-lbl">الحسابات المسجلة</div><div class="kpi-val">${state.users.length}</div></div>
       `;
 
-      document.getElementById("overviewOrdersBody").innerHTML = adminState.orders.map((o) => `
+      document.getElementById("recentOrdersBody").innerHTML = state.orders.length ? state.orders.slice(0, 10).map((o) => `
         <tr>
-          <td><strong>${o.order_number}</strong></td>
+          <td><strong>#${o.order_number}</strong></td>
           <td>${o.customer_name}</td>
-          <td>${o.shipping_city || "—"}</td>
-          <td><span class="status-pill">${o.order_status}</span></td>
+          <td>${o.customer_phone}</td>
+          <td>${o.shipping_city}</td>
+          <td><span class="pill">${o.order_status}</span></td>
           <td>$${Number(o.total_amount).toFixed(2)}</td>
         </tr>
-      `).join("");
+      `).join("") : `<tr><td colspan="6" style="color:var(--muted);">لا توجد طلبات واردة بعد.</td></tr>`;
 
-      document.getElementById("productsAdminBody").innerHTML = adminState.products.map((p, idx) => `
+      document.getElementById("productsTableBody").innerHTML = state.products.length ? state.products.map((p, idx) => `
         <tr>
+          <td><img src="${p.image_url}" alt="${p.name_ar}" style="width:44px;height:44px;object-fit:cover;border-radius:8px;" /></td>
           <td>${p.sku}</td>
-          <td><strong>${p.name_en}</strong></td>
-          <td>${p.category}</td>
-          <td>$${Number(p.price).toFixed(2)}</td>
+          <td><strong>${p.name_ar}</strong><br><span style="font-size:11px;color:var(--muted);">${p.name_en}</span></td>
+          <td>${p.category_name}</td>
+          <td>$${Number(p.sale_price ?? p.price).toFixed(2)}</td>
           <td>${p.stock_qty}</td>
           <td>
-            <button class="btn-sm" type="button" onclick="adjustStock(${idx}, 5)">+5 Stock</button>
-            <button class="btn-sm" type="button" onclick="deleteProduct(${idx})">Delete</button>
+            <button class="btn-sm" type="button" onclick="adjustStock(${idx}, 5)">+5 مخزون</button>
+            <button class="btn-sm" type="button" onclick="deleteProduct(${idx})">حذف</button>
           </td>
         </tr>
-      `).join("");
+      `).join("") : `<tr><td colspan="7" style="color:var(--muted);">لم تقم بإضافة أي منتج بعد. استخدم النموذج أعلاه لإضافة أول منتج حقيقي.</td></tr>`;
 
-      document.getElementById("ordersAdminBody").innerHTML = adminState.orders.map((o, idx) => `
+      document.getElementById("ordersTableBody").innerHTML = state.orders.length ? state.orders.map((o, idx) => `
         <tr>
-          <td><strong>${o.order_number}</strong></td>
-          <td>${o.customer_name}</td>
-          <td>${o.payment_method} (${o.payment_status})</td>
-          <td><span class="status-pill">${o.order_status}</span></td>
+          <td><strong>#${o.order_number}</strong></td>
+          <td>${o.customer_name}<br><span style="font-size:11px;color:var(--muted);">${o.customer_phone}</span></td>
+          <td>${o.shipping_city} — ${o.shipping_address}</td>
+          <td>${(o.items || []).map((i) => `${i.name} (×${i.qty})`).join("، ")}</td>
           <td>$${Number(o.total_amount).toFixed(2)}</td>
           <td>
             <select class="input" style="padding:4px 8px; width:auto;" onchange="updateOrderStatus(${idx}, this.value)">
-              <option value="pending" ${o.order_status === "pending" ? "selected" : ""}>pending</option>
-              <option value="confirmed" ${o.order_status === "confirmed" ? "selected" : ""}>confirmed</option>
-              <option value="processing" ${o.order_status === "processing" ? "selected" : ""}>processing</option>
-              <option value="shipped" ${o.order_status === "shipped" ? "selected" : ""}>shipped</option>
-              <option value="delivered" ${o.order_status === "delivered" ? "selected" : ""}>delivered</option>
+              <option value="pending" ${o.order_status === "pending" ? "selected" : ""}>قيد الانتظار</option>
+              <option value="confirmed" ${o.order_status === "confirmed" ? "selected" : ""}>مؤكد</option>
+              <option value="processing" ${o.order_status === "processing" ? "selected" : ""}>قيد التجهيز</option>
+              <option value="shipped" ${o.order_status === "shipped" ? "selected" : ""}>تم الشحن</option>
+              <option value="delivered" ${o.order_status === "delivered" ? "selected" : ""}>تم التسليم</option>
+              <option value="cancelled" ${o.order_status === "cancelled" ? "selected" : ""}>ملغي</option>
             </select>
           </td>
         </tr>
-      `).join("");
+      `).join("") : `<tr><td colspan="6" style="color:var(--muted);">لا توجد طلبات حتى الآن.</td></tr>`;
 
-      document.getElementById("inventoryAdminBody").innerHTML = adminState.products.map((p, idx) => `
+      document.getElementById("customersTableBody").innerHTML = state.users.length ? state.users.map((u, idx) => `
         <tr>
-          <td>${p.name_en}</td>
-          <td>${p.sku}</td>
-          <td><strong>${p.stock_qty}</strong></td>
-          <td><span class="status-pill">${p.stock_qty <= 8 ? "Low Stock" : "Healthy"}</span></td>
+          <td><strong>${u.full_name || "عميل"}</strong></td>
+          <td>${u.email}</td>
+          <td>${u.phone || "—"}</td>
+          <td><span class="pill">${u.is_blocked ? "موقوف" : "نشط"}</span></td>
           <td>
-            <button class="btn-sm" type="button" onclick="adjustStock(${idx}, 10)">+10</button>
-            <button class="btn-sm" type="button" onclick="adjustStock(${idx}, -1)">-1</button>
+            <button class="btn-sm" type="button" onclick="toggleBlockUser(${idx})">${u.is_blocked ? "إلغاء الحظر" : "حظر الحساب"}</button>
           </td>
         </tr>
-      `).join("");
+      `).join("") : `<tr><td colspan="5" style="color:var(--muted);">لا توجد حسابات مسجلة بعد.</td></tr>`;
 
-      document.getElementById("couponList").innerHTML = adminState.coupons.map((c) => `
-        <li><span class="status-pill">${c.code}</span> — ${c.type} (${c.value || "Free"})</li>
-      `).join("");
+      document.getElementById("couponsList").innerHTML = state.coupons.length ? state.coupons.map((c, idx) => `
+        <li style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.06);">
+          <span><span class="pill">${c.code}</span> — النوع: ${c.discount_type} — القيمة: ${c.discount_value}</span>
+          <button class="btn-sm" type="button" onclick="deleteCoupon(${idx})">حذف</button>
+        </li>
+      `).join("") : `<li style="color:var(--muted); font-size:13px;">لا توجد كوبونات خصم منشأة حالياً.</li>`;
 
-      renderLogs();
+      // تعبئة فورم اللغات
+      document.getElementById("setDefaultLang").value = state.settings.default_lang || "ar";
+      document.getElementById("setEnableAr").checked = state.settings.enable_ar !== false;
+      document.getElementById("setEnableEn").checked = state.settings.enable_en !== false;
+      document.getElementById("setAnnAr").value = state.settings.announcement_ar || "";
+      document.getElementById("setAnnEn").value = state.settings.announcement_en || "";
+      document.getElementById("setHeroTitleAr").value = state.settings.hero_title_ar || "";
+      document.getElementById("setHeroTitleEn").value = state.settings.hero_title_en || "";
+      document.getElementById("setHeroDescAr").value = state.settings.hero_desc_ar || "";
+      document.getElementById("setHeroDescEn").value = state.settings.hero_desc_en || "";
     }
 
-    function renderLogs() {
-      document.getElementById("activityFeed").innerHTML = adminState.logs.slice(0, 20).map((l) => `<li>${l}</li>`).join("");
-    }
-
-    function renderCharts() {
-      const ctx1 = document.getElementById("revenueChart");
-      const ctx2 = document.getElementById("categoryChart");
-      if (revChart) revChart.destroy();
-      if (catChart) catChart.destroy();
-
-      revChart = new Chart(ctx1, {
-        type: "line",
-        data: {
-          labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-          datasets: [{ label: "Sales ($)", data: [420, 690, 580, 910, 1240, 1480, 1190], borderColor: "#d4af37", tension: 0.35 }]
-        },
-        options: { plugins: { legend: { labels: { color: "#f7f4ed" } } }, scales: { x: { ticks: { color: "#9e9789" } }, y: { ticks: { color: "#9e9789" } } } }
-      });
-
-      catChart = new Chart(ctx2, {
-        type: "doughnut",
-        data: {
-          labels: ["Skincare", "Fragrance", "Lip Couture"],
-          datasets: [{ data: [52, 31, 17], backgroundColor: ["#d4af37", "#8a6d1b", "#f2d579"] }]
-        },
-        options: { plugins: { legend: { labels: { color: "#f7f4ed" } } } }
+    function readFileAsDataURL(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
       });
     }
 
-    function adjustStock(idx, delta) {
-      const p = adminState.products[idx];
+    document.getElementById("productForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const file = document.getElementById("imageFileInput").files[0];
+      let imageUrl = fd.get("image_url").trim();
+
+      if (file) {
+        imageUrl = await readFileAsDataURL(file);
+      }
+      if (!imageUrl) {
+        return showToast("يرجى رفع صورة للمنتج أو إدخال رابط صورة");
+      }
+
+      const newProduct = {
+        id: crypto.randomUUID ? crypto.randomUUID() : "prod-" + Date.now(),
+        sku: fd.get("sku").trim(),
+        category_name: fd.get("category_name").trim(),
+        name_ar: fd.get("name_ar").trim(),
+        name_en: fd.get("name_en").trim(),
+        price: Number(fd.get("price")),
+        sale_price: fd.get("sale_price") ? Number(fd.get("sale_price")) : null,
+        stock_qty: Number(fd.get("stock_qty")),
+        badge: fd.get("badge").trim() || null,
+        desc_ar: fd.get("desc_ar").trim(),
+        desc_en: fd.get("desc_en").trim(),
+        image_url: imageUrl,
+        status: "active",
+        created_at: new Date().toISOString()
+      };
+
+      if (hasSupabase && sb) {
+        const { error } = await sb.from("products").insert(newProduct);
+        if (error) return showToast("خطأ في حفظ المنتج: " + error.message);
+      } else {
+        state.products.unshift(newProduct);
+        localStorage.setItem(SHARED_KEYS.products, JSON.stringify(state.products));
+      }
+
+      e.target.reset();
+      showToast("تم نشر المنتج في المتجر بنجاح");
+      loadAdminData();
+    });
+
+    async function adjustStock(idx, delta) {
+      const p = state.products[idx];
       if (!p) return;
-      p.stock_qty = Math.max(0, p.stock_qty + delta);
-      logAction(`Adjusted stock for ${p.sku} by ${delta > 0 ? "+" + delta : delta} (now ${p.stock_qty})`);
+      p.stock_qty = Math.max(0, Number(p.stock_qty) + delta);
+      if (hasSupabase && sb) {
+        await sb.from("products").update({ stock_qty: p.stock_qty }).eq("id", p.id);
+      } else {
+        localStorage.setItem(SHARED_KEYS.products, JSON.stringify(state.products));
+      }
       renderAll();
+      showToast("تم تحديث المخزون");
     }
 
-    function deleteProduct(idx) {
-      const p = adminState.products[idx];
-      if (!p) return;
-      adminState.products.splice(idx, 1);
-      logAction(`Deleted product ${p.sku}`);
+    async function deleteProduct(idx) {
+      const p = state.products[idx];
+      if (!p || !confirm(`حذف المنتج "${p.name_ar}" نهائياً؟`)) return;
+      if (hasSupabase && sb) {
+        await sb.from("products").delete().eq("id", p.id);
+      } else {
+        state.products.splice(idx, 1);
+        localStorage.setItem(SHARED_KEYS.products, JSON.stringify(state.products));
+      }
       renderAll();
+      showToast("تم حذف المنتج");
     }
 
     async function updateOrderStatus(idx, status) {
-      const o = adminState.orders[idx];
+      const o = state.orders[idx];
       if (!o) return;
       o.order_status = status;
-      if (hasSupabase && sb && o.id) {
+      if (hasSupabase && sb) {
         await sb.from("orders").update({ order_status: status }).eq("id", o.id);
+      } else {
+        localStorage.setItem(SHARED_KEYS.orders, JSON.stringify(state.orders));
       }
-      logAction(`Order ${o.order_number} marked as ${status}`);
       renderAll();
+      showToast("تم تحديث حالة الطلب");
     }
+
+    async function toggleBlockUser(idx) {
+      const u = state.users[idx];
+      if (!u) return;
+      u.is_blocked = !u.is_blocked;
+      if (hasSupabase && sb) {
+        await sb.from("profiles").update({ is_blocked: u.is_blocked }).eq("id", u.id);
+      } else {
+        localStorage.setItem(SHARED_KEYS.users, JSON.stringify(state.users));
+      }
+      renderAll();
+      showToast(u.is_blocked ? "تم حظر الحساب" : "تم تفعيل الحساب");
+    }
+
+    document.getElementById("couponForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const coupon = {
+        id: crypto.randomUUID ? crypto.randomUUID() : "cp-" + Date.now(),
+        code: fd.get("code").trim().toUpperCase(),
+        discount_type: fd.get("discount_type"),
+        discount_value: Number(fd.get("discount_value")),
+        is_active: true
+      };
+      if (hasSupabase && sb) {
+        const { error } = await sb.from("coupons").insert(coupon);
+        if (error) return showToast("خطأ: " + error.message);
+      } else {
+        state.coupons.unshift(coupon);
+        localStorage.setItem(SHARED_KEYS.coupons, JSON.stringify(state.coupons));
+      }
+      e.target.reset();
+      renderAll();
+      showToast("تم إنشاء الكوبون وتفعيله");
+    });
+
+    async function deleteCoupon(idx) {
+      const c = state.coupons[idx];
+      if (!c) return;
+      if (hasSupabase && sb) {
+        await sb.from("coupons").delete().eq("id", c.id);
+      } else {
+        state.coupons.splice(idx, 1);
+        localStorage.setItem(SHARED_KEYS.coupons, JSON.stringify(state.coupons));
+      }
+      renderAll();
+      showToast("تم حذف الكوبون");
+    }
+
+    document.getElementById("languageControlForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const enableAr = document.getElementById("setEnableAr").checked;
+      const enableEn = document.getElementById("setEnableEn").checked;
+      if (!enableAr && !enableEn) {
+        return showToast("يجب تفعيل لغة واحدة على الأقل للمتجر");
+      }
+
+      const updated = {
+        ...state.settings,
+        default_lang: document.getElementById("setDefaultLang").value,
+        enable_ar: enableAr,
+        enable_en: enableEn,
+        announcement_ar: document.getElementById("setAnnAr").value.trim(),
+        announcement_en: document.getElementById("setAnnEn").value.trim(),
+        hero_title_ar: document.getElementById("setHeroTitleAr").value.trim(),
+        hero_title_en: document.getElementById("setHeroTitleEn").value.trim(),
+        hero_desc_ar: document.getElementById("setHeroDescAr").value.trim(),
+        hero_desc_en: document.getElementById("setHeroDescEn").value.trim()
+      };
+
+      state.settings = updated;
+      if (hasSupabase && sb) {
+        await sb.from("store_settings").upsert({ id: 1, ...updated });
+      } else {
+        localStorage.setItem(SHARED_KEYS.settings, JSON.stringify(updated));
+      }
+      showToast("تم حفظ إعدادات اللغات والنصوص وتطبيقها على المتجر فوراً");
+    });
 
     document.querySelectorAll(".nav-item[data-tab]").forEach((btn) => {
       btn.addEventListener("click", () => {
         document.querySelectorAll(".nav-item[data-tab]").forEach((b) => b.classList.remove("active"));
         btn.classList.add("active");
-        const tab = btn.getAttribute("data-tab");
-        document.getElementById("pageHeading").textContent = btn.textContent.trim();
+        document.getElementById("panelTitle").textContent = btn.textContent.trim();
         document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
-        document.getElementById(`tab-${tab}`).classList.add("active");
+        document.getElementById(`tab-${btn.getAttribute("data-tab")}`).classList.add("active");
       });
-    });
-
-    document.getElementById("profileMenuBtn").addEventListener("click", () => {
-      document.getElementById("profileDropdown").classList.toggle("open");
-    });
-
-    document.getElementById("saveProfileBtn").addEventListener("click", async () => {
-      const val = document.getElementById("editDisplayNameInput").value.trim();
-      if (!val) return;
-      adminState.profile.display_name = val;
-      if (hasSupabase && sb && adminState.user) {
-        await sb.from("profiles").update({ display_name: val }).eq("id", adminState.user.id);
-      }
-      logAction(`Updated display name to "${val}"`);
-      renderIdentity();
-      document.getElementById("profileDropdown").classList.remove("open");
-    });
-
-    document.getElementById("addProductForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      const item = {
-        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
-        sku: fd.get("sku"),
-        name_en: fd.get("name_en"),
-        name_ar: fd.get("name_ar"),
-        category: fd.get("category"),
-        price: Number(fd.get("price")),
-        stock_qty: Number(fd.get("stock_qty"))
-      };
-      if (hasSupabase && sb) {
-        const { error } = await sb.from("products").insert({
-          sku: item.sku,
-          slug: item.sku.toLowerCase() + "-" + Date.now(),
-          name_en: item.name_en,
-          name_ar: item.name_ar,
-          price: item.price,
-          status: "active"
-        });
-        if (error) return logAction(`Product insert error: ${error.message}`);
-      }
-      adminState.products.unshift(item);
-      e.target.reset();
-      logAction(`Created product ${item.sku} — ${item.name_en}`);
-      renderAll();
-    });
-
-    document.getElementById("addCouponBtn").addEventListener("click", () => {
-      const code = document.getElementById("newCouponCode").value.trim().toUpperCase();
-      const type = document.getElementById("newCouponType").value;
-      const value = Number(document.getElementById("newCouponVal").value || 0);
-      if (!code) return;
-      adminState.coupons.unshift({ code, type, value });
-      document.getElementById("newCouponCode").value = "";
-      logAction(`Created coupon ${code}`);
-      renderAll();
-    });
-
-    document.getElementById("saveAnnouncementBtn").addEventListener("click", async () => {
-      const text = document.getElementById("announcementInput").value.trim();
-      if (!text) return;
-      if (hasSupabase && sb) {
-        await sb.from("store_settings").update({ announcement_en: text }).eq("id", 1);
-      }
-      logAction("Updated storefront announcement bar");
-    });
-
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!sb) return;
-      const { error } = await sb.auth.signInWithPassword({
-        email: document.getElementById("loginEmail").value,
-        password: document.getElementById("loginPassword").value
-      });
-      if (error) return alert(error.message);
-      document.getElementById("authGate").classList.remove("open");
-      initAuthAndData();
-    });
-
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
-      if (sb) await sb.auth.signOut();
-      location.reload();
     });
 
     lucide.createIcons();
-    initAuthAndData();
+    loadAdminData();
   </script>
 </body>
 </html>
