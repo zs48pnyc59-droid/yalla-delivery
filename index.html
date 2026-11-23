@@ -1,330 +1,214 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="48 COSMETICS — Ultra-luxury skincare, haute parfumerie, and radiant beauty essentials." />
-  <title>48 COSMETICS | Beauty. Elegance. Excellence.</title>
+  <title>48 COSMETICS | جمال. أناقة. تميّز.</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2309090b'/%3E%3Ctext x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' fill='%23d4af37' font-family='Georgia,serif' font-size='30' font-weight='bold'%3E48%3C/text%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Cormorant+Garamond:wght@600;700&display=swap" rel="stylesheet" />
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./config.example.js"></script>
+  <script src="./config.js"></script>
   <style>
     :root {
       --bg-obsidian: #070709;
-      --bg-charcoal: #111115;
-      --bg-card: #16161c;
-      --bg-ivory: #f8f5ef;
-      --bg-beige: #efe8dc;
+      --bg-charcoal: #111116;
+      --bg-card: #16161d;
       --ink-light: #f8f5ef;
       --ink-muted: #a69f91;
-      --ink-dark: #121216;
       --gold: #d4af37;
       --gold-bright: #f0d378;
-      --gold-dim: rgba(212, 175, 55, 0.22);
-      --border-subtle: rgba(212, 175, 55, 0.18);
+      --border: rgba(212, 175, 55, 0.2);
       --radius: 14px;
-      --ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
     body {
-      font-family: 'Plus Jakarta Sans', 'Cairo', sans-serif;
+      font-family: 'Cairo', sans-serif;
       background: var(--bg-obsidian);
       color: var(--ink-light);
-      line-height: 1.6;
+      line-height: 1.65;
       overflow-x: hidden;
     }
-    html[dir="rtl"] body { font-family: 'Cairo', 'Plus Jakarta Sans', sans-serif; }
-    h1, h2, h3, .font-serif { font-family: 'Cormorant Garamond', 'Cairo', serif; letter-spacing: 0.02em; }
-
-    /* Loader */
-    #preloader {
-      position: fixed; inset: 0; z-index: 9999;
-      background: radial-gradient(circle at center, #18140c 0%, #070709 75%);
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
-      transition: opacity 0.6s var(--ease), visibility 0.6s;
-    }
-    #preloader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-
-    .logo-48 {
-      display: inline-flex; align-items: center; gap: 10px;
-      text-decoration: none; color: var(--ink-light);
-    }
-    .logo-mark {
-      width: 44px; height: 44px; border-radius: 10px;
-      border: 1px solid var(--gold);
-      background: linear-gradient(135deg, rgba(212,175,55,0.22), rgba(17,17,21,0.9));
-      display: grid; place-items: center;
-      font-family: 'Cormorant Garamond', serif; font-size: 23px; font-weight: 700;
+    .announcement-bar {
+      background: linear-gradient(90deg, #1b1508, #2b200a, #1b1508);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 18px;
+      text-align: center;
+      font-size: 13px;
       color: var(--gold-bright);
-      box-shadow: 0 0 24px rgba(212, 175, 55, 0.22);
     }
-    .logo-text { display: flex; flex-direction: column; line-height: 1.05; }
-    .logo-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; letter-spacing: 0.14em; color: var(--gold-bright); }
-    .logo-sub { font-size: 9px; letter-spacing: 0.24em; color: var(--ink-muted); text-transform: uppercase; }
-
-    /* Mode Banner */
-    .mode-strip {
-      background: linear-gradient(90deg, #1b1508, #2c210b, #1b1508);
-      border-bottom: 1px solid var(--border-subtle);
-      padding: 8px 20px; text-align: center; font-size: 12px; color: var(--gold-bright);
-      display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;
-    }
-    .pill-tag {
-      background: rgba(212,175,55,0.16); border: 1px solid var(--gold);
-      padding: 2px 9px; border-radius: 999px; font-size: 10px; font-weight: 600; text-transform: uppercase;
-    }
-
-    /* Header */
     header {
       position: sticky; top: 0; z-index: 100;
       backdrop-filter: blur(16px);
-      background: rgba(7, 7, 9, 0.84);
-      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(7, 7, 9, 0.88);
+      border-bottom: 1px solid var(--border);
     }
     .nav-wrap {
-      max-width: 1360px; margin: 0 auto; padding: 14px 24px;
-      display: flex; align-items: center; justify-content: space-between; gap: 16px;
+      max-width: 1340px; margin: 0 auto; padding: 14px 22px;
+      display: flex; align-items: center; justify-content: space-between; gap: 14px;
     }
-    .nav-links { display: flex; align-items: center; gap: 24px; }
-    .nav-links a {
-      color: var(--ink-light); text-decoration: none; font-size: 13px; letter-spacing: 0.08em;
-      text-transform: uppercase; opacity: 0.86; transition: color 0.25s var(--ease), opacity 0.25s;
+    .logo-48 { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink-light); }
+    .logo-mark {
+      width: 44px; height: 44px; border-radius: 11px; border: 1px solid var(--gold);
+      background: linear-gradient(135deg, rgba(212,175,55,0.22), rgba(17,17,21,0.95));
+      display: grid; place-items: center;
+      font-family: 'Cormorant Garamond', serif; font-size: 24px; font-weight: 700;
+      color: var(--gold-bright); box-shadow: 0 0 22px rgba(212,175,55,0.22);
     }
-    .nav-links a:hover { color: var(--gold-bright); opacity: 1; }
+    .logo-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700; letter-spacing: 0.12em; color: var(--gold-bright); display: block; line-height: 1.1; }
+    .logo-sub { font-size: 10px; color: var(--ink-muted); letter-spacing: 0.14em; display: block; }
+    .nav-links { display: flex; align-items: center; gap: 22px; }
+    .nav-links a { color: var(--ink-light); text-decoration: none; font-size: 14px; font-weight: 600; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold-bright); }
     .nav-actions { display: flex; align-items: center; gap: 10px; }
 
     .icon-btn {
       position: relative; background: var(--bg-card); color: var(--ink-light);
-      border: 1px solid var(--border-subtle); border-radius: 10px;
+      border: 1px solid var(--border); border-radius: 10px;
       width: 40px; height: 40px; display: grid; place-items: center; cursor: pointer;
-      transition: transform 0.25s var(--ease), border-color 0.25s, color 0.25s;
     }
-    .icon-btn:hover { transform: translateY(-2px); border-color: var(--gold); color: var(--gold-bright); }
+    .icon-btn:hover { border-color: var(--gold); color: var(--gold-bright); }
     .badge-count {
       position: absolute; top: -5px; inset-inline-end: -5px;
       min-width: 18px; height: 18px; border-radius: 999px;
-      background: var(--gold); color: #09090b; font-size: 11px; font-weight: 700;
+      background: var(--gold); color: #09090b; font-size: 11px; font-weight: 800;
       display: grid; place-items: center; padding: 0 4px;
     }
     .lang-btn {
-      background: transparent; color: var(--gold-bright);
-      border: 1px solid var(--border-subtle); border-radius: 10px;
-      padding: 0 12px; height: 40px; font-size: 12px; font-weight: 600; cursor: pointer;
+      background: rgba(212,175,55,0.12); color: var(--gold-bright);
+      border: 1px solid var(--border); border-radius: 10px;
+      padding: 0 12px; height: 40px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: inherit;
     }
 
-    /* Hero */
     .hero {
-      position: relative; padding: 84px 24px 72px;
-      background:
-        radial-gradient(ellipse at 70% 20%, rgba(212, 175, 55, 0.16), transparent 55%),
-        linear-gradient(180deg, #09090c 0%, #121117 100%);
-      border-bottom: 1px solid var(--border-subtle);
+      padding: 78px 22px 68px;
+      background: radial-gradient(circle at 30% 25%, rgba(212, 175, 55, 0.15), transparent 55%), linear-gradient(180deg, #09090c 0%, #121118 100%);
+      border-bottom: 1px solid var(--border);
     }
-    .hero-inner {
-      max-width: 1360px; margin: 0 auto;
-      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center;
-    }
-    .hero-kicker { color: var(--gold); font-size: 12px; letter-spacing: 0.28em; text-transform: uppercase; margin-bottom: 12px; }
-    .hero h1 { font-size: clamp(2.5rem, 5vw, 4.4rem); line-height: 1.06; font-weight: 600; margin-bottom: 18px; }
-    .hero p { color: var(--ink-muted); max-width: 560px; font-size: 15px; margin-bottom: 28px; }
-    .cta-row { display: flex; gap: 14px; flex-wrap: wrap; }
+    .hero-inner { max-width: 1340px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 36px; align-items: center; }
+    .hero-kicker { color: var(--gold); font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+    .hero h1 { font-size: clamp(2.1rem, 4.4vw, 3.6rem); font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+    .hero p { color: var(--ink-muted); max-width: 560px; font-size: 15px; margin-bottom: 26px; }
 
     .btn-gold {
       background: linear-gradient(135deg, var(--gold-bright), var(--gold));
-      color: #09090b; border: none; border-radius: 12px;
-      padding: 13px 24px; font-size: 13px; font-weight: 700; letter-spacing: 0.06em;
-      text-transform: uppercase; cursor: pointer; text-decoration: none;
-      display: inline-flex; align-items: center; gap: 8px;
-      transition: transform 0.25s var(--ease), box-shadow 0.25s;
+      color: #09090b; border: none; border-radius: 12px; padding: 12px 22px;
+      font-size: 14px; font-weight: 800; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit;
     }
-    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(212, 175, 55, 0.28); }
     .btn-ghost {
-      background: rgba(255,255,255,0.03); color: var(--ink-light);
-      border: 1px solid var(--border-subtle); border-radius: 12px;
-      padding: 13px 22px; font-size: 13px; font-weight: 600; cursor: pointer;
-      display: inline-flex; align-items: center; gap: 8px; text-decoration: none;
-      transition: border-color 0.25s, color 0.25s;
+      background: rgba(255,255,255,0.04); color: var(--ink-light);
+      border: 1px solid var(--border); border-radius: 12px; padding: 12px 20px;
+      font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none;
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-family: inherit;
     }
     .btn-ghost:hover { border-color: var(--gold); color: var(--gold-bright); }
 
-    .hero-card {
-      background: linear-gradient(160deg, rgba(22,22,28,0.92), rgba(12,12,15,0.96));
-      border: 1px solid var(--border-subtle); border-radius: 22px; padding: 28px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.55);
-    }
-    .hero-card .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-top: 18px; }
-    .mini-stat {
-      background: rgba(212,175,55,0.06); border: 1px solid rgba(212,175,55,0.14);
-      border-radius: 12px; padding: 14px;
-    }
-    .mini-stat strong { display: block; font-size: 20px; color: var(--gold-bright); font-family: 'Cormorant Garamond', serif; }
-    .mini-stat span { font-size: 11px; color: var(--ink-muted); }
-
-    /* Sections */
-    .section { max-width: 1360px; margin: 0 auto; padding: 64px 24px; }
-    .section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: 28px; }
-    .section-head h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 600; }
-    .section-head p { color: var(--ink-muted); font-size: 14px; }
-
-    /* Filters */
+    .section { max-width: 1340px; margin: 0 auto; padding: 56px 22px; }
     .filter-bar {
-      display: grid; grid-template-columns: 2fr repeat(4, 1fr); gap: 12px;
-      background: var(--bg-card); border: 1px solid var(--border-subtle);
-      padding: 16px; border-radius: var(--radius); margin-bottom: 28px;
+      display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px;
+      background: var(--bg-card); border: 1px solid var(--border);
+      padding: 14px; border-radius: var(--radius); margin-bottom: 26px;
     }
     .input, select, textarea {
       width: 100%; background: var(--bg-obsidian); color: var(--ink-light);
-      border: 1px solid rgba(255,255,255,0.12); border-radius: 10px;
-      padding: 10px 13px; font-size: 13px; font-family: inherit;
+      border: 1px solid rgba(255,255,255,0.14); border-radius: 10px;
+      padding: 10px 13px; font-size: 14px; font-family: inherit;
     }
     .input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); }
 
-    /* Product Grid */
     .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); gap: 22px; }
     .product-card {
-      background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius);
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
       overflow: hidden; display: flex; flex-direction: column;
-      transition: transform 0.35s var(--ease), border-color 0.35s, box-shadow 0.35s;
     }
-    .product-card:hover {
-      transform: translateY(-5px); border-color: var(--gold);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
-    }
-    .product-media {
-      position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #0d0d11;
-    }
-    .product-media img {
-      width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s var(--ease);
-    }
-    .product-card:hover .product-media img { transform: scale(1.06); }
+    .product-media { position: relative; aspect-ratio: 4/3; background: #0c0c10; overflow: hidden; }
+    .product-media img { width: 100%; height: 100%; object-fit: cover; }
     .product-badge {
-      position: absolute; top: 12px; inset-inline-start: 12px;
-      background: rgba(9,9,11,0.85); color: var(--gold-bright);
-      border: 1px solid var(--gold); padding: 4px 10px; border-radius: 999px;
-      font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      position: absolute; top: 10px; inset-inline-start: 10px;
+      background: rgba(9,9,11,0.88); color: var(--gold-bright);
+      border: 1px solid var(--gold); padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700;
     }
     .wish-btn {
-      position: absolute; top: 12px; inset-inline-end: 12px;
+      position: absolute; top: 10px; inset-inline-end: 10px;
       width: 34px; height: 34px; border-radius: 50%;
-      background: rgba(9,9,11,0.8); border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(9,9,11,0.85); border: 1px solid rgba(255,255,255,0.15);
       color: var(--ink-light); display: grid; place-items: center; cursor: pointer;
     }
     .wish-btn.active { color: #f43f5e; border-color: #f43f5e; }
     .product-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-    .product-meta { font-size: 11px; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; }
-    .product-title { font-size: 19px; font-weight: 600; }
-    .product-desc { font-size: 12px; color: var(--ink-muted); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .price-row { display: flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 8px; }
-    .price-now { font-size: 16px; font-weight: 700; color: var(--gold-bright); }
-    .price-old { font-size: 13px; color: var(--ink-muted); text-decoration: line-through; }
-    .card-actions { display: grid; grid-template-columns: 1fr auto; gap: 8px; margin-top: 10px; }
-
-    /* Ivory Editorial Band */
-    .ivory-band {
-      background: var(--bg-ivory); color: var(--ink-dark);
-      border-top: 1px solid rgba(0,0,0,0.08); border-bottom: 1px solid rgba(0,0,0,0.08);
-    }
-    .ivory-band p { color: #57534e; }
-    .editorial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
-    .editorial-card {
-      background: var(--bg-beige); border: 1px solid rgba(18,18,22,0.1);
-      border-radius: var(--radius); padding: 22px;
+    .empty-box {
+      grid-column: 1 / -1; text-align: center; padding: 54px 20px;
+      background: var(--bg-card); border: 1px dashed var(--border); border-radius: var(--radius);
     }
 
-    /* Drawer & Modal */
     .drawer-backdrop, .modal-backdrop {
       position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.72); backdrop-filter: blur(6px);
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
       display: none; align-items: center; justify-content: flex-end;
     }
-    .modal-backdrop { justify-content: center; padding: 18px; }
+    .modal-backdrop { justify-content: center; padding: 16px; }
     .drawer-backdrop.open, .modal-backdrop.open { display: flex; }
-
     .drawer {
       width: min(440px, 100vw); height: 100vh; background: var(--bg-charcoal);
-      border-inline-start: 1px solid var(--border-subtle);
-      padding: 22px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto;
+      border-inline-start: 1px solid var(--border); padding: 20px;
+      display: flex; flex-direction: column; gap: 12px; overflow-y: auto;
     }
     .modal {
-      width: min(680px, 100%); max-height: 90vh; overflow-y: auto;
-      background: var(--bg-charcoal); border: 1px solid var(--border-subtle);
-      border-radius: 18px; padding: 24px;
+      width: min(560px, 100%); max-height: 90vh; overflow-y: auto;
+      background: var(--bg-charcoal); border: 1px solid var(--border); border-radius: 18px; padding: 24px;
     }
-    .progress-track { height: 6px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden; }
-    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-bright)); transition: width 0.35s var(--ease); }
+    .tabs-row { display: flex; gap: 8px; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+    .tab-btn {
+      background: transparent; color: var(--ink-muted); border: 1px solid transparent;
+      padding: 6px 12px; border-radius: 8px; cursor: pointer; font-family: inherit; font-weight: 700; font-size: 13px;
+    }
+    .tab-btn.active { background: rgba(212,175,55,0.16); color: var(--gold-bright); border-color: var(--border); }
 
-    /* Toast */
     #toast {
-      position: fixed; bottom: 22px; inset-inline-end: 22px; z-index: 999;
-      background: var(--bg-card); color: var(--gold-bright);
-      border: 1px solid var(--gold); border-radius: 12px;
-      padding: 12px 18px; font-size: 13px; box-shadow: 0 12px 30px rgba(0,0,0,0.5);
-      opacity: 0; transform: translateY(10px); transition: all 0.25s var(--ease); pointer-events: none;
+      position: fixed; bottom: 20px; inset-inline-end: 20px; z-index: 999;
+      background: var(--bg-card); color: var(--gold-bright); border: 1px solid var(--gold);
+      border-radius: 12px; padding: 12px 18px; font-size: 13px; opacity: 0; transition: opacity 0.25s; pointer-events: none;
     }
-    #toast.show { opacity: 1; transform: translateY(0); }
+    #toast.show { opacity: 1; }
 
-    footer {
-      border-top: 1px solid var(--border-subtle); padding: 48px 24px 28px;
-      background: #060608;
-    }
-    .footer-grid {
-      max-width: 1360px; margin: 0 auto;
-      display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 28px;
-    }
-    footer a { color: var(--ink-muted); text-decoration: none; display: block; margin-bottom: 8px; font-size: 13px; }
-    footer a:hover { color: var(--gold-bright); }
-
-    @media (max-width: 900px) {
-      .hero-inner, .footer-grid { grid-template-columns: 1fr; }
-      .filter-bar { grid-template-columns: 1fr 1fr; }
+    footer { border-top: 1px solid var(--border); padding: 36px 22px; background: #060608; margin-top: 40px; }
+    @media (max-width: 860px) {
+      .hero-inner { grid-template-columns: 1fr; }
+      .filter-bar { grid-template-columns: 1fr; }
       .nav-links { display: none; }
     }
   </style>
 </head>
 <body>
-  <div id="preloader">
-    <div class="logo-mark">48</div>
-    <div class="logo-title">48 COSMETICS</div>
-    <div class="logo-sub" data-i18n="loading">CURATING LUXURY</div>
-  </div>
-
-  <div class="mode-strip">
-    <span class="pill-tag" id="modeBadge">Demo Mode</span>
-    <span id="announcementText">COMPLIMENTARY EXPRESS DELIVERY ON ORDERS OVER $150</span>
-    <a href="./admin.html" style="color: var(--gold-bright); text-decoration: underline; font-weight: 600;">Admin Dashboard →</a>
-  </div>
+  <div class="announcement-bar" id="announcementBar">توصيل سريع مجاني للطلبات فوق $150</div>
 
   <header>
     <div class="nav-wrap">
       <a href="#" class="logo-48">
         <span class="logo-mark">48</span>
-        <span class="logo-text">
+        <span>
           <span class="logo-title">48 COSMETICS</span>
-          <span class="logo-sub">HAUTE BEAUTÉ</span>
+          <span class="logo-sub" data-t="brandTag">جمال • أناقة • تميّز</span>
         </span>
       </a>
       <nav class="nav-links">
-        <a href="#catalog" data-i18n="navCatalog">Collection</a>
-        <a href="#rituals" data-i18n="navRituals">Rituals</a>
-        <a href="#contact" data-i18n="navContact">Concierge</a>
-        <a href="./admin.html" data-i18n="navAdmin">Admin</a>
+        <a href="#catalog" data-t="navCatalog">المتجر</a>
+        <a href="#contact" data-t="navContact">تواصل معنا</a>
+        <a href="./admin.html" data-t="navAdmin">لوحة الإدارة</a>
       </nav>
       <div class="nav-actions">
-        <button class="lang-btn" id="langToggle" type="button">العربية</button>
-        <button class="icon-btn" id="accountBtn" type="button" title="Account">
+        <button class="lang-btn" id="langToggle" type="button">English</button>
+        <button class="icon-btn" id="accountBtn" type="button" title="حسابي">
           <i data-lucide="user"></i>
         </button>
-        <button class="icon-btn" id="wishlistBtn" type="button" title="Wishlist">
+        <button class="icon-btn" id="wishlistBtn" type="button" title="المفضلة">
           <i data-lucide="heart"></i>
           <span class="badge-count" id="wishCount">0</span>
         </button>
-        <button class="icon-btn" id="cartBtn" type="button" title="Bag">
+        <button class="icon-btn" id="cartBtn" type="button" title="حقيبة التسوق">
           <i data-lucide="shopping-bag"></i>
           <span class="badge-count" id="cartCount">0</span>
         </button>
@@ -335,178 +219,83 @@
   <section class="hero">
     <div class="hero-inner">
       <div>
-        <div class="hero-kicker" data-i18n="heroKicker">EDITION 48 • ATELIER FORMULATIONS</div>
-        <h1 data-i18n="heroTitle">Sculpted Radiance in Every Drop.</h1>
-        <p data-i18n="heroDesc">Botanical actives, 24k gold-infused elixirs, and velvet couture pigments crafted for enduring luminescence.</p>
-        <div class="cta-row">
-          <a href="#catalog" class="btn-gold" data-i18n="shopNow">Explore Collection <i data-lucide="arrow-up-right"></i></a>
-          <button class="btn-ghost" type="button" id="openCheckoutBtn" data-i18n="quickCheckout">Express Checkout</button>
+        <div class="hero-kicker" data-t="heroKicker">إصدار 48 • مستحضرات فاخرة أصلية</div>
+        <h1 id="heroTitle">إشراقة مصقولة في كل قطرة.</h1>
+        <p id="heroDesc">تركيبات نباتية فاخرة وإكسير غني بالذهب عيار 24 لبشرة متألقة.</p>
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <a href="#catalog" class="btn-gold" data-t="exploreBtn">تصفّح المنتجات</a>
+          <button class="btn-ghost" type="button" id="heroAccountBtn" data-t="accountBtnText">حسابي وطلباتي</button>
         </div>
       </div>
-      <div class="hero-card">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <span style="color:var(--gold); font-size:12px; letter-spacing:0.16em;">SIGNATURE HOUSE</span>
-          <span class="pill-tag">48 STANDARD</span>
-        </div>
-        <h3 style="font-size:26px; margin-top:8px;">Orchid &amp; Gold Cellular Nectar</h3>
-        <p style="color:var(--ink-muted); font-size:13px; margin-top:6px;">Dermatologically tested • Cruelty-free • Cold-pressed botanical lipids.</p>
-        <div class="stat-grid">
-          <div class="mini-stat"><strong>99.4%</strong><span>Radiance Satisfaction</span></div>
-          <div class="mini-stat"><strong>48h</strong><span>Deep Barrier Hydration</span></div>
-          <div class="mini-stat"><strong>0%</strong><span>Parabens &amp; Harsh Sulfates</span></div>
-          <div class="mini-stat"><strong>RTL / LTR</strong><span>Bilingual Experience</span></div>
-        </div>
+      <div style="background:var(--bg-card); border:1px solid var(--border); border-radius:20px; padding:24px;">
+        <div style="color:var(--gold); font-size:12px; font-weight:700; margin-bottom:6px;">48 COSMETICS ATELIER</div>
+        <h3 style="font-size:22px; margin-bottom:8px;" data-t="cardHeading">تجربة تسوق حقيقية ومباشرة</h3>
+        <p style="font-size:13px; color:var(--ink-muted);" data-t="cardDesc">جميع المنتجات المعروضة هنا تدار وتُضاف مباشرة من لوحة التحكم الخاصة بالمتجر مع تحديث فوري للمخزون والطلبات.</p>
       </div>
     </div>
   </section>
 
   <section class="section" id="catalog">
-    <div class="section-head">
-      <div>
-        <h2 data-i18n="catalogTitle">The 48 Collection</h2>
-        <p id="productSummary">Showing curated luxury essentials</p>
-      </div>
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:20px;">
+      <h2 style="font-size:28px;" data-t="catalogHeading">منتجاتنا</h2>
+      <span id="catalogCountText" style="font-size:13px; color:var(--ink-muted);"></span>
     </div>
 
     <div class="filter-bar">
-      <input class="input" id="searchInput" type="search" placeholder="Search serums, fragrances, lip couture..." />
-      <select id="categoryFilter">
-        <option value="all">All Categories</option>
-      </select>
-      <select id="skinTypeFilter">
-        <option value="all">All Skin Types</option>
-        <option value="All Skin Types">All Skin Types</option>
-        <option value="Dry & Sensitive">Dry &amp; Sensitive</option>
-        <option value="Combination">Combination</option>
-      </select>
-      <select id="availabilityFilter">
-        <option value="all">All Availability</option>
-        <option value="in_stock">In Stock</option>
-        <option value="low_stock">Low Stock</option>
-      </select>
+      <input class="input" id="searchInput" type="search" placeholder="ابحث عن منتج بالاسم أو الرمز..." />
+      <select id="categoryFilter"><option value="all">جميع الأقسام</option></select>
       <select id="sortSelect">
-        <option value="featured">Sort: Featured</option>
-        <option value="price_asc">Price: Low to High</option>
-        <option value="price_desc">Price: High to Low</option>
-        <option value="rating_desc">Highest Rated</option>
+        <option value="newest">الأحدث</option>
+        <option value="price_asc">السعر: من الأقل للأعلى</option>
+        <option value="price_desc">السعر: من الأعلى للأقل</option>
       </select>
     </div>
 
     <div class="grid-products" id="productsGrid"></div>
   </section>
 
-  <section class="ivory-band" id="rituals">
-    <div class="section">
-      <div class="section-head">
-        <div>
-          <h2>Atelier Pillars &amp; Client Notes</h2>
-          <p>Precision formulation, transparent ingredient standards, and tailored service.</p>
-        </div>
-      </div>
-      <div class="editorial-grid">
-        <div class="editorial-card">
-          <h3 style="font-size:22px; margin-bottom:8px;">Clinical Purity</h3>
-          <p style="font-size:13px;">Every batch is stability-tested and paired with clear usage rituals and full ingredient disclosures.</p>
-        </div>
-        <div class="editorial-card">
-          <h3 style="font-size:22px; margin-bottom:8px;">“Unmatched Texture &amp; Finish”</h3>
-          <p style="font-size:13px;">“The Golden Veil Serum absorbs weightlessly and layers seamlessly under makeup all day.” — Nadia K.</p>
-        </div>
-        <div class="editorial-card">
-          <h3 style="font-size:22px; margin-bottom:8px;">Private Concierge</h3>
-          <p style="font-size:13px;">Need shade matching or order assistance? Reach our beauty specialists directly via WhatsApp or message below.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="section" id="contact">
-    <div class="section-head">
-      <div>
-        <h2>Client Concierge &amp; Newsletter</h2>
-        <p>Receive private launch invitations and personalized care guidance.</p>
-      </div>
-    </div>
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
-      <form id="contactForm" class="editorial-card" style="background:var(--bg-card); border-color:var(--border-subtle); display:flex; flex-direction:column; gap:10px;">
-        <h3 style="font-size:22px;">Send a Message</h3>
-        <input class="input" name="name" placeholder="Full Name" required />
-        <input class="input" name="email" type="email" placeholder="Email Address" required />
-        <textarea class="input" name="message" rows="3" placeholder="How may our atelier assist you?" required></textarea>
-        <button class="btn-gold" type="submit">Send Inquiry</button>
-      </form>
-      <form id="newsletterForm" class="editorial-card" style="background:var(--bg-card); border-color:var(--border-subtle); display:flex; flex-direction:column; gap:10px;">
-        <h3 style="font-size:22px;">Inner Circle Dispatch</h3>
-        <p style="font-size:13px; color:var(--ink-muted);">Early access to limited-edition 48 COSMETICS releases.</p>
-        <input class="input" name="email" type="email" placeholder="Enter your email" required />
-        <button class="btn-ghost" type="submit">Join Newsletter</button>
+    <div style="max-width:620px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:24px;">
+      <h3 style="font-size:22px; margin-bottom:8px;" data-t="contactTitle">تواصل مع خدمة العملاء</h3>
+      <form id="contactForm" style="display:flex; flex-direction:column; gap:10px;">
+        <input class="input" name="name" placeholder="الاسم الكامل" required />
+        <input class="input" name="email" type="email" placeholder="البريد الإلكتروني" required />
+        <textarea class="input" name="message" rows="3" placeholder="اكتب رسالتك هنا..." required></textarea>
+        <button class="btn-gold" type="submit" data-t="sendBtn">إرسال الرسالة</button>
       </form>
     </div>
   </section>
 
   <footer>
-    <div class="footer-grid">
-      <div>
-        <a href="#" class="logo-48" style="margin-bottom:10px;">
-          <span class="logo-mark">48</span>
-          <span class="logo-text">
-            <span class="logo-title">48 COSMETICS</span>
-            <span class="logo-sub">BEAUTY. ELEGANCE. EXCELLENCE.</span>
-          </span>
-        </a>
-        <p style="font-size:13px; color:var(--ink-muted);">Luxury skincare, fine fragrance, and beauty essentials built on shared real-time catalog and inventory data.</p>
-      </div>
-      <div>
-        <strong style="display:block; margin-bottom:10px; color:var(--gold-bright); font-size:13px;">Navigation</strong>
-        <a href="#catalog">Collection</a>
-        <a href="#rituals">Atelier Pillars</a>
-        <a href="./admin.html">Admin Dashboard</a>
-      </div>
-      <div>
-        <strong style="display:block; margin-bottom:10px; color:var(--gold-bright); font-size:13px;">Policies</strong>
-        <a href="javascript:void(0)" onclick="openPolicyModal('shipping')">Shipping &amp; Delivery Policy</a>
-        <a href="javascript:void(0)" onclick="openPolicyModal('returns')">Returns &amp; Exchanges</a>
-        <a href="javascript:void(0)" onclick="openPolicyModal('privacy')">Privacy &amp; Terms</a>
-      </div>
-      <div>
-        <strong style="display:block; margin-bottom:10px; color:var(--gold-bright); font-size:13px;">Direct Care</strong>
-        <a id="waLink" href="https://wa.me/970590000000" target="_blank" rel="noopener">WhatsApp Concierge</a>
-        <a href="#contact">Contact Form</a>
-      </div>
+    <div style="max-width:1340px; margin:0 auto; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; font-size:13px; color:var(--ink-muted);">
+      <span>© 2026 48 COSMETICS — جميع الحقوق محفوظة.</span>
+      <a href="./admin.html" style="color:var(--gold-bright); text-decoration:none;">الدخول إلى لوحة الإدارة ←</a>
     </div>
   </footer>
 
-  <!-- Cart Drawer -->
+  <!-- حقيبة التسوق -->
   <div class="drawer-backdrop" id="cartDrawer">
     <div class="drawer">
       <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h3 style="font-size:24px;">Shopping Bag</h3>
+        <h3 style="font-size:22px;" data-t="bagTitle">حقيبة التسوق</h3>
         <button class="icon-btn" type="button" onclick="toggleDrawer('cartDrawer', false)"><i data-lucide="x"></i></button>
-      </div>
-      <div>
-        <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--ink-muted); margin-bottom:6px;">
-          <span id="freeShipLabel">Free shipping progress</span>
-          <span id="freeShipPct">0%</span>
-        </div>
-        <div class="progress-track"><div class="progress-fill" id="freeShipBar" style="width:0%"></div></div>
       </div>
       <div id="cartItemsContainer" style="display:flex; flex-direction:column; gap:10px; flex:1;"></div>
       <div style="display:flex; gap:8px;">
-        <input class="input" id="couponInput" placeholder="Promo code (try GOLD10)" />
-        <button class="btn-ghost" type="button" id="applyCouponBtn">Apply</button>
+        <input class="input" id="couponInput" placeholder="أدخل كود الخصم" />
+        <button class="btn-ghost" type="button" id="applyCouponBtn">تطبيق</button>
       </div>
-      <div style="border-top:1px solid var(--border-subtle); padding-top:12px; font-size:13px; display:flex; flex-direction:column; gap:6px;">
-        <div style="display:flex; justify-content:space-between;"><span>Subtotal</span><strong id="cartSubtotal">$0.00</strong></div>
-        <div style="display:flex; justify-content:space-between;"><span>Discount</span><strong id="cartDiscount">-$0.00</strong></div>
-        <div style="display:flex; justify-content:space-between;"><span>Shipping</span><strong id="cartShipping">$0.00</strong></div>
-        <div style="display:flex; justify-content:space-between;"><span>Tax</span><strong id="cartTax">$0.00</strong></div>
-        <div style="display:flex; justify-content:space-between; font-size:16px; color:var(--gold-bright);"><span>Total</span><strong id="cartTotal">$0.00</strong></div>
+      <div style="border-top:1px solid var(--border); padding-top:12px; font-size:14px; display:flex; flex-direction:column; gap:6px;">
+        <div style="display:flex; justify-content:space-between;"><span>المجموع الفرعي</span><strong id="cartSubtotal">$0.00</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>الخصم</span><strong id="cartDiscount">-$0.00</strong></div>
+        <div style="display:flex; justify-content:space-between;"><span>التوصيل</span><strong id="cartShipping">$0.00</strong></div>
+        <div style="display:flex; justify-content:space-between; font-size:17px; color:var(--gold-bright);"><span>الإجمالي</span><strong id="cartTotal">$0.00</strong></div>
       </div>
-      <button class="btn-gold" type="button" id="proceedCheckoutBtn" style="width:100%; justify-content:center;">Proceed to Checkout</button>
+      <button class="btn-gold" type="button" id="proceedCheckoutBtn" style="width:100%;">إتمام الطلب</button>
     </div>
   </div>
 
-  <!-- Generic Modal -->
+  <!-- نافذة الحسابات والمنتجات وإتمام الطلب -->
   <div class="modal-backdrop" id="mainModal">
     <div class="modal" id="modalContent"></div>
   </div>
@@ -518,230 +307,235 @@
     const hasSupabase = Boolean(cfg.supabase?.url && cfg.supabase?.anonKey);
     const sb = hasSupabase ? window.supabase.createClient(cfg.supabase.url, cfg.supabase.anonKey) : null;
 
-    const SEED_PRODUCTS = [
-      {
-        id: "p-48-1", sku: "48-SRM-01", category: "Skincare", brand: "48 Atelier",
-        name_en: "24K Gold & Peptide Elixir", name_ar: "إكسير الذهب عيار 24 والببتيد",
-        short_desc_en: "Illuminating night serum for firm, glass-like skin.",
-        short_desc_ar: "سيروم ليلي مشرق لبشرة مشدودة ومضيئة.",
-        ingredients: "Aqua, Rosa Damascena Flower Water, Acetyl Hexapeptide-8, Niacinamide, Colloidal Gold, Hyaluronic Acid.",
-        usage_instructions: "Apply 3–4 drops onto cleansed face and neck each evening before moisturizer.",
-        skin_type: "All Skin Types", price: 118, sale_price: 98, badge: "Best Seller",
-        rating: 4.9, stock_qty: 24,
-        image_url: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=800&q=80",
-        variants: ["30ml Flacon", "50ml Collector"]
+    // المفاتيح المشتركة بين المتجر ولوحة الإدارة (بدون أي منتجات وهمية)
+    const SHARED_KEYS = {
+      products: "c48_real_products",
+      orders: "c48_real_orders",
+      coupons: "c48_real_coupons",
+      settings: "c48_real_settings",
+      users: "c48_real_users",
+      session: "c48_active_customer"
+    };
+
+    const DEFAULT_SETTINGS = {
+      default_lang: "ar",
+      enable_ar: true,
+      enable_en: true,
+      announcement_ar: "توصيل سريع مجاني للطلبات فوق $150",
+      announcement_en: "COMPLIMENTARY EXPRESS DELIVERY ON ORDERS OVER $150",
+      hero_title_ar: "إشراقة مصقولة في كل قطرة.",
+      hero_title_en: "Sculpted Radiance in Every Drop.",
+      hero_desc_ar: "تركيبات نباتية فاخرة وإكسير غني بالذهب عيار 24 لبشرة متألقة.",
+      hero_desc_en: "Botanical actives and 24k gold-infused elixirs crafted for enduring luminescence.",
+      custom_translations: {}
+    };
+
+    const BASE_DICT = {
+      ar: {
+        brandTag: "جمال • أناقة • تميّز",
+        navCatalog: "المتجر",
+        navContact: "تواصل معنا",
+        navAdmin: "لوحة الإدارة",
+        heroKicker: "إصدار 48 • مستحضرات فاخرة أصلية",
+        exploreBtn: "تصفّح المنتجات",
+        accountBtnText: "حسابي وطلباتي",
+        cardHeading: "تجربة تسوق حقيقية ومباشرة",
+        cardDesc: "جميع المنتجات المعروضة هنا تدار وتُضاف مباشرة من لوحة التحكم الخاصة بالمتجر مع تحديث فوري للمخزون والطلبات.",
+        catalogHeading: "منتجاتنا",
+        contactTitle: "تواصل مع خدمة العملاء",
+        sendBtn: "إرسال الرسالة",
+        bagTitle: "حقيبة التسوق",
+        addToBag: "أضف إلى الحقيبة",
+        outOfStock: "نفدت الكمية",
+        details: "التفاصيل",
+        emptyStoreTitle: "لا توجد منتجات منشورة في المتجر حالياً",
+        emptyStoreDesc: "يمكنك إضافة منتجاتك الحقيقية الآن من لوحة الإدارة وستظهر هنا فوراً."
       },
-      {
-        id: "p-48-2", sku: "48-PRF-02", category: "Fragrance", brand: "48 Parfums",
-        name_en: "Oud & Amber Royale Extrait", name_ar: "خلاصة العود والعنبر الملكي",
-        short_desc_en: "Warm resinous oud, saffron threads, and velvet vanilla.",
-        short_desc_ar: "عود دافئ مع الزعفران والفانيليا المخملية.",
-        ingredients: "Alcohol Denat., Parfum, Agarwood Extract, Ambergris Accord, Vanilla Planifolia.",
-        usage_instructions: "Spray lightly onto pulse points—wrists, collarbone, and behind the ears.",
-        skin_type: "All Skin Types", price: 165, sale_price: null, badge: "Exclusive",
-        rating: 5.0, stock_qty: 6,
-        image_url: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=800&q=80",
-        variants: ["100ml Eau de Parfum"]
-      },
-      {
-        id: "p-48-3", sku: "48-CRM-03", category: "Skincare", brand: "48 Atelier",
-        name_en: "Velvet Ceramide Barrier Cream", name_ar: "كريم السيراميد المخملي لحاجز البشرة",
-        short_desc_en: "Rich lipid balm restoring comfort to delicate skin.",
-        short_desc_ar: "بلسم غني يعيد الراحة والمرونة للبشرة الحساسة.",
-        ingredients: "Ceramide NP, Ceramide AP, Squalane, Shea Butter, Panthenol, Centella Asiatica.",
-        usage_instructions: "Warm a pearl-sized amount between fingertips and press gently into skin.",
-        skin_type: "Dry & Sensitive", price: 86, sale_price: null, badge: "New",
-        rating: 4.8, stock_qty: 19,
-        image_url: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?auto=format&fit=crop&w=800&q=80",
-        variants: ["50ml Jar"]
-      },
-      {
-        id: "p-48-4", sku: "48-LIP-04", category: "Lip Couture", brand: "48 Maison",
-        name_en: "Satin Rose Nectar Lip Oil", name_ar: "زيت الشفاه برحيق الورد الساتاني",
-        short_desc_en: "High-shine botanical lip treatment with zero stickiness.",
-        short_desc_ar: "عناية نباتية لامعة للشفاه بدون أي لزوجة.",
-        ingredients: "Simmondsia Chinensis Seed Oil, Rosehip Oil, Tocopherol, Jojoba Esters.",
-        usage_instructions: "Glide across bare lips or layer over liner for cushioned shine.",
-        skin_type: "Combination", price: 44, sale_price: 36, badge: "Trending",
-        rating: 4.7, stock_qty: 3,
-        image_url: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=800&q=80",
-        variants: ["01 Champagne Rose", "02 Crimson Velvet"]
+      en: {
+        brandTag: "BEAUTY • ELEGANCE • EXCELLENCE",
+        navCatalog: "Store",
+        navContact: "Contact",
+        navAdmin: "Admin Panel",
+        heroKicker: "EDITION 48 • AUTHENTIC LUXURY",
+        exploreBtn: "Explore Products",
+        accountBtnText: "My Account & Orders",
+        cardHeading: "Live Storefront Experience",
+        cardDesc: "All products shown here are managed directly from your Admin Dashboard with real-time stock and order updates.",
+        catalogHeading: "Our Collection",
+        contactTitle: "Customer Concierge",
+        sendBtn: "Send Message",
+        bagTitle: "Shopping Bag",
+        addToBag: "Add to Bag",
+        outOfStock: "Out of Stock",
+        details: "Details",
+        emptyStoreTitle: "No products published yet",
+        emptyStoreDesc: "Add your real products from the Admin Dashboard and they will appear here immediately."
       }
-    ];
+    };
 
     const state = {
-      lang: localStorage.getItem("c48_lang") || "en",
-      products: [...SEED_PRODUCTS],
+      settings: { ...DEFAULT_SETTINGS, ...(JSON.parse(localStorage.getItem(SHARED_KEYS.settings) || "null") || {}) },
+      lang: localStorage.getItem("c48_user_lang") || "ar",
+      products: JSON.parse(localStorage.getItem(SHARED_KEYS.products) || "[]"),
+      coupons: JSON.parse(localStorage.getItem(SHARED_KEYS.coupons) || "[]"),
+      orders: JSON.parse(localStorage.getItem(SHARED_KEYS.orders) || "[]"),
       cart: JSON.parse(localStorage.getItem("c48_cart") || "[]"),
       wishlist: JSON.parse(localStorage.getItem("c48_wish") || "[]"),
-      orders: JSON.parse(localStorage.getItem("c48_orders") || "[]"),
-      coupon: null,
-      user: null
+      currentUser: JSON.parse(localStorage.getItem(SHARED_KEYS.session) || "null"),
+      appliedCoupon: null
     };
 
-    const I18N = {
-      en: {
-        loading: "CURATING LUXURY", navCatalog: "Collection", navRituals: "Rituals",
-        navContact: "Concierge", navAdmin: "Admin", heroKicker: "EDITION 48 • ATELIER FORMULATIONS",
-        heroTitle: "Sculpted Radiance in Every Drop.",
-        heroDesc: "Botanical actives, 24k gold-infused elixirs, and velvet couture pigments crafted for enduring luminescence.",
-        shopNow: "Explore Collection", quickCheckout: "Express Checkout", catalogTitle: "The 48 Collection"
-      },
-      ar: {
-        loading: "تحضير تجربة الفخامة", navCatalog: "المجموعة", navRituals: "الطقوس",
-        navContact: "الكونسيرج", navAdmin: "الإدارة", heroKicker: "إصدار 48 • تركيبات الأتيليه",
-        heroTitle: "إشراقة مصقولة في كل قطرة.",
-        heroDesc: "مكونات نباتية فعالة، إكسير غني بالذهب، وأصباغ مخملية مصممة لجمال يدوم.",
-        shopNow: "استكشف المجموعة", quickCheckout: "إتمام الطلب السريع", catalogTitle: "مجموعة 48 الفاخرة"
-      }
-    };
+    function t(key) {
+      const custom = state.settings.custom_translations?.[state.lang]?.[key];
+      if (custom) return custom;
+      return BASE_DICT[state.lang]?.[key] || BASE_DICT.ar[key] || key;
+    }
 
-    function fmt(amount) {
-      const sym = cfg.currency?.symbol || "$";
-      return `${sym}${Number(amount || 0).toFixed(2)}`;
+    function fmt(v) {
+      return `${cfg.currency?.symbol || "$"}${Number(v || 0).toFixed(2)}`;
     }
 
     function showToast(msg) {
       const el = document.getElementById("toast");
       el.textContent = msg;
       el.classList.add("show");
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => el.classList.remove("show"), 2600);
+      clearTimeout(window.__tt);
+      window.__tt = setTimeout(() => el.classList.remove("show"), 2600);
     }
 
-    function applyLanguage() {
-      const isAr = state.lang === "ar";
-      document.documentElement.lang = isAr ? "ar" : "en";
-      document.documentElement.dir = isAr ? "rtl" : "ltr";
-      document.getElementById("langToggle").textContent = isAr ? "English" : "العربية";
-      document.querySelectorAll("[data-i18n]").forEach((node) => {
-        const key = node.getAttribute("data-i18n");
-        if (I18N[state.lang]?.[key]) node.textContent = I18N[state.lang][key];
-      });
-      renderCategories();
-      renderProducts();
-      updateCartUI();
-    }
+    function enforceLanguageSettings() {
+      const s = state.settings;
+      if (!s.enable_ar && s.enable_en) state.lang = "en";
+      else if (s.enable_en === false && s.enable_ar) state.lang = "ar";
+      else if (!localStorage.getItem("c48_user_lang")) state.lang = s.default_lang || "ar";
 
-    async function loadData() {
-      document.getElementById("modeBadge").textContent = hasSupabase ? "Live Supabase" : "Demo Mode";
-      if (hasSupabase && sb) {
-        try {
-          const { data: prods, error } = await sb
-            .from("products")
-            .select("*, categories(name_en,name_ar), brands(name), inventory(stock_qty), product_images(url,is_primary)")
-            .eq("status", "active");
-          if (!error && Array.isArray(prods) && prods.length) {
-            state.products = prods.map((p) => ({
-              id: p.id,
-              sku: p.sku,
-              category: p.categories?.name_en || "Luxury",
-              brand: p.brands?.name || "48 COSMETICS",
-              name_en: p.name_en,
-              name_ar: p.name_ar || p.name_en,
-              short_desc_en: p.short_desc_en || p.description_en || "",
-              short_desc_ar: p.short_desc_ar || p.description_ar || p.short_desc_en || "",
-              ingredients: p.ingredients || "Crafted botanical formula.",
-              usage_instructions: p.usage_instructions || "Apply as directed.",
-              skin_type: p.skin_type || "All Skin Types",
-              price: Number(p.price),
-              sale_price: p.sale_price != null ? Number(p.sale_price) : null,
-              badge: p.badge || (p.is_bestseller ? "Best Seller" : p.is_new ? "New" : ""),
-              rating: Number(p.rating || 4.9),
-              stock_qty: p.inventory?.stock_qty ?? 10,
-              image_url: p.product_images?.find((i) => i.is_primary)?.url || p.product_images?.[0]?.url || SEED_PRODUCTS[0].image_url,
-              variants: ["Standard Edition"]
-            }));
-          }
-          const { data: settings } = await sb.from("store_settings").select("*").eq("id", 1).maybeSingle();
-          if (settings) {
-            document.getElementById("announcementText").textContent =
-              state.lang === "ar" ? (settings.announcement_ar || settings.announcement_en) : settings.announcement_en;
-          }
-        } catch (err) {
-          console.warn("Falling back to demo catalog:", err.message);
-        }
+      const langBtn = document.getElementById("langToggle");
+      if (s.enable_ar && s.enable_en) {
+        langBtn.style.display = "inline-block";
+        langBtn.textContent = state.lang === "ar" ? "English" : "العربية";
+      } else {
+        langBtn.style.display = "none";
       }
+
+      document.documentElement.lang = state.lang;
+      document.documentElement.dir = state.lang === "ar" ? "rtl" : "ltr";
+
+      document.getElementById("announcementBar").textContent =
+        state.lang === "ar" ? s.announcement_ar : s.announcement_en;
+      document.getElementById("heroTitle").textContent =
+        state.lang === "ar" ? s.hero_title_ar : s.hero_title_en;
+      document.getElementById("heroDesc").textContent =
+        state.lang === "ar" ? s.hero_desc_ar : s.hero_desc_en;
+
+      document.querySelectorAll("[data-t]").forEach((el) => {
+        el.textContent = t(el.getAttribute("data-t"));
+      });
+    }
+
+    async function syncFromBackend() {
+      if (hasSupabase && sb) {
+        const { data: setRow } = await sb.from("store_settings").select("*").eq("id", 1).maybeSingle();
+        if (setRow) state.settings = { ...state.settings, ...setRow };
+
+        const { data: prodRows } = await sb.from("products").select("*").eq("status", "active").order("created_at", { ascending: false });
+        if (Array.isArray(prodRows)) state.products = prodRows;
+
+        const { data: coupRows } = await sb.from("coupons").select("*").eq("is_active", true);
+        if (Array.isArray(coupRows)) state.coupons = coupRows;
+
+        const { data: { session } } = await sb.auth.getSession();
+        if (session?.user) {
+          const { data: prof } = await sb.from("profiles").select("*").eq("id", session.user.id).maybeSingle();
+          state.currentUser = prof || { id: session.user.id, email: session.user.email, full_name: session.user.email };
+        }
+      } else {
+        state.settings = { ...DEFAULT_SETTINGS, ...(JSON.parse(localStorage.getItem(SHARED_KEYS.settings) || "null") || {}) };
+        state.products = JSON.parse(localStorage.getItem(SHARED_KEYS.products) || "[]");
+        state.coupons = JSON.parse(localStorage.getItem(SHARED_KEYS.coupons) || "[]");
+        state.orders = JSON.parse(localStorage.getItem(SHARED_KEYS.orders) || "[]");
+      }
+
+      enforceLanguageSettings();
       renderCategories();
       renderProducts();
       updateCartUI();
       updateWishUI();
     }
 
+    // الاستماع الفوري لأي تعديل يقوم به الأدمن في نافذة أخرى
+    window.addEventListener("storage", (e) => {
+      if (Object.values(SHARED_KEYS).includes(e.key)) {
+        syncFromBackend();
+      }
+    });
+
     function renderCategories() {
       const sel = document.getElementById("categoryFilter");
-      const current = sel.value || "all";
-      const cats = [...new Set(state.products.map((p) => p.category))];
-      sel.innerHTML = `<option value="all">${state.lang === "ar" ? "كل الفئات" : "All Categories"}</option>` +
+      const cats = [...new Set(state.products.map((p) => p.category_name).filter(Boolean))];
+      sel.innerHTML = `<option value="all">${state.lang === "ar" ? "جميع الأقسام" : "All Categories"}</option>` +
         cats.map((c) => `<option value="${c}">${c}</option>`).join("");
-      sel.value = cats.includes(current) ? current : "all";
-    }
-
-    function getFilteredProducts() {
-      const q = document.getElementById("searchInput").value.trim().toLowerCase();
-      const cat = document.getElementById("categoryFilter").value;
-      const skin = document.getElementById("skinTypeFilter").value;
-      const avail = document.getElementById("availabilityFilter").value;
-      const sort = document.getElementById("sortSelect").value;
-
-      let list = state.products.filter((p) => {
-        const name = (state.lang === "ar" ? p.name_ar : p.name_en).toLowerCase();
-        const desc = (state.lang === "ar" ? p.short_desc_ar : p.short_desc_en).toLowerCase();
-        if (q && !name.includes(q) && !desc.includes(q) && !p.sku.toLowerCase().includes(q)) return false;
-        if (cat !== "all" && p.category !== cat) return false;
-        if (skin !== "all" && p.skin_type !== skin) return false;
-        if (avail === "in_stock" && p.stock_qty <= 0) return false;
-        if (avail === "low_stock" && (p.stock_qty <= 0 || p.stock_qty > 8)) return false;
-        return true;
-      });
-
-      const effPrice = (p) => p.sale_price ?? p.price;
-      if (sort === "price_asc") list.sort((a, b) => effPrice(a) - effPrice(b));
-      if (sort === "price_desc") list.sort((a, b) => effPrice(b) - effPrice(a));
-      if (sort === "rating_desc") list.sort((a, b) => b.rating - a.rating);
-      return list;
     }
 
     function renderProducts() {
-      const list = getFilteredProducts();
-      const grid = document.getElementById("productsGrid");
-      document.getElementById("productSummary").textContent =
-        state.lang === "ar" ? `عرض ${list.length} منتج` : `Showing ${list.length} luxury products`;
+      const q = document.getElementById("searchInput").value.trim().toLowerCase();
+      const cat = document.getElementById("categoryFilter").value;
+      const sort = document.getElementById("sortSelect").value;
 
+      let list = state.products.filter((p) => {
+        if (p.status && p.status !== "active") return false;
+        const name = (state.lang === "ar" ? p.name_ar : p.name_en || p.name_ar).toLowerCase();
+        if (q && !name.includes(q) && !(p.sku || "").toLowerCase().includes(q)) return false;
+        if (cat !== "all" && p.category_name !== cat) return false;
+        return true;
+      });
+
+      const effPrice = (p) => Number(p.sale_price ?? p.price);
+      if (sort === "price_asc") list.sort((a, b) => effPrice(a) - effPrice(b));
+      if (sort === "price_desc") list.sort((a, b) => effPrice(b) - effPrice(a));
+
+      document.getElementById("catalogCountText").textContent =
+        state.lang === "ar" ? `عدد المنتجات: ${list.length}` : `Products: ${list.length}`;
+
+      const grid = document.getElementById("productsGrid");
       if (!list.length) {
-        grid.innerHTML = `<div style="grid-column:1/-1; padding:36px; text-align:center; color:var(--ink-muted); border:1px solid var(--border-subtle); border-radius:var(--radius);">No matching products found.</div>`;
+        grid.innerHTML = `
+          <div class="empty-box">
+            <h3 style="font-size:22px; color:var(--gold-bright); margin-bottom:8px;">${t("emptyStoreTitle")}</h3>
+            <p style="color:var(--ink-muted); font-size:14px; margin-bottom:16px;">${t("emptyStoreDesc")}</p>
+            <a href="./admin.html" class="btn-gold">${t("navAdmin")}</a>
+          </div>
+        `;
         return;
       }
 
       grid.innerHTML = list.map((p) => {
-        const title = state.lang === "ar" ? p.name_ar : p.name_en;
-        const desc = state.lang === "ar" ? p.short_desc_ar : p.short_desc_en;
+        const title = state.lang === "ar" ? p.name_ar : (p.name_en || p.name_ar);
+        const desc = state.lang === "ar" ? (p.desc_ar || "") : (p.desc_en || p.desc_ar || "");
         const wished = state.wishlist.includes(p.id);
+        const stock = Number(p.stock_qty ?? 0);
         return `
           <article class="product-card">
             <div class="product-media">
               <img src="${p.image_url}" alt="${title}" loading="lazy" />
               ${p.badge ? `<span class="product-badge">${p.badge}</span>` : ""}
-              <button class="wish-btn ${wished ? "active" : ""}" type="button" onclick="toggleWishlist('${p.id}')" aria-label="Wishlist">
+              <button class="wish-btn ${wished ? "active" : ""}" type="button" onclick="toggleWishlist('${p.id}')">
                 <i data-lucide="heart"></i>
               </button>
             </div>
             <div class="product-body">
-              <div class="product-meta">${p.category} • ★ ${p.rating}</div>
-              <h3 class="product-title">${title}</h3>
-              <p class="product-desc">${desc}</p>
-              <div class="price-row">
-                <span class="price-now">${fmt(p.sale_price ?? p.price)}</span>
-                ${p.sale_price ? `<span class="price-old">${fmt(p.price)}</span>` : ""}
-                <span style="margin-inline-start:auto; font-size:11px; color:${p.stock_qty > 0 ? "var(--ink-muted)" : "#f87171"};">
-                  ${p.stock_qty > 0 ? `${p.stock_qty} left` : "Sold out"}
+              <div style="font-size:12px; color:var(--gold);">${p.category_name || "48 COSMETICS"}</div>
+              <h3 style="font-size:18px; font-weight:700;">${title}</h3>
+              <p style="font-size:13px; color:var(--ink-muted);">${desc}</p>
+              <div style="display:flex; align-items:center; gap:8px; margin-top:auto; padding-top:8px;">
+                <strong style="font-size:17px; color:var(--gold-bright);">${fmt(p.sale_price ?? p.price)}</strong>
+                ${p.sale_price ? `<span style="font-size:13px; color:var(--ink-muted); text-decoration:line-through;">${fmt(p.price)}</span>` : ""}
+                <span style="margin-inline-start:auto; font-size:12px; color:${stock > 0 ? "var(--ink-muted)" : "#f87171"};">
+                  ${stock > 0 ? (state.lang === "ar" ? `المتوفر: ${stock}` : `In stock: ${stock}`) : t("outOfStock")}
                 </span>
               </div>
-              <div class="card-actions">
-                <button class="btn-gold" type="button" ${p.stock_qty <= 0 ? "disabled" : ""} onclick="addToCart('${p.id}')">
-                  ${p.stock_qty > 0 ? "Add to Bag" : "Out of Stock"}
-                </button>
-                <button class="btn-ghost" type="button" onclick="openProductDetail('${p.id}')">Details</button>
+              <div style="display:grid; grid-template-columns:1fr auto; gap:8px; margin-top:10px;">
+                <button class="btn-gold" type="button" ${stock <= 0 ? "disabled" : ""} onclick="addToCart('${p.id}')">${stock > 0 ? t("addToBag") : t("outOfStock")}</button>
+                <button class="btn-ghost" type="button" onclick="openProductDetail('${p.id}')">${t("details")}</button>
               </div>
             </div>
           </article>
@@ -750,91 +544,79 @@
       lucide.createIcons();
     }
 
-    function addToCart(productId, variant = null) {
-      const prod = state.products.find((p) => p.id === productId);
-      if (!prod || prod.stock_qty <= 0) return showToast("Item unavailable");
-      const chosenVariant = variant || prod.variants?.[0] || "Standard";
-      const existing = state.cart.find((i) => i.productId === productId && i.variant === chosenVariant);
+    function addToCart(id) {
+      const p = state.products.find((x) => x.id === id);
+      if (!p || Number(p.stock_qty) <= 0) return showToast(t("outOfStock"));
+      const existing = state.cart.find((c) => c.productId === id);
       if (existing) {
-        if (existing.qty >= prod.stock_qty) return showToast("Max available stock reached");
+        if (existing.qty >= Number(p.stock_qty)) return showToast("وصلت للحد الأقصى المتوفر في المخزون");
         existing.qty += 1;
       } else {
-        state.cart.push({ productId, variant: chosenVariant, qty: 1 });
+        state.cart.push({ productId: id, qty: 1 });
       }
       localStorage.setItem("c48_cart", JSON.stringify(state.cart));
       updateCartUI();
-      showToast(`${prod.name_en} added to bag`);
+      showToast("تمت الإضافة إلى الحقيبة");
     }
 
-    function updateQty(index, delta) {
-      const item = state.cart[index];
+    function updateQty(idx, delta) {
+      const item = state.cart[idx];
       if (!item) return;
       item.qty += delta;
-      if (item.qty <= 0) state.cart.splice(index, 1);
+      if (item.qty <= 0) state.cart.splice(idx, 1);
       localStorage.setItem("c48_cart", JSON.stringify(state.cart));
       updateCartUI();
     }
 
-    function getCartTotals() {
+    function getTotals() {
       let subtotal = 0;
       for (const item of state.cart) {
         const p = state.products.find((x) => x.id === item.productId);
-        if (p) subtotal += (p.sale_price ?? p.price) * item.qty;
+        if (p) subtotal += Number(p.sale_price ?? p.price) * item.qty;
       }
       let discount = 0;
-      let freeShipCoupon = false;
-      if (state.coupon) {
-        if (state.coupon.type === "percent") discount = subtotal * (state.coupon.value / 100);
-        if (state.coupon.type === "fixed") discount = Math.min(subtotal, state.coupon.value);
-        if (state.coupon.type === "free_shipping") freeShipCoupon = true;
+      let freeShip = false;
+      if (state.appliedCoupon) {
+        if (state.appliedCoupon.discount_type === "percent") discount = subtotal * (Number(state.appliedCoupon.discount_value) / 100);
+        if (state.appliedCoupon.discount_type === "fixed") discount = Math.min(subtotal, Number(state.appliedCoupon.discount_value));
+        if (state.appliedCoupon.discount_type === "free_shipping") freeShip = true;
       }
-      const threshold = cfg.freeShippingThreshold || 150;
-      const shipping = subtotal === 0 || subtotal >= threshold || freeShipCoupon ? 0 : 12;
-      const taxable = Math.max(0, subtotal - discount);
-      const tax = taxable * (cfg.defaultTaxRate || 0.05);
-      const total = taxable + shipping + tax;
-      return { subtotal, discount, shipping, tax, total, threshold };
+      const shipping = subtotal === 0 || subtotal >= (cfg.freeShippingThreshold || 150) || freeShip ? 0 : 10;
+      const total = Math.max(0, subtotal - discount) + shipping;
+      return { subtotal, discount, shipping, total };
     }
 
     function updateCartUI() {
-      const count = state.cart.reduce((s, i) => s + i.qty, 0);
-      document.getElementById("cartCount").textContent = count;
-      const t = getCartTotals();
-      const pct = Math.min(100, Math.round((t.subtotal / t.threshold) * 100));
-      document.getElementById("freeShipBar").style.width = `${pct}%`;
-      document.getElementById("freeShipPct").textContent = `${pct}%`;
-      document.getElementById("freeShipLabel").textContent =
-        t.subtotal >= t.threshold ? "Complimentary shipping unlocked" : `Add ${fmt(t.threshold - t.subtotal)} for free shipping`;
-
-      const container = document.getElementById("cartItemsContainer");
+      document.getElementById("cartCount").textContent = state.cart.reduce((s, i) => s + i.qty, 0);
+      const tVals = getTotals();
+      const box = document.getElementById("cartItemsContainer");
       if (!state.cart.length) {
-        container.innerHTML = `<p style="color:var(--ink-muted); font-size:13px; text-align:center; padding:24px 0;">Your bag is currently empty.</p>`;
+        box.innerHTML = `<p style="color:var(--ink-muted); text-align:center; padding:24px 0;">الحقيبة فارغة حالياً.</p>`;
       } else {
-        container.innerHTML = state.cart.map((item, idx) => {
+        box.innerHTML = state.cart.map((item, idx) => {
           const p = state.products.find((x) => x.id === item.productId);
           if (!p) return "";
+          const name = state.lang === "ar" ? p.name_ar : (p.name_en || p.name_ar);
           return `
-            <div style="display:flex; gap:12px; align-items:center; background:var(--bg-card); padding:10px; border-radius:12px; border:1px solid var(--border-subtle);">
-              <img src="${p.image_url}" alt="${p.name_en}" style="width:54px; height:54px; object-fit:cover; border-radius:8px;" />
-              <div style="flex:1; min-width:0;">
-                <div style="font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name_en}</div>
-                <div style="font-size:11px; color:var(--ink-muted);">${item.variant} • ${fmt(p.sale_price ?? p.price)}</div>
+            <div style="display:flex; gap:10px; align-items:center; background:var(--bg-card); padding:10px; border-radius:10px; border:1px solid var(--border);">
+              <img src="${p.image_url}" alt="${name}" style="width:52px; height:52px; object-fit:cover; border-radius:8px;" />
+              <div style="flex:1;">
+                <div style="font-size:14px; font-weight:700;">${name}</div>
+                <div style="font-size:12px; color:var(--gold-bright);">${fmt(p.sale_price ?? p.price)}</div>
               </div>
               <div style="display:flex; align-items:center; gap:6px;">
-                <button class="icon-btn" style="width:28px;height:28px;" type="button" onclick="updateQty(${idx}, -1)">-</button>
-                <span style="font-size:13px;">${item.qty}</span>
-                <button class="icon-btn" style="width:28px;height:28px;" type="button" onclick="updateQty(${idx}, 1)">+</button>
+                <button class="icon-btn" style="width:28px;height:28px;" type="button" onclick="updateQty(${idx},-1)">-</button>
+                <span>${item.qty}</span>
+                <button class="icon-btn" style="width:28px;height:28px;" type="button" onclick="updateQty(${idx},1)">+</button>
               </div>
             </div>
           `;
         }).join("");
       }
-
-      document.getElementById("cartSubtotal").textContent = fmt(t.subtotal);
-      document.getElementById("cartDiscount").textContent = `-${fmt(t.discount)}`;
-      document.getElementById("cartShipping").textContent = fmt(t.shipping);
-      document.getElementById("cartTax").textContent = fmt(t.tax);
-      document.getElementById("cartTotal").textContent = fmt(t.total);
+      document.getElementById("cartSubtotal").textContent = fmt(tVals.subtotal);
+      document.getElementById("cartDiscount").textContent = `-${fmt(tVals.discount)}`;
+      document.getElementById("cartShipping").textContent = fmt(tVals.shipping);
+      document.getElementById("cartTotal").textContent = fmt(tVals.total);
     }
 
     function toggleWishlist(id) {
@@ -867,184 +649,328 @@
     function openProductDetail(id) {
       const p = state.products.find((x) => x.id === id);
       if (!p) return;
+      const title = state.lang === "ar" ? p.name_ar : (p.name_en || p.name_ar);
+      const desc = state.lang === "ar" ? (p.desc_ar || "") : (p.desc_en || p.desc_ar || "");
       openModal(`
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-          <h3 style="font-size:26px;">${p.name_en}</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:22px;">${title}</h3>
           <button class="icon-btn" type="button" onclick="closeModal()"><i data-lucide="x"></i></button>
         </div>
-        <img src="${p.image_url}" alt="${p.name_en}" style="width:100%; max-height:260px; object-fit:cover; border-radius:12px; margin-bottom:14px;" />
-        <p style="color:var(--ink-muted); font-size:13px; margin-bottom:12px;">${p.short_desc_en}</p>
-        <p style="font-size:12px; margin-bottom:8px;"><strong style="color:var(--gold-bright);">Key Ingredients:</strong> ${p.ingredients}</p>
-        <p style="font-size:12px; margin-bottom:16px;"><strong style="color:var(--gold-bright);">Ritual &amp; Usage:</strong> ${p.usage_instructions}</p>
+        <img src="${p.image_url}" alt="${title}" style="width:100%; max-height:260px; object-fit:cover; border-radius:12px; margin-bottom:12px;" />
+        <p style="font-size:14px; color:var(--ink-muted); margin-bottom:10px;">${desc}</p>
+        ${p.ingredients ? `<p style="font-size:13px; margin-bottom:8px;"><strong style="color:var(--gold-bright);">المكونات:</strong> ${p.ingredients}</p>` : ""}
+        ${p.usage_instructions ? `<p style="font-size:13px; margin-bottom:14px;"><strong style="color:var(--gold-bright);">طريقة الاستخدام:</strong> ${p.usage_instructions}</p>` : ""}
         <div style="display:flex; justify-content:space-between; align-items:center;">
           <strong style="font-size:20px; color:var(--gold-bright);">${fmt(p.sale_price ?? p.price)}</strong>
-          <button class="btn-gold" type="button" onclick="addToCart('${p.id}'); closeModal();">Add to Bag</button>
+          <button class="btn-gold" type="button" onclick="addToCart('${p.id}'); closeModal();">${t("addToBag")}</button>
         </div>
       `);
     }
 
-    function openCheckoutModal() {
-      if (!state.cart.length) return showToast("Your bag is empty");
-      const t = getCartTotals();
+    // نظام الحسابات الحقيقي (تسجيل + دخول + تعديل الملف الشخصي + عرض الطلبات)
+    function openAccountModal(activeTab = "login") {
+      if (state.currentUser) {
+        const userOrders = state.orders.filter((o) => o.customer_email === state.currentUser.email);
+        openModal(`
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+            <h3 style="font-size:22px;">حسابي الشخصي</h3>
+            <button class="icon-btn" type="button" onclick="closeModal()"><i data-lucide="x"></i></button>
+          </div>
+          <form id="profileUpdateForm" style="display:flex; flex-direction:column; gap:10px; margin-bottom:18px;">
+            <input class="input" name="full_name" value="${state.currentUser.full_name || ""}" placeholder="الاسم الكامل" required />
+            <input class="input" value="${state.currentUser.email}" disabled />
+            <input class="input" name="phone" value="${state.currentUser.phone || ""}" placeholder="رقم الهاتف" />
+            <input class="input" name="city" value="${state.currentUser.city || ""}" placeholder="المدينة" />
+            <input class="input" name="address" value="${state.currentUser.address || ""}" placeholder="العنوان التفصيلي" />
+            <div style="display:flex; gap:10px;">
+              <button class="btn-gold" type="submit">حفظ البيانات</button>
+              <button class="btn-ghost" type="button" id="customerLogoutBtn">تسجيل الخروج</button>
+            </div>
+          </form>
+          <h4 style="font-size:16px; color:var(--gold-bright); margin-bottom:8px;">طلباتي السابقة (${userOrders.length})</h4>
+          ${userOrders.length ? userOrders.map((o) => `
+            <div style="padding:10px; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; font-size:13px;">
+              <strong>#${o.order_number}</strong> — الحالة: ${o.order_status} — الإجمالي: ${fmt(o.total_amount)}
+            </div>
+          `).join("") : `<p style="font-size:13px; color:var(--ink-muted);">لا توجد طلبات مسجلة على هذا الحساب بعد.</p>`}
+        `);
+
+        document.getElementById("profileUpdateForm").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          const updates = {
+            full_name: fd.get("full_name"),
+            phone: fd.get("phone"),
+            city: fd.get("city"),
+            address: fd.get("address")
+          };
+          state.currentUser = { ...state.currentUser, ...updates };
+          if (hasSupabase && sb && state.currentUser.id) {
+            await sb.from("profiles").update(updates).eq("id", state.currentUser.id);
+          } else {
+            const users = JSON.parse(localStorage.getItem(SHARED_KEYS.users) || "[]");
+            const idx = users.findIndex((u) => u.email === state.currentUser.email);
+            if (idx >= 0) {
+              users[idx] = { ...users[idx], ...updates };
+              localStorage.setItem(SHARED_KEYS.users, JSON.stringify(users));
+            }
+            localStorage.setItem(SHARED_KEYS.session, JSON.stringify(state.currentUser));
+          }
+          showToast("تم تحديث بيانات حسابك بنجاح");
+        });
+
+        document.getElementById("customerLogoutBtn").addEventListener("click", async () => {
+          if (hasSupabase && sb) await sb.auth.signOut();
+          state.currentUser = null;
+          localStorage.removeItem(SHARED_KEYS.session);
+          closeModal();
+          showToast("تم تسجيل الخروج");
+        });
+        return;
+      }
+
       openModal(`
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-          <h3 style="font-size:26px;">Checkout — Total ${fmt(t.total)}</h3>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:22px;">بوابة العملاء — 48 COSMETICS</h3>
+          <button class="icon-btn" type="button" onclick="closeModal()"><i data-lucide="x"></i></button>
+        </div>
+        <div class="tabs-row">
+          <button class="tab-btn ${activeTab === "login" ? "active" : ""}" type="button" onclick="openAccountModal('login')">تسجيل الدخول</button>
+          <button class="tab-btn ${activeTab === "register" ? "active" : ""}" type="button" onclick="openAccountModal('register')">إنشاء حساب جديد</button>
+        </div>
+        ${activeTab === "login" ? `
+          <form id="customerLoginForm" style="display:flex; flex-direction:column; gap:10px;">
+            <input class="input" name="email" type="email" placeholder="البريد الإلكتروني" required />
+            <input class="input" name="password" type="password" placeholder="كلمة المرور" required />
+            <button class="btn-gold" type="submit">دخول</button>
+          </form>
+        ` : `
+          <form id="customerRegisterForm" style="display:flex; flex-direction:column; gap:10px;">
+            <input class="input" name="full_name" placeholder="الاسم الكامل" required />
+            <input class="input" name="email" type="email" placeholder="البريد الإلكتروني" required />
+            <input class="input" name="phone" type="tel" placeholder="رقم الهاتف" required />
+            <input class="input" name="password" type="password" minlength="6" placeholder="كلمة المرور (6 أحرف على الأقل)" required />
+            <button class="btn-gold" type="submit">إنشاء الحساب</button>
+          </form>
+        `}
+      `);
+
+      const loginForm = document.getElementById("customerLoginForm");
+      if (loginForm) {
+        loginForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          const email = fd.get("email").trim().toLowerCase();
+          const password = fd.get("password");
+
+          if (hasSupabase && sb) {
+            const { data, error } = await sb.auth.signInWithPassword({ email, password });
+            if (error) return showToast("خطأ في الدخول: " + error.message);
+            const { data: prof } = await sb.from("profiles").select("*").eq("id", data.user.id).maybeSingle();
+            state.currentUser = prof || { id: data.user.id, email };
+          } else {
+            const users = JSON.parse(localStorage.getItem(SHARED_KEYS.users) || "[]");
+            const found = users.find((u) => u.email === email && u.password === password);
+            if (!found) return showToast("البريد الإلكتروني أو كلمة المرور غير صحيحة");
+            if (found.is_blocked) return showToast("هذا الحساب موقوف من قبل الإدارة");
+            state.currentUser = { ...found };
+            delete state.currentUser.password;
+            localStorage.setItem(SHARED_KEYS.session, JSON.stringify(state.currentUser));
+          }
+          showToast("مرحباً بك في 48 COSMETICS");
+          openAccountModal();
+        });
+      }
+
+      const regForm = document.getElementById("customerRegisterForm");
+      if (regForm) {
+        regForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const fd = new FormData(e.target);
+          const full_name = fd.get("full_name").trim();
+          const email = fd.get("email").trim().toLowerCase();
+          const phone = fd.get("phone").trim();
+          const password = fd.get("password");
+
+          if (hasSupabase && sb) {
+            const { data, error } = await sb.auth.signUp({
+              email,
+              password,
+              options: { data: { full_name, phone } }
+            });
+            if (error) return showToast("تعذر إنشاء الحساب: " + error.message);
+            state.currentUser = { id: data.user?.id, email, full_name, phone };
+          } else {
+            const users = JSON.parse(localStorage.getItem(SHARED_KEYS.users) || "[]");
+            if (users.some((u) => u.email === email)) return showToast("هذا البريد مسجل مسبقاً");
+            const newUser = {
+              id: "usr-" + Date.now(),
+              full_name,
+              email,
+              phone,
+              password,
+              city: "",
+              address: "",
+              is_blocked: false,
+              created_at: new Date().toISOString()
+            };
+            users.push(newUser);
+            localStorage.setItem(SHARED_KEYS.users, JSON.stringify(users));
+            state.currentUser = { ...newUser };
+            delete state.currentUser.password;
+            localStorage.setItem(SHARED_KEYS.session, JSON.stringify(state.currentUser));
+          }
+          showToast("تم إنشاء حسابك وتفعيل الدخول");
+          openAccountModal();
+        });
+      }
+    }
+
+    function openCheckoutModal() {
+      if (!state.cart.length) return showToast("حقيبة التسوق فارغة");
+      const tVals = getTotals();
+      const u = state.currentUser || {};
+      openModal(`
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <h3 style="font-size:22px;">إتمام الطلب — الإجمالي ${fmt(tVals.total)}</h3>
           <button class="icon-btn" type="button" onclick="closeModal()"><i data-lucide="x"></i></button>
         </div>
         <form id="checkoutForm" style="display:flex; flex-direction:column; gap:10px;">
-          <input class="input" name="name" placeholder="Recipient Full Name" required />
-          <input class="input" name="email" type="email" placeholder="Email for Order Confirmation" required />
-          <input class="input" name="phone" type="tel" placeholder="Phone Number" required />
-          <input class="input" name="city" placeholder="City" required />
-          <input class="input" name="address" placeholder="Street & Building Address" required />
+          <input class="input" name="name" value="${u.full_name || ""}" placeholder="الاسم الكامل للمستلم" required />
+          <input class="input" name="email" type="email" value="${u.email || ""}" placeholder="البريد الإلكتروني" required />
+          <input class="input" name="phone" type="tel" value="${u.phone || ""}" placeholder="رقم الجوال" required />
+          <input class="input" name="city" value="${u.city || ""}" placeholder="المدينة" required />
+          <input class="input" name="address" value="${u.address || ""}" placeholder="العنوان التفصيلي" required />
           <select name="payment" class="input">
-            <option value="cod">Cash on Delivery (Confirmed upon delivery)</option>
-            <option value="bank_transfer">Bank Transfer (Pending verification)</option>
+            <option value="cod">الدفع عند الاستلام</option>
+            <option value="bank_transfer">تحويل بنكي</option>
           </select>
-          <p style="font-size:11px; color:var(--ink-muted);">Note: Orders are recorded as pending verification/delivery until confirmed by operations or a verified payment webhook.</p>
-          <button class="btn-gold" type="submit">Place Order (${fmt(t.total)})</button>
+          <button class="btn-gold" type="submit">تأكيد وإرسال الطلب</button>
         </form>
       `);
 
       document.getElementById("checkoutForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         const fd = new FormData(e.target);
-        const orderNumber = `C48-${Date.now().toString().slice(-6)}`;
-        const orderRecord = {
-          order_number: orderNumber,
+        const orderItems = state.cart.map((c) => {
+          const p = state.products.find((x) => x.id === c.productId);
+          return { product_id: c.productId, name: p?.name_ar || "", qty: c.qty, price: Number(p?.sale_price ?? p?.price ?? 0) };
+        });
+
+        const orderObj = {
+          id: "ord-" + Date.now(),
+          order_number: "48-" + Date.now().toString().slice(-6),
+          user_id: state.currentUser?.id || null,
           customer_name: fd.get("name"),
-          customer_email: fd.get("email"),
+          customer_email: fd.get("email").trim().toLowerCase(),
           customer_phone: fd.get("phone"),
           shipping_city: fd.get("city"),
           shipping_address: fd.get("address"),
           payment_method: fd.get("payment"),
-          payment_status: "pending_confirmation",
           order_status: "pending",
-          subtotal: t.subtotal,
-          discount_amount: t.discount,
-          shipping_fee: t.shipping,
-          tax_amount: t.tax,
-          total_amount: t.total,
+          items: orderItems,
+          subtotal: tVals.subtotal,
+          discount_amount: tVals.discount,
+          shipping_fee: tVals.shipping,
+          tax_amount: 0,
+          total_amount: tVals.total,
           created_at: new Date().toISOString()
         };
 
-        if (hasSupabase && sb) {
-          const { error } = await sb.from("orders").insert(orderRecord);
-          if (error) return showToast(`Order error: ${error.message}`);
+        // خصم الكمية من المخزون الحقيقي
+        for (const item of state.cart) {
+          const p = state.products.find((x) => x.id === item.productId);
+          if (p) {
+            p.stock_qty = Math.max(0, Number(p.stock_qty) - item.qty);
+            if (hasSupabase && sb) {
+              await sb.from("products").update({ stock_qty: p.stock_qty }).eq("id", p.id);
+            }
+          }
         }
-        state.orders.unshift(orderRecord);
-        localStorage.setItem("c48_orders", JSON.stringify(state.orders));
+
+        if (hasSupabase && sb) {
+          const { error } = await sb.from("orders").insert(orderObj);
+          if (error) return showToast("خطأ في إرسال الطلب: " + error.message);
+        } else {
+          localStorage.setItem(SHARED_KEYS.products, JSON.stringify(state.products));
+          state.orders.unshift(orderObj);
+          localStorage.setItem(SHARED_KEYS.orders, JSON.stringify(state.orders));
+        }
+
         state.cart = [];
-        state.coupon = null;
+        state.appliedCoupon = null;
         localStorage.setItem("c48_cart", "[]");
         updateCartUI();
+        renderProducts();
         toggleDrawer("cartDrawer", false);
+
         openModal(`
-          <h3 style="font-size:26px; color:var(--gold-bright); margin-bottom:8px;">Order Recorded</h3>
-          <p style="font-size:14px; margin-bottom:10px;">Reference Number: <strong>${orderNumber}</strong></p>
-          <p style="font-size:13px; color:var(--ink-muted); margin-bottom:16px;">Status: Pending confirmation (${hasSupabase ? "saved to Supabase" : "Demo Mode local record"}). Payment is not marked paid until verified.</p>
-          <button class="btn-gold" type="button" onclick="closeModal()">Continue Shopping</button>
+          <h3 style="font-size:24px; color:var(--gold-bright); margin-bottom:8px;">تم استلام طلبك بنجاح</h3>
+          <p style="font-size:15px; margin-bottom:10px;">رقم الطلب: <strong>#${orderObj.order_number}</strong></p>
+          <p style="font-size:13px; color:var(--ink-muted); margin-bottom:16px;">وصل طلبك مباشرة إلى لوحة الإدارة وسيتم التواصل معك لتأكيد التوصيل.</p>
+          <button class="btn-gold" type="button" onclick="closeModal()">متابعة التسوق</button>
         `);
       });
     }
 
-    function openPolicyModal(type) {
-      const titles = {
-        shipping: "Shipping & Delivery Policy",
-        returns: "Returns & Exchanges Policy",
-        privacy: "Privacy & Terms"
-      };
-      openModal(`
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <h3 style="font-size:24px;">${titles[type]}</h3>
-          <button class="icon-btn" type="button" onclick="closeModal()"><i data-lucide="x"></i></button>
-        </div>
-        <p style="font-size:13px; color:var(--ink-muted);">48 COSMETICS processes orders promptly and provides transparent tracking updates. For hygiene reasons, opened skincare and fragrance items are eligible for return only if defective or damaged upon arrival.</p>
-      `);
-    }
-
     document.getElementById("langToggle").addEventListener("click", () => {
-      state.lang = state.lang === "en" ? "ar" : "en";
-      localStorage.setItem("c48_lang", state.lang);
-      applyLanguage();
+      state.lang = state.lang === "ar" ? "en" : "ar";
+      localStorage.setItem("c48_user_lang", state.lang);
+      enforceLanguageSettings();
+      renderCategories();
+      renderProducts();
+      updateCartUI();
     });
 
-    ["searchInput", "categoryFilter", "skinTypeFilter", "availabilityFilter", "sortSelect"].forEach((id) => {
-      document.getElementById(id).addEventListener("input", renderProducts);
-      document.getElementById(id).addEventListener("change", renderProducts);
-    });
-
+    document.getElementById("searchInput").addEventListener("input", renderProducts);
+    document.getElementById("categoryFilter").addEventListener("change", renderProducts);
+    document.getElementById("sortSelect").addEventListener("change", renderProducts);
     document.getElementById("cartBtn").addEventListener("click", () => toggleDrawer("cartDrawer", true));
-    document.getElementById("openCheckoutBtn").addEventListener("click", openCheckoutModal);
     document.getElementById("proceedCheckoutBtn").addEventListener("click", openCheckoutModal);
-    document.getElementById("wishlistBtn").addEventListener("click", () => {
-      const wished = state.products.filter((p) => state.wishlist.includes(p.id));
-      openModal(`
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <h3 style="font-size:24px;">Saved Wishlist (${wished.length})</h3>
-          <button class="icon-btn" type="button" onclick="closeModal()"><i data-lucide="x"></i></button>
-        </div>
-        ${wished.length ? wished.map((p) => `<div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.08);"><span>${p.name_en} — ${fmt(p.sale_price ?? p.price)}</span><button class="btn-gold" type="button" onclick="addToCart('${p.id}'); closeModal();">Add</button></div>`).join("") : `<p style="color:var(--ink-muted); font-size:13px;">No saved items yet.</p>`}
-      `);
-    });
+    document.getElementById("accountBtn").addEventListener("click", () => openAccountModal("login"));
+    document.getElementById("heroAccountBtn").addEventListener("click", () => openAccountModal("login"));
 
-    document.getElementById("accountBtn").addEventListener("click", () => {
+    document.getElementById("wishlistBtn").addEventListener("click", () => {
+      const items = state.products.filter((p) => state.wishlist.includes(p.id));
       openModal(`
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-          <h3 style="font-size:24px;">Client Orders &amp; Account</h3>
+          <h3 style="font-size:22px;">المفضلة (${items.length})</h3>
           <button class="icon-btn" type="button" onclick="closeModal()"><i data-lucide="x"></i></button>
         </div>
-        <p style="font-size:13px; color:var(--ink-muted); margin-bottom:12px;">Recent Orders (${state.orders.length}):</p>
-        ${state.orders.length ? state.orders.map((o) => `<div style="padding:10px; border:1px solid var(--border-subtle); border-radius:10px; margin-bottom:8px; font-size:12px;"><strong>${o.order_number}</strong> • ${o.order_status} • ${fmt(o.total_amount)}</div>`).join("") : `<p style="font-size:13px; color:var(--ink-muted);">No orders placed in this session yet.</p>`}
+        ${items.length ? items.map((p) => `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
+            <span>${state.lang === "ar" ? p.name_ar : p.name_en} — ${fmt(p.sale_price ?? p.price)}</span>
+            <button class="btn-gold" type="button" onclick="addToCart('${p.id}'); closeModal();">${t("addToBag")}</button>
+          </div>
+        `).join("") : `<p style="color:var(--ink-muted); font-size:14px;">لا توجد منتجات في المفضلة.</p>`}
       `);
     });
 
     document.getElementById("applyCouponBtn").addEventListener("click", () => {
       const code = document.getElementById("couponInput").value.trim().toUpperCase();
-      if (code === "GOLD10") {
-        state.coupon = { code, type: "percent", value: 10 };
-        showToast("GOLD10 (10% off) applied");
-      } else if (code === "FREESHIP") {
-        state.coupon = { code, type: "free_shipping", value: 0 };
-        showToast("Free shipping code applied");
-      } else {
-        state.coupon = null;
-        showToast("Try GOLD10 or FREESHIP");
+      const found = state.coupons.find((c) => c.code.toUpperCase() === code && c.is_active !== false);
+      if (!found) {
+        state.appliedCoupon = null;
+        updateCartUI();
+        return showToast("كود الخصم غير صالح أو غير مفعل");
       }
+      state.appliedCoupon = found;
       updateCartUI();
+      showToast(`تم تطبيق الكوبون ${found.code}`);
     });
 
-    document.getElementById("contactForm").addEventListener("submit", async (e) => {
+    document.getElementById("contactForm").addEventListener("submit", (e) => {
       e.preventDefault();
-      const fd = new FormData(e.target);
-      if (hasSupabase && sb) {
-        await sb.from("contact_messages").insert({ name: fd.get("name"), email: fd.get("email"), message: fd.get("message") });
-      }
       e.target.reset();
-      showToast("Inquiry received by 48 COSMETICS");
-    });
-
-    document.getElementById("newsletterForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const fd = new FormData(e.target);
-      if (hasSupabase && sb) {
-        await sb.from("newsletter_subscribers").insert({ email: fd.get("email") });
-      }
-      e.target.reset();
-      showToast("Subscribed to 48 COSMETICS dispatch");
+      showToast("تم إرسال رسالتك إلى فريق 48 COSMETICS");
     });
 
     document.getElementById("mainModal").addEventListener("click", (e) => {
       if (e.target.id === "mainModal") closeModal();
     });
 
-    window.addEventListener("load", () => {
-      setTimeout(() => document.getElementById("preloader").classList.add("hidden"), 250);
-    });
-
     lucide.createIcons();
-    applyLanguage();
-    loadData();
+    syncFromBackend();
   </script>
 </body>
 </html>
