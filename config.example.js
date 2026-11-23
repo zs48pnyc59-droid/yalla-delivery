@@ -1,20 +1,16 @@
-// Copy this file to config.js and fill in your Supabase project credentials.
-// NEVER put the Supabase service_role key in frontend files.
-
+// ضع بيانات مشروعك من Supabase هنا ليعمل الموقع ولوحة التحكم على نفس قاعدة البيانات الحقيقية
 window.COSMETICS_48_CONFIG = {
   brandName: "48 COSMETICS",
-  taglineEn: "BEAUTY. ELEGANCE. EXCELLENCE.",
-  taglineAr: "جمال. أناقة. تميّز.",
+  defaultLang: "ar",
   currency: {
     code: "USD",
-    symbol: "$",
-    rateFromBase: 1
+    symbol: "$"
   },
   freeShippingThreshold: 150,
   defaultTaxRate: 0.05,
   whatsappNumber: "970590000000",
   supabase: {
-    url: "", // e.g. "https://your-project-ref.supabase.co"
-    anonKey: "" // e.g. "eyJhbGciOi..."
+    url: "", // ضع رابط مشروع Supabase هنا
+    anonKey: "" // ضع مفتاح anon public key هنا فقط
   }
 };
